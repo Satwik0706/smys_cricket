@@ -15,8 +15,11 @@
   <!-- ============================================================ -->
   <!-- 💎 TOP NAVIGATION BAR                                        -->
   <!-- ============================================================ -->
-  <header class="top-nav">
-    <div class="brand-badge">
+  <!-- ============================================================ -->
+  <!-- 💎 TOP NAVIGATION BAR                                        -->
+  <!-- ============================================================ -->
+  <header class="top-nav" id="mainTopNav">
+    <div class="brand-badge" style="cursor:pointer;" onclick="window.switchPortal('viewHub')">
       <div class="brand-logo-icon">🏏</div>
       <div>
         <div class="brand-title">T20 CRICKET MEGA AUCTION</div>
@@ -24,24 +27,23 @@
       </div>
     </div>
 
-    <!-- Portal Switcher -->
-    <nav class="portal-tabs">
-      <button class="tab-btn active" data-portal="viewRegistration">
-        <span>📝</span> Registration
+    <!-- Center: Portal Switcher Dropdown & Return Hub -->
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="btn-back-hub" onclick="window.switchPortal('viewHub')">
+        <span>🏛️</span> Entrance Hub
       </button>
-      <button class="tab-btn" data-portal="viewAdmin">
-        <span>👑</span> Admin Cockpit <span id="adminLockBadge">🔒</span>
-      </button>
-      <button class="tab-btn" data-portal="viewTeamWarroom">
-        <span>🛡️</span> Team Console <span id="teamLockBadge">🔒</span>
-      </button>
-      <button class="tab-btn" data-portal="viewBroadcast">
-        <span>📺</span> Live Telecast / OBS
-      </button>
-      <button class="tab-btn" data-portal="viewPosterStudio">
-        <span>📸</span> Instagram Studio
-      </button>
-    </nav>
+
+      <div class="portal-dropdown-wrapper">
+        <select id="portalDropdownSelector" class="portal-dropdown" title="Switch Portal">
+          <option value="viewHub">🏛️ Tournament Entrance Hub</option>
+          <option value="viewRegistration">📝 Player Registration</option>
+          <option value="viewAdmin">👑 Master Admin Cockpit (🔒)</option>
+          <option value="viewTeamWarroom">🛡️ Franchise War-Room (🔒)</option>
+          <option value="viewBroadcast">📺 Live TV Broadcast / OBS</option>
+          <option value="viewPosterStudio">📸 Instagram Poster Studio</option>
+        </select>
+      </div>
+    </div>
 
     <!-- Header Actions -->
     <div class="nav-actions">
@@ -58,9 +60,86 @@
   </header>
 
   <!-- ============================================================ -->
+  <!-- 🏛️ VIEW 0: TOURNAMENT ENTRANCE HUB (SEPARATE PORTALS)       -->
+  <!-- ============================================================ -->
+  <main id="viewHub" class="portal-view active">
+    <div class="hub-hero">
+      <h1>T20 CRICKET MEGA AUCTION 2026</h1>
+      <p>Select a dedicated portal to enter the live auction ecosystem. All portals operate independently and synchronize in real time.</p>
+    </div>
+
+    <div class="hub-grid">
+      <!-- Card 1: Player Registration -->
+      <div class="hub-card" onclick="window.switchPortal('viewRegistration')">
+        <div>
+          <div class="hub-card-icon">📝</div>
+          <div class="hub-card-title">Player Registration</div>
+          <div class="hub-card-desc">For cricketers & coaches. Submit bio, CricHeroes profile, phone contact, multiple playing roles, career statistics, and photo.</div>
+        </div>
+        <div class="hub-card-footer">
+          <span>Open Registration Portal</span>
+          <span>→</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Master Admin Cockpit -->
+      <div class="hub-card" onclick="window.switchPortal('viewAdmin')">
+        <div>
+          <div class="hub-card-icon">👑</div>
+          <div class="hub-card-title">Admin & Auctioneer Cockpit</div>
+          <div class="hub-card-desc">Password-protected control room. Create teams, set base prices, assign sequence order, and control the live hammer.</div>
+        </div>
+        <div class="hub-card-footer">
+          <span>Enter Admin (Password 🔒)</span>
+          <span>→</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Franchise War-Room -->
+      <div class="hub-card" onclick="window.switchPortal('viewTeamWarroom')">
+        <div>
+          <div class="hub-card-icon">🛡️</div>
+          <div class="hub-card-title">Franchise Table War-Room</div>
+          <div class="hub-card-desc">For team owners & analysts. Log in to your bidding table, raise the digital paddle, track purse limits, and export your squad to Excel.</div>
+        </div>
+        <div class="hub-card-footer">
+          <span>Enter Table Console</span>
+          <span>→</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Live TV Broadcast / OBS -->
+      <div class="hub-card" onclick="window.switchPortal('viewBroadcast')">
+        <div>
+          <div class="hub-card-icon">📺</div>
+          <div class="hub-card-title">Live Broadcast & OBS Stream</div>
+          <div class="hub-card-desc">Broadcast-grade graphics for stadium big screens and OBS Studio live streaming with live bidding ladders and SOLD celebration.</div>
+        </div>
+        <div class="hub-card-footer">
+          <span>Launch Broadcast Display</span>
+          <span>→</span>
+        </div>
+      </div>
+
+      <!-- Card 5: Instagram Graphic Studio -->
+      <div class="hub-card" onclick="window.switchPortal('viewPosterStudio')">
+        <div>
+          <div class="hub-card-icon">📸</div>
+          <div class="hub-card-title">Instagram Poster Studio</div>
+          <div class="hub-card-desc">Official 1080x1080 match graphics generator. Instantly render and download celebration posters ready for social media.</div>
+        </div>
+        <div class="hub-card-footer">
+          <span>Open Poster Studio</span>
+          <span>→</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============================================================ -->
   <!-- 📝 PORTAL 1: DYNAMIC PLAYER REGISTRATION                     -->
   <!-- ============================================================ -->
-  <main id="viewRegistration" class="portal-view active">
+  <main id="viewRegistration" class="portal-view">
     <div class="reg-layout">
       <!-- Registration Form -->
       <div class="reg-form-card">
@@ -95,27 +174,31 @@
             </div>
 
             <div class="form-group full-width">
-              <label class="form-label">Playing Role *</label>
+              <label class="form-label">Playing Roles (Select One or More) *</label>
               <div class="role-options">
                 <label class="role-chip">
-                  <input type="radio" name="regRole" value="Batter" checked>
+                  <input type="checkbox" name="regRole" value="Batter" checked>
                   <span>🏏 Pure Batter</span>
                 </label>
                 <label class="role-chip">
-                  <input type="radio" name="regRole" value="Fast Bowler">
+                  <input type="checkbox" name="regRole" value="Fast Bowler">
                   <span>⚡ Fast Bowler</span>
                 </label>
                 <label class="role-chip">
-                  <input type="radio" name="regRole" value="Spin Bowler">
+                  <input type="checkbox" name="regRole" value="Spin Bowler">
                   <span>🌀 Spin Bowler</span>
                 </label>
                 <label class="role-chip">
-                  <input type="radio" name="regRole" value="All-Rounder">
+                  <input type="checkbox" name="regRole" value="All-Rounder">
                   <span>⭐ All-Rounder</span>
                 </label>
                 <label class="role-chip">
-                  <input type="radio" name="regRole" value="Wicketkeeper">
+                  <input type="checkbox" name="regRole" value="Wicketkeeper">
                   <span>🧤 Wicketkeeper</span>
+                </label>
+                <label class="role-chip">
+                  <input type="checkbox" name="regRole" value="Finisher">
+                  <span>💥 Finisher</span>
                 </label>
               </div>
             </div>

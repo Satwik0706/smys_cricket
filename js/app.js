@@ -59,7 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cloudModal.classList.remove('active');
   });
 
-  // --- Navigation & Portal Switching ---
+  // --- Navigation & Dedicated Portal Routing ---
+  const portalDropdownSelector = document.getElementById('portalDropdownSelector');
+
   window.switchPortal = (portalId) => {
     portalTabs.forEach(tab => {
       tab.classList.toggle('active', tab.dataset.portal === portalId);
@@ -67,16 +69,61 @@ document.addEventListener('DOMContentLoaded', () => {
     portalViews.forEach(view => {
       view.classList.toggle('active', view.id === portalId);
     });
+    if (portalDropdownSelector) {
+      portalDropdownSelector.value = portalId;
+    }
+
+    // Clean URL Hash Routing
+    const hashMap = {
+      'viewHub': 'hub',
+      'viewRegistration': 'register',
+      'viewAdmin': 'admin',
+      'viewTeamWarroom': 'team',
+      'viewBroadcast': 'broadcast',
+      'viewPosterStudio': 'studio'
+    };
+    if (hashMap[portalId]) {
+      window.location.hash = '#/' + hashMap[portalId];
+    }
+
     if (portalId === 'viewPosterStudio') {
       renderStudioPoster();
     }
   };
+
+  // Dropdown Selector Change
+  if (portalDropdownSelector) {
+    portalDropdownSelector.addEventListener('change', (e) => {
+      window.switchPortal(e.target.value);
+    });
+  }
 
   portalTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       window.switchPortal(tab.dataset.portal);
     });
   });
+
+  // Handle URL Hash on load & history navigation
+  function handleRouteFromHash() {
+    const hash = window.location.hash.replace('#/', '').replace('#', '').toLowerCase();
+    const routeMap = {
+      'hub': 'viewHub',
+      'register': 'viewRegistration',
+      'player': 'viewRegistration',
+      'admin': 'viewAdmin',
+      'team': 'viewTeamWarroom',
+      'broadcast': 'viewBroadcast',
+      'obs': 'viewBroadcast',
+      'studio': 'viewPosterStudio'
+    };
+    if (routeMap[hash]) {
+      window.switchPortal(routeMap[hash]);
+    } else {
+      window.switchPortal('viewHub'); // Default landing is the Entrance Hub!
+    }
+  }
+  window.addEventListener('hashchange', handleRouteFromHash);
 
   // ============================================================
   // 🔐 ADMIN AUTHENTICATION
@@ -276,8 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const updateCardPreview = () => {
     const name = document.getElementById('regName').value || 'PLAYER NAME';
     const country = document.getElementById('regCountry').value || 'INDIA';
-    const roleEl = document.querySelector('input[name="regRole"]:checked');
-    const role = roleEl ? roleEl.value : 'Batter';
+    const checkedRoles = Array.from(document.querySelectorAll('input[name="regRole"]:checked')).map(cb => cb.value);
+    const role = checkedRoles.length > 0 ? checkedRoles.join(', ') : 'Batter';
     const matches = document.getElementById('regMatches').value || '0';
     const runs = document.getElementById('regRuns').value || '0';
     const sr = document.getElementById('regStrikeRate').value || '0.0';
@@ -357,7 +404,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   playerRegForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const roleEl = document.querySelector('input[name="regRole"]:checked');
+    const checkedRoles = Array.from(document.querySelectorAll('input[name="regRole"]:checked')).map(cb => cb.value);
+    const role = checkedRoles.length > 0 ? checkedRoles.join(', ') : 'Batter';
 
     const newPlayer = window.auctionStore.registerPlayer({
       name: document.getElementById('regName').value.trim(),
@@ -365,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
       age: document.getElementById('regAge').value,
       battingStyle: document.getElementById('regBattingStyle').value,
       bowlingStyle: document.getElementById('regBowlingStyle').value.trim(),
-      role: roleEl ? roleEl.value : 'Batter',
+      role: role,
       matches: document.getElementById('regMatches').value || 0,
       runs: document.getElementById('regRuns').value || 0,
       strikeRate: document.getElementById('regStrikeRate').value || 0,
@@ -1279,8 +1327,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initial Notify
+  // Initial Notify & Hash Route
   window.auctionStore.notify();
   updateCardPreview();
+  handleRouteFromHash();
 });
 

@@ -57,12 +57,16 @@ An enterprise, TV-broadcast grade Cricket Mega Auction & Live Telecasting system
   $$\text{Max Allowed Bid} = \text{Remaining Purse} - (\text{Required Unfilled Slots} \times \text{Min Base Price})$$
   Franchise consoles automatically lock and display warning banners if a team attempts to bid beyond their safe limit.
 
-### 5. 📺 TV Telecasting & Live OBS Stream Overlay
-* **Star Sports / IPL Style HUD:** 3D Player card, Bidding duel history ladder, countdown clock that turns crimson with audio heartbeat in the last 5 seconds.
-* **Live Screen Instagram "SOLD" Pop-up Modal:**
-  * When the auctioneer hammers **SOLD**, stadium fanfare sounds, golden digital confetti bursts across the screen, and a high-impact Instagram celebration card slides into the center of the live screen!
-  * **1-Click Download 1080x1080 Post (PNG)**: Automatically generates social media graphics ready for Instagram/Twitter.
-* **Pop-out OBS Window:** One-click borderless window launcher for OBS Studio browser source capture.
+### 5. 🏛️ Dedicated Portal Separation & URL Direct Links
+Every portal is now cleanly separated so users only see their designated screen:
+* **`https://your-domain.vercel.app/#/hub`** → **Tournament Entrance Hub** (Clean gateway with cards to enter each portal)
+* **`https://your-domain.vercel.app/#/register`** → **Dedicated Player Registration** (Share this on WhatsApp with players; no distracting admin/team buttons!)
+* **`https://your-domain.vercel.app/#/admin`** → **Dedicated Admin Cockpit** (Password-protected console for tournament organizers)
+* **`https://your-domain.vercel.app/#/team`** → **Dedicated Franchise War-Room** (Table bidding screen for team owners with Excel export)
+* **`https://your-domain.vercel.app/#/broadcast`** → **Clean Live TV / OBS Overlay** (Stream-ready layout with live tickers and SOLD celebratory popup)
+* **`https://your-domain.vercel.app/#/studio`** → **Instagram Poster Studio** (1080x1080 graphic generator)
+* **Portal Dropdown:** Users can quickly jump between portals using the clean **`[ 🏛️ Switch Portal ▾ ]`** selector or click **"Entrance Hub"**.
+* **Multi-Role Selection:** Players can select **multiple playing roles** simultaneously (e.g. *Batter + Wicketkeeper*, or *All-Rounder + Fast Bowler + Finisher*).
 
 ---
 
