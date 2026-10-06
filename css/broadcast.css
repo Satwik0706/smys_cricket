@@ -1,397 +1,491 @@
-/* broadcast.css - TV-Broadcast Grade Cricket Auction Overlay & Live HUD */
+/* ============================================================
+   broadcast.css — IPL TV-Grade Cricket Auction Broadcast HUD
+   Midnight Navy × Championship Gold × Electric Cyan
+   ============================================================ */
 
-:root {
-  --bg-obsidian: #07213F;
-  --bg-card: rgba(9, 42, 80, 0.92);
-  --bg-glass: rgba(7, 33, 64, 0.82);
-  --sky-bright: #38BDF8;
-  --sky-primary: #0EA5E9;
-  --gold-glow: #F59E0B;
-  --gold-bright: #FBBF24;
-  --accent-cyan: #38BDF8;
-  --accent-red: #EF4444;
-  --accent-green: #10B981;
-  --text-main: #FFFFFF;
-  --text-muted: #BAE6FD;
-  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
+/* Inherit design tokens from portal.css */
 
-/* TV Broadcast Container */
+/* ============================================================ */
+/* ──────────── BROADCAST VIEW CONTAINER ────────────────────── */
+/* ============================================================ */
+
 .broadcast-view {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 74px);
-  background: radial-gradient(ellipse at 50% 12%, #0B3D74 0%, #07254A 55%, #031428 100%);
-  color: var(--text-main);
-  padding: 24px;
+  min-height: calc(100vh - 68px);
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%,   rgba(11,44,92,0.9) 0%, transparent 60%),
+    radial-gradient(ellipse 60%  40% at 90% 100%, rgba(14,165,233,0.08) 0%, transparent 50%),
+    #030B18;
+  color: #FFFFFF;
+  padding: 24px 28px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 20px;
 }
 
-/* Top Broadcast Header */
+/* ============================================================ */
+/* ──────────── BROADCAST HEADER ─────────────────────────────── */
+/* ============================================================ */
+
 .broadcast-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(7, 33, 64, 0.88);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(125, 211, 252, 0.3);
-  border-radius: 18px;
+  background: rgba(6,16,34,0.92);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 20px;
   padding: 14px 28px;
-  box-shadow: 0 10px 30px rgba(2, 18, 38, 0.7);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03);
+  position: relative;
+  overflow: hidden;
+}
+.broadcast-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #D4AF37 25%, #38BDF8 75%, transparent);
 }
 
+/* LIVE badge */
 .broadcast-badge-live {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(239, 68, 68, 0.15);
-  color: #EF4444;
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 800;
-  font-size: 0.85rem;
-  letter-spacing: 2px;
+  background: rgba(239,68,68,0.12);
+  color: #F87171;
+  border: 1px solid rgba(239,68,68,0.35);
+  padding: 6px 16px;
+  border-radius: 99px;
+  font-weight: 900;
+  font-size: 0.82rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
 }
 
 .live-pulse-dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   background: #EF4444;
   border-radius: 50%;
-  animation: pulse-dot 1.5s infinite;
+  animation: pulse-dot 1.4s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 @keyframes pulse-dot {
-  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  0%   { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+  70%  { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239,68,68,0); }
 }
 
-.broadcast-set-info {
-  text-align: center;
-}
+.broadcast-set-info { text-align: center; }
 
 .broadcast-set-title {
-  font-size: 1.35rem;
+  font-family: 'Barlow Condensed', 'Inter', sans-serif;
+  font-size: 1.45rem;
   font-weight: 900;
-  color: var(--gold-bright);
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  background: linear-gradient(120deg, #FBBF24, #F0C842);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-transform: uppercase;
 }
 
 .broadcast-set-sub {
-  font-size: 0.82rem;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  color: #7DD3FC;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: 600;
+  letter-spacing: 2.5px;
+  font-weight: 700;
+  margin-top: 2px;
 }
 
-/* Pulsing Countdown Clock */
+/* Countdown box */
 .broadcast-timer-box {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(0, 0, 0, 0.55);
-  border: 1.5px solid rgba(212, 175, 55, 0.3);
+  gap: 10px;
+  background: rgba(0,0,0,0.5);
+  border: 1.5px solid rgba(212,175,55,0.35);
   padding: 8px 18px;
   border-radius: 12px;
 }
 
 .broadcast-timer-number {
-  font-size: 2.2rem;
+  font-family: 'Barlow Condensed', monospace;
+  font-size: 2.4rem;
   font-weight: 900;
-  font-family: monospace;
   color: #FFFFFF;
+  line-height: 1;
+  min-width: 56px;
+  text-align: center;
 }
 
 .timer-critical {
-  border-color: var(--accent-red) !important;
-  color: var(--accent-red) !important;
-  animation: timer-heartbeat 0.8s infinite;
+  color: #EF4444 !important;
+  border-color: rgba(239,68,68,0.6) !important;
+  animation: timer-heartbeat 0.7s ease-in-out infinite;
 }
 
 @keyframes timer-heartbeat {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); text-shadow: 0 0 15px rgba(239, 68, 68, 0.8); }
+  50% { transform: scale(1.06); text-shadow: 0 0 16px rgba(239,68,68,0.8); }
 }
 
-/* Main Broadcast Stage (Split Screen) */
+/* ============================================================ */
+/* ──────────── BROADCAST ARENA (Main Stage) ─────────────────── */
+/* ============================================================ */
+
 .broadcast-arena {
   display: grid;
-  grid-template-columns: 420px 1fr;
-  gap: 32px;
-  margin: 24px 0;
-  align-items: center;
+  grid-template-columns: 400px 1fr;
+  gap: 28px;
+  align-items: start;
+  flex: 1;
 }
 
-/* Left: 3D Player Trading Card */
+/* ─── Player Trading Card (Left) ─────────────────────────── */
 .broadcast-player-card {
-  background: linear-gradient(145deg, rgba(9, 42, 80, 0.95), rgba(5, 25, 50, 0.98));
-  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  background: linear-gradient(155deg, rgba(9,28,60,0.98) 0%, rgba(4,14,32,0.99) 100%);
+  border: 1.5px solid rgba(56,189,248,0.35);
   border-radius: 24px;
-  padding: 28px;
+  padding: 28px 24px 24px;
   position: relative;
-  box-shadow: 0 20px 50px rgba(2, 18, 38, 0.8), 0 0 35px rgba(14, 165, 233, 0.25);
+  box-shadow:
+    0 24px 56px rgba(0,0,0,0.85),
+    0 0 40px rgba(14,165,233,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.06);
   text-align: center;
+  overflow: hidden;
+}
+.broadcast-player-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #0EA5E9, #38BDF8, #7DD3FC);
+  border-radius: 24px 24px 0 0;
+}
+.broadcast-player-card::after {
+  content: '';
+  position: absolute;
+  top: -60px; left: 50%; transform: translateX(-50%);
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 65%);
+  pointer-events: none;
 }
 
 .player-img-frame {
-  width: 210px;
-  height: 210px;
-  margin: 0 auto 16px auto;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 18px;
   border-radius: 50%;
-  border: 4px solid var(--gold-glow);
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.35);
+  border: 4px solid #38BDF8;
+  box-shadow: 0 0 32px rgba(56,189,248,0.4), 0 0 70px rgba(56,189,248,0.1);
   overflow: hidden;
-  background: #1E293B;
+  background: #0A1628;
+  position: relative;
+  z-index: 1;
 }
-
-.player-img-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.player-img-frame img { width: 100%; height: 100%; object-fit: cover; }
 
 .player-card-name {
-  font-size: 1.9rem;
+  font-family: 'Barlow Condensed', 'Inter', sans-serif;
+  font-size: 2rem;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
+  letter-spacing: 2px;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
 }
 
 .player-card-role-pill {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.3);
+  padding: 5px 16px;
+  border-radius: 99px;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: var(--accent-cyan);
+  color: #7DD3FC;
   margin-bottom: 18px;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
 .player-stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  background: rgba(0, 0, 0, 0.45);
-  padding: 14px;
+  gap: 8px;
+  background: rgba(0,0,0,0.4);
+  padding: 14px 10px;
   border-radius: 14px;
-  margin-top: 14px;
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
-.player-stat-col {
-  text-align: center;
-}
+.player-stat-col { text-align: center; }
 
 .stat-label {
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 0.6rem;
+  font-weight: 800;
   text-transform: uppercase;
-  font-weight: 600;
+  letter-spacing: 1.2px;
+  color: #5B7A9A;
+  margin-bottom: 4px;
 }
 
 .stat-val {
-  font-size: 1.25rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #FFFFFF;
+  line-height: 1;
 }
 
 .player-base-badge {
-  margin-top: 16px;
-  background: rgba(212, 175, 55, 0.12);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  padding: 8px 14px;
+  margin-top: 14px;
+  background: rgba(212,175,55,0.1);
+  border: 1px solid rgba(212,175,55,0.3);
+  padding: 9px 14px;
   border-radius: 10px;
-  font-weight: 700;
-  color: var(--gold-bright);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #FBBF24;
+  letter-spacing: 0.5px;
 }
 
-/* Right: Massive Bidding Battle HUD */
+/* ─── Bidding HUD (Right) ────────────────────────────────── */
 .broadcast-bidding-hud {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
+/* Current Bid Hero Card */
 .highest-bid-hero {
-  background: linear-gradient(135deg, rgba(9, 42, 82, 0.95), rgba(5, 26, 52, 0.95));
-  border: 1.5px solid rgba(56, 189, 248, 0.5);
+  background: linear-gradient(145deg, rgba(9,30,65,0.98), rgba(4,16,38,0.99));
+  border: 1.5px solid rgba(56,189,248,0.4);
   border-radius: 24px;
-  padding: 32px;
+  padding: 28px 32px;
   position: relative;
-  box-shadow: 0 20px 45px rgba(2, 18, 38, 0.8);
+  overflow: hidden;
+  box-shadow: 0 20px 48px rgba(0,0,0,0.85), 0 0 30px rgba(14,165,233,0.12);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 20px;
+}
+.highest-bid-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 90% 50%, rgba(56,189,248,0.05) 0%, transparent 55%);
+  pointer-events: none;
 }
 
 .current-bid-label {
-  font-size: 0.95rem;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  color: #7DD3FC;
   letter-spacing: 3px;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 800;
+  margin-bottom: 6px;
 }
 
 .current-bid-amount {
-  font-size: 4.6rem;
+  font-family: 'Barlow Condensed', 'Inter', sans-serif;
+  font-size: 5rem;
   font-weight: 900;
-  color: var(--gold-bright);
-  text-shadow: 0 0 35px rgba(212, 175, 55, 0.35);
+  color: #FBBF24;
+  text-shadow: 0 0 40px rgba(212,175,55,0.35);
   line-height: 1;
-  margin: 6px 0;
+  letter-spacing: -1px;
 }
 
-.current-team-leader {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 8px;
-}
+.current-team-leader { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
 
 .leader-badge {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 20px;
-  border-radius: 30px;
-  font-size: 1.25rem;
+  padding: 9px 22px;
+  border-radius: 99px;
+  font-size: 1.2rem;
   font-weight: 800;
   color: #FFFFFF;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
 }
 
-/* Hammer Status Warning Banners */
+/* Hammer Status Banners */
 .hammer-banner {
-  padding: 16px 28px;
-  border-radius: 16px;
+  padding: 18px 28px;
+  border-radius: 18px;
   text-align: center;
-  font-size: 1.6rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.7rem;
   font-weight: 900;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   text-transform: uppercase;
-  animation: glow-pulse 1s infinite alternate;
+  animation: glow-pulse 1s ease-in-out infinite alternate;
 }
 
 .hammer-going-once {
-  background: rgba(245, 158, 11, 0.25);
+  background: rgba(245,158,11,0.15);
   border: 2px solid #F59E0B;
-  color: #FBBF24;
+  color: #FCD34D;
 }
 
 .hammer-going-twice {
-  background: rgba(239, 68, 68, 0.3);
+  background: rgba(239,68,68,0.18);
   border: 2px solid #EF4444;
-  color: #F87171;
+  color: #FCA5A5;
 }
 
 @keyframes glow-pulse {
   from { opacity: 0.85; transform: scale(0.99); }
-  to { opacity: 1; transform: scale(1.01); }
+  to   { opacity: 1;    transform: scale(1.01); }
 }
 
-/* Bidding Duel History */
+/* Bid History Ladder */
 .bid-history-ladder {
-  background: rgba(11, 17, 32, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(4,12,28,0.7);
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 20px;
-  padding: 20px;
-  max-height: 220px;
+  padding: 18px 20px;
+  max-height: 200px;
   overflow-y: auto;
 }
 
 .bid-ladder-title {
-  font-size: 0.85rem;
-  letter-spacing: 2px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: #5B7A9A;
   margin-bottom: 12px;
-  font-weight: 700;
 }
 
 .ladder-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
+  padding: 9px 14px;
   border-radius: 10px;
-  margin-bottom: 8px;
-  background: rgba(255, 255, 255, 0.04);
+  margin-bottom: 6px;
+  background: rgba(255,255,255,0.03);
   font-weight: 700;
+  font-size: 0.87rem;
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.18s;
 }
 
 .ladder-item:first-child {
-  background: rgba(212, 175, 55, 0.15);
-  border-left: 4px solid var(--gold-bright);
+  background: rgba(212,175,55,0.1);
+  border: 1px solid rgba(212,175,55,0.25);
+  border-left: 4px solid #FBBF24;
 }
 
-/* Bottom Broadcast Ticker */
+/* Team Budget Widgets */
+.team-budget-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.team-budget-chip {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  transition: all 0.2s;
+}
+.team-budget-chip.lead {
+  background: rgba(212,175,55,0.1);
+  border-color: rgba(212,175,55,0.3);
+}
+.team-budget-chip:hover {
+  background: rgba(56,189,248,0.06);
+  border-color: rgba(56,189,248,0.2);
+}
+
+/* ============================================================ */
+/* ──────────── BOTTOM SCROLL TICKER ─────────────────────────── */
+/* ============================================================ */
+
 .broadcast-bottom-ticker {
-  background: rgba(6, 28, 54, 0.95);
-  border-top: 1.5px solid rgba(56, 189, 248, 0.45);
-  padding: 12px 20px;
+  background: rgba(4,14,30,0.97);
+  border: 1px solid rgba(56,189,248,0.2);
+  padding: 11px 20px;
   border-radius: 14px;
   display: flex;
   align-items: center;
   gap: 16px;
   overflow: hidden;
-  box-shadow: 0 -10px 30px rgba(2, 16, 36, 0.85);
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.8);
+  flex-shrink: 0;
 }
 
 .ticker-title {
-  background: var(--gold-bright);
-  color: #060913;
-  padding: 6px 14px;
+  background: linear-gradient(135deg, #D4AF37, #FBBF24);
+  color: #030B18;
+  padding: 5px 14px;
   border-radius: 6px;
   font-weight: 900;
-  font-size: 0.85rem;
-  letter-spacing: 1px;
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
   white-space: nowrap;
+  text-transform: uppercase;
+  flex-shrink: 0;
 }
+
+.ticker-scroll-wrap { overflow: hidden; flex: 1; }
 
 .ticker-track {
   display: flex;
   gap: 32px;
   white-space: nowrap;
-  animation: marquee 25s linear infinite;
+  animation: marquee 28s linear infinite;
 }
 
 .ticker-item {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 600;
+  color: #94B8D8;
 }
+.ticker-item strong { color: #FFFFFF; }
 
 @keyframes marquee {
-  0% { transform: translateX(0); }
+  0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
 /* ============================================================ */
-/* 🌟 THE INSTAGRAM "SOLD" POP-UP MODAL (ON LIVE SCREEN)       */
+/* ──────────── SOLD POP-UP CELEBRATION ─────────────────────── */
 /* ============================================================ */
 
 .sold-popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(4, 7, 15, 0.88);
-  backdrop-filter: blur(18px);
+  background: rgba(2,6,16,0.92);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.35s ease;
 }
 
 .sold-popup-overlay.active {
@@ -400,17 +494,27 @@
 }
 
 .sold-popup-card {
-  width: 90%;
+  width: 100%;
   max-width: 520px;
-  background: linear-gradient(160deg, #092C54 0%, #051930 100%);
-  border: 3px solid var(--gold-bright);
+  background: linear-gradient(160deg, #081E44 0%, #040D24 100%);
+  border: 2.5px solid #D4AF37;
   border-radius: 28px;
-  padding: 32px;
-  box-shadow: 0 0 80px rgba(14, 165, 233, 0.35), 0 30px 60px rgba(0, 0, 0, 0.9);
+  padding: 36px 32px;
+  box-shadow:
+    0 0 80px rgba(212,175,55,0.2),
+    0 0 40px rgba(14,165,233,0.15),
+    0 36px 72px rgba(0,0,0,0.95);
   text-align: center;
   position: relative;
-  transform: scale(0.85) translateY(20px);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.82) translateY(24px);
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+.sold-popup-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #D4AF37, #FBBF24, #F0C842);
 }
 
 .sold-popup-overlay.active .sold-popup-card {
@@ -418,116 +522,115 @@
 }
 
 .sold-popup-banner {
-  font-size: 2.4rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.8rem;
   font-weight: 900;
-  color: var(--gold-bright);
-  letter-spacing: 4px;
-  text-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+  color: #FBBF24;
+  letter-spacing: 5px;
+  text-shadow: 0 0 30px rgba(212,175,55,0.6);
   margin-bottom: 4px;
+  text-transform: uppercase;
 }
 
 .sold-popup-sub {
-  font-size: 0.82rem;
-  letter-spacing: 3px;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 3.5px;
+  color: #7DD3FC;
   text-transform: uppercase;
-  margin-bottom: 20px;
-  font-weight: 600;
+  margin-bottom: 22px;
+  font-weight: 700;
 }
 
 .sold-popup-photo-frame {
-  width: 170px;
-  height: 170px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
-  margin: 0 auto 16px auto;
-  border: 4px solid var(--gold-bright);
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+  margin: 0 auto 18px;
+  border: 4px solid #FBBF24;
+  box-shadow: 0 0 32px rgba(212,175,55,0.45), 0 0 70px rgba(212,175,55,0.12);
   overflow: hidden;
-  background: #1e293b;
+  background: #0A1628;
 }
-
-.sold-popup-photo-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.sold-popup-photo-frame img { width: 100%; height: 100%; object-fit: cover; }
 
 .sold-popup-player-name {
-  font-size: 1.9rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem;
   font-weight: 900;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  letter-spacing: 1.5px;
+  color: #FFFFFF;
+  margin-bottom: 6px;
 }
 
 .sold-popup-team-box {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 14px;
-  padding: 10px 20px;
+  padding: 10px 22px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin: 12px 0 18px 0;
+  margin: 12px 0 18px;
   font-size: 1.1rem;
   font-weight: 800;
+  color: #FFFFFF;
 }
 
 .sold-popup-price-pill {
-  background: linear-gradient(90deg, #D4AF37, #F59E0B);
-  color: #060913;
-  font-size: 2rem;
+  background: linear-gradient(90deg, #D4AF37, #FBBF24, #F0C842);
+  color: #030B18;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.2rem;
   font-weight: 900;
-  padding: 12px 28px;
-  border-radius: 50px;
-  margin: 8px 0 24px 0;
-  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.35);
+  padding: 12px 32px;
+  border-radius: 99px;
+  margin: 8px 0 26px;
+  box-shadow: 0 12px 28px rgba(212,175,55,0.35);
   letter-spacing: 1px;
+  display: inline-block;
 }
 
-.sold-popup-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
+.sold-popup-actions { display: flex; gap: 12px; justify-content: center; }
 
 .btn-download-post {
-  background: #2563EB;
+  background: linear-gradient(135deg, #1D4ED8, #2563EB);
   color: #FFFFFF;
   border: none;
-  padding: 12px 24px;
+  padding: 12px 22px;
   border-radius: 12px;
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  font-family: inherit;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s ease;
+  box-shadow: 0 8px 20px rgba(37,99,235,0.35);
+  transition: all 0.2s;
 }
+.btn-download-post:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(37,99,235,0.5); }
 
-.btn-download-post:hover {
-  background: #1D4ED8;
-  transform: translateY(-2px);
-}
-
-.btn-close-popup {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-main);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-close-popup:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Confetti Canvas Behind Pop-up */
+/* Confetti Canvas */
 #confettiCanvas {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 9998;
+}
+
+/* ============================================================ */
+/* ──────────── BROADCAST RESPONSIVE ─────────────────────────── */
+/* ============================================================ */
+
+@media (max-width: 1100px) {
+  .broadcast-arena { grid-template-columns: 340px 1fr; gap: 20px; }
+  .current-bid-amount { font-size: 3.8rem; }
+}
+
+@media (max-width: 800px) {
+  .broadcast-arena { grid-template-columns: 1fr; }
+  .broadcast-view { padding: 16px; }
+  .highest-bid-hero { flex-direction: column; text-align: center; }
+  .current-bid-amount { font-size: 3.2rem; }
 }
