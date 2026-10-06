@@ -61,73 +61,111 @@
   <!-- ============================================================ -->
   <main id="viewHub" class="portal-view active">
     <div class="hub-hero">
-      <h1>T20 CRICKET MEGA AUCTION 2026</h1>
-      <p>Select a dedicated portal to enter the live auction ecosystem. All portals operate independently and synchronize in real time.</p>
+      <div class="hub-badge">🏆 OFFICIAL TOURNAMENT PLATFORM • 2026 SEASON</div>
+      <h1>Cricket Mega Auction System</h1>
+      <p>Professional multi-portal auction operations hub with live synchronized tables, real-time database, and broadcast telecast engine.</p>
+    </div>
+
+    <!-- Live System Overview Strip -->
+    <div class="hub-stats-strip">
+      <div class="hub-stat-item">
+        <span class="hub-stat-icon">⚡</span>
+        <div>
+          <div class="hub-stat-val">Real-Time Sync</div>
+          <div class="hub-stat-lbl">Multi-Tab & Cloud</div>
+        </div>
+      </div>
+      <div class="hub-stat-item">
+        <span class="hub-stat-icon">🛡️</span>
+        <div>
+          <div class="hub-stat-val">Franchise Tables</div>
+          <div class="hub-stat-lbl">War-Room Consoles</div>
+        </div>
+      </div>
+      <div class="hub-stat-item">
+        <span class="hub-stat-icon">🏏</span>
+        <div>
+          <div class="hub-stat-val">Player Pool</div>
+          <div class="hub-stat-lbl">Sequenced & Vetted</div>
+        </div>
+      </div>
+      <div class="hub-stat-item">
+        <span class="hub-stat-icon">📺</span>
+        <div>
+          <div class="hub-stat-val">Live Telecast</div>
+          <div class="hub-stat-lbl">OBS / Stadium HUD</div>
+        </div>
+      </div>
     </div>
 
     <div class="hub-grid">
       <!-- Card 1: Player Registration -->
       <div class="hub-card" onclick="window.switchPortal('viewRegistration')">
-        <div>
-          <div class="hub-card-icon">📝</div>
-          <div class="hub-card-title">Player Registration</div>
-          <div class="hub-card-desc">For cricketers & coaches. Submit bio, CricHeroes profile, phone contact, multiple playing roles, career statistics, and photo.</div>
+        <div class="hub-card-header">
+          <div class="hub-card-icon-wrap">📝</div>
+          <span class="hub-card-tag">PUBLIC ACCESS</span>
         </div>
+        <h3 class="hub-card-title">Player Registration</h3>
+        <p class="hub-card-desc">For cricketers & coaches. Submit credentials, CricHeroes stats, contact details, playing roles, and photos.</p>
         <div class="hub-card-footer">
-          <span>Open Registration Portal</span>
-          <span>→</span>
+          <span>Open Player Portal</span>
+          <span class="hub-arrow">→</span>
         </div>
       </div>
 
       <!-- Card 2: Master Admin Cockpit -->
       <div class="hub-card" onclick="window.switchPortal('viewAdmin')">
-        <div>
-          <div class="hub-card-icon">👑</div>
-          <div class="hub-card-title">Admin & Auctioneer Cockpit</div>
-          <div class="hub-card-desc">Password-protected control room. Create teams, set base prices, assign sequence order, and control the live hammer.</div>
+        <div class="hub-card-header">
+          <div class="hub-card-icon-wrap">👑</div>
+          <span class="hub-card-tag hub-tag-protected">ORGANIZER 🔒</span>
         </div>
+        <h3 class="hub-card-title">Admin Cockpit</h3>
+        <p class="hub-card-desc">Password-protected auction control center. Manage franchises, set purse budgets, approve player pool, and swing the live hammer.</p>
         <div class="hub-card-footer">
-          <span>Enter Admin (Password 🔒)</span>
-          <span>→</span>
+          <span>Enter Admin Console</span>
+          <span class="hub-arrow">→</span>
         </div>
       </div>
 
       <!-- Card 3: Franchise War-Room -->
       <div class="hub-card" onclick="window.switchPortal('viewTeamWarroom')">
-        <div>
-          <div class="hub-card-icon">🛡️</div>
-          <div class="hub-card-title">Franchise Table War-Room</div>
-          <div class="hub-card-desc">For team owners & analysts. Log in to your bidding table, raise the digital paddle, track purse limits, and export your squad to Excel.</div>
+        <div class="hub-card-header">
+          <div class="hub-card-icon-wrap">🛡️</div>
+          <span class="hub-card-tag hub-tag-protected">FRANCHISE 🔒</span>
         </div>
+        <h3 class="hub-card-title">Franchise War-Room</h3>
+        <p class="hub-card-desc">For team owners and analysts. Login with table credentials to raise live bidding paddles, track purse limits, and build your squad.</p>
         <div class="hub-card-footer">
-          <span>Enter Table Console</span>
-          <span>→</span>
+          <span>Connect Bidding Table</span>
+          <span class="hub-arrow">→</span>
         </div>
       </div>
 
       <!-- Card 4: Live TV Broadcast / OBS -->
       <div class="hub-card" onclick="window.switchPortal('viewBroadcast')">
-        <div>
-          <div class="hub-card-icon">📺</div>
-          <div class="hub-card-title">Live Broadcast & OBS Stream</div>
-          <div class="hub-card-desc">Broadcast-grade graphics for stadium big screens and OBS Studio live streaming with live bidding ladders and SOLD celebration.</div>
+        <div class="hub-card-header">
+          <div class="hub-card-icon-wrap">📺</div>
+          <span class="hub-card-tag">STADIUM / OBS</span>
         </div>
+        <h3 class="hub-card-title">Live Broadcast HUD</h3>
+        <p class="hub-card-desc">Broadcast-grade graphics for stadium LED screens, projectors, and OBS Studio with bidding ladder, timer, and SOLD celebrations.</p>
         <div class="hub-card-footer">
-          <span>Launch Broadcast Display</span>
-          <span>→</span>
+          <span>Launch Telecast Overlay</span>
+          <span class="hub-arrow">→</span>
         </div>
       </div>
 
       <!-- Card 5: Instagram Graphic Studio -->
       <div class="hub-card" onclick="window.switchPortal('viewPosterStudio')">
-        <div>
-          <div class="hub-card-icon">📸</div>
-          <div class="hub-card-title">Instagram Poster Studio</div>
-          <div class="hub-card-desc">Official 1080x1080 match graphics generator. Instantly render and download celebration posters ready for social media.</div>
+        <div class="hub-card-header">
+          <div class="hub-card-icon-wrap">📸</div>
+          <span class="hub-card-tag">MEDIA & PR</span>
         </div>
+        <h3 class="hub-card-title">Poster Studio</h3>
+        <p class="hub-card-desc">Generate official 1080x1080 social media celebration posters instantly when players get sold, ready for Instagram & WhatsApp.</p>
         <div class="hub-card-footer">
-          <span>Open Poster Studio</span>
-          <span>→</span>
+          <span>Open Graphic Studio</span>
+          <span class="hub-arrow">→</span>
         </div>
       </div>
     </div>
@@ -247,7 +285,7 @@
                 <div class="dropzone-icon">📷</div>
                 <strong>Tap to Take Photo or Choose from Gallery / Computer</strong>
                 <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Auto-compressed in 100ms • Works on Android, iPhone & PC</div>
-                <button type="button" class="icon-btn" id="btnChoosePhoto" style="margin-top:10px; background:rgba(212,175,55,0.15); border-color:var(--gold-primary);">
+                <button type="button" class="btn-action-primary" id="btnChoosePhoto" style="margin-top:10px;">
                   📁 Select Photo / Camera
                 </button>
                 <div id="uploadSuccessBadge" style="display:none; color:var(--accent-emerald); font-weight:700; font-size:0.85rem; margin-top:8px;">
@@ -323,29 +361,29 @@
           <h2 style="color:var(--gold-bright); font-size:1.6rem; font-weight:900;">Master Admin & Auctioneer Cockpit</h2>
           <p style="color:var(--text-secondary); font-size:0.85rem;">Create franchise teams, approve players, configure tiers, and control the live auction hammer.</p>
         </div>
-        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-          <button class="icon-btn" id="btnOpenCreateTeamModal" style="background:linear-gradient(135deg, #10B981, #059669); border:none; font-weight:700;">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button class="btn-action-primary" id="btnOpenCreateTeamModal">
             <span>➕</span> Create New Team
           </button>
-          <button class="icon-btn" id="btnAdminCloudSettings" style="background:linear-gradient(135deg, #0284C7, #0EA5E9); border:none; font-weight:700; color:#FFFFFF;" title="Configure Supabase Cloud Database & Global Live Sync">
+          <button class="btn-action-secondary" id="btnAdminCloudSettings" title="Configure Supabase Cloud Database & Global Live Sync">
             <span>☁️</span> Cloud Sync (Supabase)
           </button>
-          <button class="icon-btn" id="btnExportAdminExcel" style="background:linear-gradient(135deg, #0284C7, #0369A1); border:none; font-weight:700;" title="Download complete player list, bids, and team rosters">
+          <button class="btn-action-secondary" id="btnExportAdminExcel" title="Download complete player list, bids, and team rosters">
             <span>📊</span> Export Full Excel
           </button>
-          <button class="icon-btn" id="btnPrintAdminReport" style="background:rgba(255,255,255,0.08); font-weight:700;" title="Print or save PDF tournament summary report">
+          <button class="btn-action-secondary" id="btnPrintAdminReport" title="Print or save PDF tournament summary report">
             <span>📄</span> PDF Report
           </button>
-          <button class="icon-btn" id="btnCallNextSeq">
+          <button class="btn-action-secondary" id="btnCallNextSeq">
             <span>⏩</span> Call Next in Seq
           </button>
-          <button class="icon-btn" id="btnChangeAdminPass" title="Change Master Password">
+          <button class="btn-action-secondary" id="btnChangeAdminPass" title="Change Master Password">
             <span>🔑</span> Key
           </button>
-          <button class="icon-btn" id="btnResetAuction" style="color:var(--accent-crimson); border-color:rgba(239,68,68,0.3);">
+          <button class="btn-action-danger" id="btnResetAuction">
             <span>🔄</span> Reset
           </button>
-          <button class="icon-btn" id="btnAdminLogout" style="background:rgba(255,255,255,0.08);">
+          <button class="btn-action-secondary" id="btnAdminLogout">
             <span>🚪</span> Logout
           </button>
         </div>
@@ -887,23 +925,23 @@
         <button class="btn-primary" id="btnSaveCloudConfig" style="flex:2; min-width:180px;">
           💾 Save & Connect Supabase
         </button>
-        <button type="button" class="icon-btn" id="btnTestCloudConnection" style="flex:1; min-width:140px; justify-content:center; background:rgba(56,189,248,0.15); border-color:var(--sky-bright); color:var(--sky-bright);">
+        <button type="button" class="btn-action-secondary" id="btnTestCloudConnection" style="flex:1; min-width:140px; justify-content:center;">
           🧪 Test Connection
         </button>
-        <button type="button" class="icon-btn" id="btnDisconnectCloud" style="color:var(--accent-crimson); border-color:rgba(239,68,68,0.3); justify-content:center;">
+        <button type="button" class="btn-action-danger" id="btnDisconnectCloud" style="justify-content:center;">
           Disconnect
         </button>
         <button class="btn-close-popup" id="btnCloseCloudModal">Close</button>
       </div>
 
-      <div id="cloudFeedbackMsg" style="display:none; font-size:0.85rem; padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:18px;"></div>
+      <div id="cloudFeedbackMsg" style="display:none; font-size:0.85rem; padding:10px 14px; border-radius:var(--r-sm); margin-bottom:18px;"></div>
 
       <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <div style="font-size:0.88rem; font-weight:800; color:var(--gold-bright);">
             Supabase 1-Click SQL Schema:
           </div>
-          <button type="button" id="btnCopySqlSchema" class="icon-btn" style="padding:4px 12px; font-size:0.75rem; background:rgba(245,158,11,0.15); border-color:var(--gold-primary); color:var(--gold-bright);">
+          <button type="button" id="btnCopySqlSchema" class="btn-action-secondary" style="padding:4px 12px; font-size:0.75rem;">
             📋 Copy SQL Schema
           </button>
         </div>

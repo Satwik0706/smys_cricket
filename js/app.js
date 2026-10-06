@@ -816,7 +816,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span style="background:${team.primaryColor}; color:${team.textColor || '#FFF'}; padding:2px 6px; border-radius:4px; font-size:0.7rem; font-weight:800; margin-left:6px;">${team.shortCode}</span>
               </div>
             </div>
-            <button class="icon-btn btn-delete-team" data-id="${team.id}" style="color:var(--accent-crimson); border-color:rgba(239,68,68,0.3); padding:4px 8px; font-size:0.75rem;">Delete</button>
+            <button class="btn-action-danger btn-delete-team" data-id="${team.id}" style="padding:3px 8px; font-size:0.72rem;">Delete</button>
           </div>
 
           <div style="margin:10px 0; font-size:0.8rem; color:var(--text-secondary);">
@@ -906,8 +906,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <select class="form-select" id="selTier_${p.id}" style="padding:4px 8px; font-size:0.75rem;">
               ${state.tiers.map(t => `<option value="${t.id}">${t.name} (₹${t.defaultBasePriceCr}Cr)</option>`).join('')}
             </select>
-            <button class="icon-btn btn-approve-p" data-id="${p.id}" style="background:var(--accent-emerald); border:none; padding:4px 10px; font-size:0.75rem;">Approve</button>
-            <button class="icon-btn btn-reject-p" data-id="${p.id}" style="background:var(--accent-crimson); border:none; padding:4px 8px; font-size:0.75rem;">X</button>
+            <button class="btn-action-primary btn-approve-p" data-id="${p.id}" style="padding:4px 10px; font-size:0.75rem;">Approve</button>
+            <button class="btn-action-danger btn-reject-p" data-id="${p.id}" style="padding:4px 8px; font-size:0.75rem;">✕</button>
           </div>
         `;
         pendingPlayersList.appendChild(item);
@@ -993,7 +993,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="icon-btn btn-call-stage" data-id="${p.id}" style="padding:4px 8px; font-size:0.75rem;">
               ${isCurrent ? 'Current' : 'Call 🎙️'}
             </button>
-            <button class="icon-btn btn-del-player" data-id="${p.id}" style="padding:4px 8px; font-size:0.75rem; color:var(--accent-crimson);">X</button>
+            <button class="btn-action-danger btn-del-player" data-id="${p.id}" style="padding:4px 8px; font-size:0.72rem;">✕</button>
           </td>
         `;
         sequenceTableBody.appendChild(tr);

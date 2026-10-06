@@ -1,221 +1,171 @@
 /* ============================================================
-   broadcast.css — IPL TV-Grade Cricket Auction Broadcast HUD
-   Midnight Navy × Championship Gold × Electric Cyan
+   broadcast.css — Professional TV-Broadcast Overlay & HUD
+   Deep Midnight Canvas × Royal Sapphire × Champagne Gold
    ============================================================ */
 
-/* Inherit design tokens from portal.css */
-
-/* ============================================================ */
-/* ──────────── BROADCAST VIEW CONTAINER ────────────────────── */
-/* ============================================================ */
-
+/* ─── Broadcast Container ──────────────────────────────────── */
 .broadcast-view {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 68px);
-  background:
-    radial-gradient(ellipse 100% 50% at 50% 0%,   rgba(11,44,92,0.9) 0%, transparent 60%),
-    radial-gradient(ellipse 60%  40% at 90% 100%, rgba(14,165,233,0.08) 0%, transparent 50%),
-    #030B18;
+  min-height: calc(100vh - 64px);
+  background: #070B14;
   color: #FFFFFF;
-  padding: 24px 28px;
+  padding: 22px 26px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 20px;
+  gap: 18px;
 }
 
-/* ============================================================ */
-/* ──────────── BROADCAST HEADER ─────────────────────────────── */
-/* ============================================================ */
-
+/* ─── Top Broadcast Header ─────────────────────────────────── */
 .broadcast-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(6,16,34,0.92);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(56,189,248,0.2);
-  border-radius: 20px;
-  padding: 14px 28px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03);
-  position: relative;
-  overflow: hidden;
-}
-.broadcast-header::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, #D4AF37 25%, #38BDF8 75%, transparent);
+  background: #0D1527;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  padding: 12px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* LIVE badge */
 .broadcast-badge-live {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(239,68,68,0.12);
-  color: #F87171;
-  border: 1px solid rgba(239,68,68,0.35);
-  padding: 6px 16px;
-  border-radius: 99px;
-  font-weight: 900;
-  font-size: 0.82rem;
-  letter-spacing: 2.5px;
+  background: rgba(225, 29, 72, 0.12);
+  color: #FB7185;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
 }
 
 .live-pulse-dot {
-  width: 9px;
-  height: 9px;
-  background: #EF4444;
+  width: 8px;
+  height: 8px;
+  background: #E11D48;
   border-radius: 50%;
   animation: pulse-dot 1.4s ease-in-out infinite;
   flex-shrink: 0;
 }
 
 @keyframes pulse-dot {
-  0%   { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
-  70%  { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(239,68,68,0); }
-  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+  0%   { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.6); }
+  70%  { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(225, 29, 72, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
 }
 
 .broadcast-set-info { text-align: center; }
 
 .broadcast-set-title {
   font-family: 'Barlow Condensed', 'Inter', sans-serif;
-  font-size: 1.45rem;
+  font-size: 1.4rem;
   font-weight: 900;
-  letter-spacing: 1.5px;
-  background: linear-gradient(120deg, #FBBF24, #F0C842);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: 1.2px;
+  color: #FACC15;
   text-transform: uppercase;
 }
 
 .broadcast-set-sub {
   font-size: 0.72rem;
-  color: #7DD3FC;
+  color: #94A3B8;
   text-transform: uppercase;
-  letter-spacing: 2.5px;
+  letter-spacing: 2px;
   font-weight: 700;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-/* Countdown box */
+/* Countdown Box */
 .broadcast-timer-box {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: rgba(0,0,0,0.5);
-  border: 1.5px solid rgba(212,175,55,0.35);
-  padding: 8px 18px;
-  border-radius: 12px;
+  gap: 8px;
+  background: #090E1A;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  padding: 6px 16px;
+  border-radius: 10px;
 }
 
 .broadcast-timer-number {
   font-family: 'Barlow Condensed', monospace;
-  font-size: 2.4rem;
+  font-size: 2.2rem;
   font-weight: 900;
   color: #FFFFFF;
   line-height: 1;
-  min-width: 56px;
+  min-width: 50px;
   text-align: center;
 }
 
 .timer-critical {
-  color: #EF4444 !important;
-  border-color: rgba(239,68,68,0.6) !important;
+  color: #F43F5E !important;
+  border-color: rgba(244, 63, 94, 0.5) !important;
   animation: timer-heartbeat 0.7s ease-in-out infinite;
 }
 
 @keyframes timer-heartbeat {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); text-shadow: 0 0 16px rgba(239,68,68,0.8); }
+  50% { transform: scale(1.05); }
 }
 
-/* ============================================================ */
-/* ──────────── BROADCAST ARENA (Main Stage) ─────────────────── */
-/* ============================================================ */
-
+/* ─── Broadcast Arena (Split Stage) ────────────────────────── */
 .broadcast-arena {
   display: grid;
-  grid-template-columns: 400px 1fr;
-  gap: 28px;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
   align-items: start;
   flex: 1;
 }
 
-/* ─── Player Trading Card (Left) ─────────────────────────── */
+/* Left: Trading Card */
 .broadcast-player-card {
-  background: linear-gradient(155deg, rgba(9,28,60,0.98) 0%, rgba(4,14,32,0.99) 100%);
-  border: 1.5px solid rgba(56,189,248,0.35);
-  border-radius: 24px;
-  padding: 28px 24px 24px;
+  background: #0E172A;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  padding: 24px 20px 20px;
   position: relative;
-  box-shadow:
-    0 24px 56px rgba(0,0,0,0.85),
-    0 0 40px rgba(14,165,233,0.18),
-    inset 0 1px 0 rgba(255,255,255,0.06);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
   text-align: center;
-  overflow: hidden;
-}
-.broadcast-player-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, #0EA5E9, #38BDF8, #7DD3FC);
-  border-radius: 24px 24px 0 0;
-}
-.broadcast-player-card::after {
-  content: '';
-  position: absolute;
-  top: -60px; left: 50%; transform: translateX(-50%);
-  width: 280px; height: 280px;
-  background: radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 65%);
-  pointer-events: none;
 }
 
 .player-img-frame {
-  width: 200px;
-  height: 200px;
-  margin: 0 auto 18px;
+  width: 190px;
+  height: 190px;
+  margin: 0 auto 16px;
   border-radius: 50%;
-  border: 4px solid #38BDF8;
-  box-shadow: 0 0 32px rgba(56,189,248,0.4), 0 0 70px rgba(56,189,248,0.1);
+  border: 3px solid #3B82F6;
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.3);
   overflow: hidden;
-  background: #0A1628;
-  position: relative;
-  z-index: 1;
+  background: #070B14;
 }
 .player-img-frame img { width: 100%; height: 100%; object-fit: cover; }
 
 .player-card-name {
   font-family: 'Barlow Condensed', 'Inter', sans-serif;
-  font-size: 2rem;
+  font-size: 1.9rem;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   color: #FFFFFF;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   line-height: 1.1;
-  position: relative;
-  z-index: 1;
 }
 
 .player-card-role-pill {
   display: inline-block;
-  background: rgba(56,189,248,0.1);
-  border: 1px solid rgba(56,189,248,0.3);
-  padding: 5px 16px;
-  border-radius: 99px;
-  font-size: 0.78rem;
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 0.76rem;
   font-weight: 700;
-  color: #7DD3FC;
-  margin-bottom: 18px;
-  letter-spacing: 1.5px;
+  color: #93C5FD;
+  margin-bottom: 16px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 
@@ -223,10 +173,10 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  background: rgba(0,0,0,0.4);
-  padding: 14px 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.05);
+  background: #070B14;
+  padding: 12px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .player-stat-col { text-align: center; }
@@ -235,14 +185,14 @@
   font-size: 0.6rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #5B7A9A;
-  margin-bottom: 4px;
+  letter-spacing: 1px;
+  color: #64748B;
+  margin-bottom: 3px;
 }
 
 .stat-val {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: #FFFFFF;
   line-height: 1;
@@ -250,195 +200,158 @@
 
 .player-base-badge {
   margin-top: 14px;
-  background: rgba(212,175,55,0.1);
-  border: 1px solid rgba(212,175,55,0.3);
-  padding: 9px 14px;
-  border-radius: 10px;
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  padding: 8px 12px;
+  border-radius: 8px;
   font-weight: 800;
-  font-size: 0.85rem;
-  color: #FBBF24;
+  font-size: 0.82rem;
+  color: #FACC15;
   letter-spacing: 0.5px;
 }
 
-/* ─── Bidding HUD (Right) ────────────────────────────────── */
+/* ─── Right: Bidding HUD ───────────────────────────────────── */
 .broadcast-bidding-hud {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 /* Current Bid Hero Card */
 .highest-bid-hero {
-  background: linear-gradient(145deg, rgba(9,30,65,0.98), rgba(4,16,38,0.99));
-  border: 1.5px solid rgba(56,189,248,0.4);
-  border-radius: 24px;
-  padding: 28px 32px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 20px 48px rgba(0,0,0,0.85), 0 0 30px rgba(14,165,233,0.12);
+  background: #0E172A;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
-}
-.highest-bid-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 90% 50%, rgba(56,189,248,0.05) 0%, transparent 55%);
-  pointer-events: none;
+  gap: 18px;
 }
 
 .current-bid-label {
-  font-size: 0.72rem;
-  color: #7DD3FC;
-  letter-spacing: 3px;
+  font-size: 0.7rem;
+  color: #94A3B8;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
   font-weight: 800;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .current-bid-amount {
   font-family: 'Barlow Condensed', 'Inter', sans-serif;
-  font-size: 5rem;
+  font-size: 4.8rem;
   font-weight: 900;
-  color: #FBBF24;
-  text-shadow: 0 0 40px rgba(212,175,55,0.35);
+  color: #FACC15;
   line-height: 1;
   letter-spacing: -1px;
 }
 
-.current-team-leader { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.current-team-leader { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
 
 .leader-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 22px;
-  border-radius: 99px;
-  font-size: 1.2rem;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  font-size: 1.15rem;
   font-weight: 800;
   color: #FFFFFF;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-/* Hammer Status Banners */
+/* Hammer Status Warning Banners */
 .hammer-banner {
-  padding: 18px 28px;
-  border-radius: 18px;
+  padding: 16px 24px;
+  border-radius: 14px;
   text-align: center;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   font-weight: 900;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   animation: glow-pulse 1s ease-in-out infinite alternate;
 }
 
 .hammer-going-once {
-  background: rgba(245,158,11,0.15);
-  border: 2px solid #F59E0B;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1.5px solid #F59E0B;
   color: #FCD34D;
 }
 
 .hammer-going-twice {
-  background: rgba(239,68,68,0.18);
-  border: 2px solid #EF4444;
-  color: #FCA5A5;
+  background: rgba(225, 29, 72, 0.12);
+  border: 1.5px solid #E11D48;
+  color: #FDA4AF;
 }
 
 @keyframes glow-pulse {
-  from { opacity: 0.85; transform: scale(0.99); }
-  to   { opacity: 1;    transform: scale(1.01); }
+  from { opacity: 0.9; transform: scale(0.995); }
+  to   { opacity: 1;   transform: scale(1.005); }
 }
 
 /* Bid History Ladder */
 .bid-history-ladder {
-  background: rgba(4,12,28,0.7);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
-  padding: 18px 20px;
-  max-height: 200px;
+  background: #070B14;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 16px;
+  padding: 16px 18px;
+  max-height: 190px;
   overflow-y: auto;
 }
 
 .bid-ladder-title {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  letter-spacing: 2.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  color: #5B7A9A;
-  margin-bottom: 12px;
+  color: #64748B;
+  margin-bottom: 10px;
 }
 
 .ladder-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 9px 14px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
   margin-bottom: 6px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   font-weight: 700;
-  font-size: 0.87rem;
-  border: 1px solid rgba(255,255,255,0.04);
-  transition: all 0.18s;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .ladder-item:first-child {
-  background: rgba(212,175,55,0.1);
-  border: 1px solid rgba(212,175,55,0.25);
-  border-left: 4px solid #FBBF24;
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  border-left: 3px solid #FACC15;
 }
 
-/* Team Budget Widgets */
-.team-budget-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 10px;
-}
-
-.team-budget-chip {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 12px 14px;
-  transition: all 0.2s;
-}
-.team-budget-chip.lead {
-  background: rgba(212,175,55,0.1);
-  border-color: rgba(212,175,55,0.3);
-}
-.team-budget-chip:hover {
-  background: rgba(56,189,248,0.06);
-  border-color: rgba(56,189,248,0.2);
-}
-
-/* ============================================================ */
-/* ──────────── BOTTOM SCROLL TICKER ─────────────────────────── */
-/* ============================================================ */
-
+/* ─── Bottom Marquee Ticker ────────────────────────────────── */
 .broadcast-bottom-ticker {
-  background: rgba(4,14,30,0.97);
-  border: 1px solid rgba(56,189,248,0.2);
-  padding: 11px 20px;
-  border-radius: 14px;
+  background: #0D1527;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  padding: 10px 18px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 16px;
   overflow: hidden;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.8);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
 }
 
 .ticker-title {
-  background: linear-gradient(135deg, #D4AF37, #FBBF24);
-  color: #030B18;
-  padding: 5px 14px;
+  background: #FACC15;
+  color: #070B14;
+  padding: 4px 12px;
   border-radius: 6px;
   font-weight: 900;
-  font-size: 0.78rem;
-  letter-spacing: 1.5px;
+  font-size: 0.75rem;
+  letter-spacing: 1.2px;
   white-space: nowrap;
   text-transform: uppercase;
   flex-shrink: 0;
@@ -457,9 +370,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: #94B8D8;
+  color: #94A3B8;
 }
 .ticker-item strong { color: #FFFFFF; }
 
@@ -468,16 +381,13 @@
   100% { transform: translateX(-50%); }
 }
 
-/* ============================================================ */
-/* ──────────── SOLD POP-UP CELEBRATION ─────────────────────── */
-/* ============================================================ */
-
+/* ─── Sold Celebration Modal ───────────────────────────────── */
 .sold-popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(2,6,16,0.92);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  background: rgba(3, 7, 18, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -485,7 +395,7 @@
   padding: 20px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.3s ease;
 }
 
 .sold-popup-overlay.active {
@@ -495,123 +405,109 @@
 
 .sold-popup-card {
   width: 100%;
-  max-width: 520px;
-  background: linear-gradient(160deg, #081E44 0%, #040D24 100%);
-  border: 2.5px solid #D4AF37;
-  border-radius: 28px;
-  padding: 36px 32px;
-  box-shadow:
-    0 0 80px rgba(212,175,55,0.2),
-    0 0 40px rgba(14,165,233,0.15),
-    0 36px 72px rgba(0,0,0,0.95);
+  max-width: 500px;
+  background: #0E172A;
+  border: 2px solid #FACC15;
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: 0 0 60px rgba(234, 179, 8, 0.2), 0 24px 60px rgba(0, 0, 0, 0.9);
   text-align: center;
   position: relative;
-  transform: scale(0.82) translateY(24px);
-  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-.sold-popup-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, #D4AF37, #FBBF24, #F0C842);
+  transform: scale(0.85);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sold-popup-overlay.active .sold-popup-card {
-  transform: scale(1) translateY(0);
+  transform: scale(1);
 }
 
 .sold-popup-banner {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 2.8rem;
+  font-size: 2.6rem;
   font-weight: 900;
-  color: #FBBF24;
-  letter-spacing: 5px;
-  text-shadow: 0 0 30px rgba(212,175,55,0.6);
-  margin-bottom: 4px;
+  color: #FACC15;
+  letter-spacing: 4px;
+  margin-bottom: 2px;
   text-transform: uppercase;
 }
 
 .sold-popup-sub {
   font-size: 0.72rem;
-  letter-spacing: 3.5px;
-  color: #7DD3FC;
+  letter-spacing: 3px;
+  color: #94A3B8;
   text-transform: uppercase;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   font-weight: 700;
 }
 
 .sold-popup-photo-frame {
-  width: 160px;
-  height: 160px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  margin: 0 auto 18px;
-  border: 4px solid #FBBF24;
-  box-shadow: 0 0 32px rgba(212,175,55,0.45), 0 0 70px rgba(212,175,55,0.12);
+  margin: 0 auto 16px;
+  border: 3px solid #FACC15;
+  box-shadow: 0 0 24px rgba(234, 179, 8, 0.35);
   overflow: hidden;
-  background: #0A1628;
+  background: #070B14;
 }
 .sold-popup-photo-frame img { width: 100%; height: 100%; object-fit: cover; }
 
 .sold-popup-player-name {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 2rem;
+  font-size: 1.9rem;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   color: #FFFFFF;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .sold-popup-team-box {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 14px;
-  padding: 10px 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 8px 18px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  margin: 12px 0 18px;
-  font-size: 1.1rem;
+  gap: 8px;
+  margin: 10px 0 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #FFFFFF;
 }
 
 .sold-popup-price-pill {
-  background: linear-gradient(90deg, #D4AF37, #FBBF24, #F0C842);
-  color: #030B18;
+  background: #FACC15;
+  color: #070B14;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 2.2rem;
+  font-size: 2.1rem;
   font-weight: 900;
-  padding: 12px 32px;
-  border-radius: 99px;
-  margin: 8px 0 26px;
-  box-shadow: 0 12px 28px rgba(212,175,55,0.35);
+  padding: 10px 28px;
+  border-radius: 9999px;
+  margin: 6px 0 22px;
+  box-shadow: 0 8px 24px rgba(234, 179, 8, 0.3);
   letter-spacing: 1px;
   display: inline-block;
 }
 
-.sold-popup-actions { display: flex; gap: 12px; justify-content: center; }
+.sold-popup-actions { display: flex; gap: 10px; justify-content: center; }
 
 .btn-download-post {
-  background: linear-gradient(135deg, #1D4ED8, #2563EB);
+  background: #2563EB;
   color: #FFFFFF;
   border: none;
-  padding: 12px 22px;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 0.9rem;
-  font-family: inherit;
+  padding: 11px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.88rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 8px 20px rgba(37,99,235,0.35);
-  transition: all 0.2s;
+  transition: all 0.18s;
 }
-.btn-download-post:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(37,99,235,0.5); }
+.btn-download-post:hover { background: #1D4ED8; }
 
-/* Confetti Canvas */
 #confettiCanvas {
   position: fixed;
   inset: 0;
@@ -619,18 +515,15 @@
   z-index: 9998;
 }
 
-/* ============================================================ */
-/* ──────────── BROADCAST RESPONSIVE ─────────────────────────── */
-/* ============================================================ */
-
-@media (max-width: 1100px) {
-  .broadcast-arena { grid-template-columns: 340px 1fr; gap: 20px; }
-  .current-bid-amount { font-size: 3.8rem; }
+/* ─── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .broadcast-arena { grid-template-columns: 320px 1fr; gap: 18px; }
+  .current-bid-amount { font-size: 3.6rem; }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 768px) {
   .broadcast-arena { grid-template-columns: 1fr; }
-  .broadcast-view { padding: 16px; }
+  .broadcast-view { padding: 14px; }
   .highest-bid-hero { flex-direction: column; text-align: center; }
-  .current-bid-amount { font-size: 3.2rem; }
+  .current-bid-amount { font-size: 3rem; }
 }
