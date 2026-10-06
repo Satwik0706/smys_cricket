@@ -91,49 +91,115 @@ Every portal is now cleanly separated so users only see their designated screen:
 
 ---
 
-## ☁️ How to Deploy Live to Vercel (Step-by-Step)
+## 🚀 How to Push Updates to GitHub & Auto-Deploy on Vercel
 
-Deploying to Vercel gives you a global link (`https://your-cricket-auction.vercel.app`) that you can share with players and team owners worldwide.
+Since your repo is already connected to Vercel, any push to `main` branch automatically deploys live in ~15 seconds!
 
-### Method 1: Deploy via GitHub (Recommended)
-1. Push your project directory to a GitHub repository:
-   ```bash
-   cd d:\Cricket_Aution
-   git init
-   git add .
-   git commit -m "Cricket Mega Auction Platform"
-   git branch -M main
-   git remote add origin https://github.com/<YOUR_USERNAME>/<YOUR_REPO_NAME>.git
-   git push -u origin main
-   ```
-2. Go to [vercel.com](https://vercel.com) and log in.
-3. Click **"Add New Project"** and select your GitHub repository.
-4. Framework Preset: Choose **Other** (Root directory: `./`).
-5. Click **Deploy**.
-6. Within 30 seconds, Vercel will give you a live HTTPS domain: `https://your-tournament.vercel.app`!
+Run these 3 commands in your PowerShell / Terminal:
 
-### Method 2: Deploy via Vercel CLI (1-Command)
-1. In your terminal, run:
-   ```bash
-   npm i -g vercel
-   cd d:\Cricket_Aution
-   vercel
-   ```
-2. Follow the 3 prompts (hit Enter to accept defaults). Your app will be live immediately!
+```bash
+git add .
+git commit -m "feat: sky blue luxury theme and admin-only supabase cloud sync"
+git push origin main
+```
+
+That's it! Vercel will immediately pick up the push and update your live site.
 
 ---
 
-## 🗄️ Connecting Free Supabase Cloud (When Live on Vercel)
+## ☁️ Connecting Free Supabase Cloud in Master Admin Cockpit
 
-To enable live cross-country WebSocket sync between players on phones and teams on laptops:
+Supabase connects all mobile phones, franchise laptops, and stadium OBS screens in real time.
 
-1. Create a free account at [Supabase](https://supabase.com) (100% Free, no credit card).
-2. Create a new project (e.g. `cricket-auction`).
-3. Click **SQL Editor** on the left menu in Supabase.
-4. In your live web app, click the **"☁️ Cloud Sync"** button in the top navigation bar.
-5. Copy the SQL schema from the modal, paste it into the Supabase SQL editor, and click **Run**.
-6. In Supabase, go to **Project Settings -> API** and copy your:
-   * **Project URL**
-   * **Anon Public Key**
-7. Paste them into the **Cloud Sync** modal on the web app and click **Save**.
-8. All player registrations and live bids now sync globally across all devices!
+### Step 1: Create a Free Supabase Project
+1. Go to [supabase.com](https://supabase.com) and click **Start your project** (100% Free, no credit card required).
+2. Click **New Project**, name it (e.g. `cricket-auction-2026`), choose a database password and click **Create new project** (takes ~1 minute to spin up).
+
+### Step 2: Run the 1-Click SQL Schema
+1. In your Supabase dashboard, click **SQL Editor** on the left sidebar.
+2. Click **+ New query**.
+3. Copy the SQL schema from the **Cloud Sync** modal in your Admin Cockpit (or copy it below):
+```sql
+-- 1. Create Players Table
+create table if not exists public.players (
+  id text primary key,
+  name text not null,
+  role text not null,
+  batting_style text,
+  bowling_style text,
+  country text default 'India',
+  age integer,
+  matches integer default 0,
+  runs integer default 0,
+  wickets integer default 0,
+  strike_rate numeric default 0,
+  economy numeric default 0,
+  photo_url text,
+  tier_id text,
+  base_price_cr numeric default 0.20,
+  status text default 'PENDING',
+  sold_to_team text,
+  sold_price_cr numeric,
+  auction_sequence integer default 999,
+  cric_heroes_name text,
+  cric_heroes_phone text,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- 2. Create Teams Table
+create table if not exists public.teams (
+  id text primary key,
+  name text not null,
+  short_code text not null,
+  primary_color text not null,
+  secondary_color text,
+  logo_url text,
+  purse_left_cr numeric not null,
+  total_purse_cr numeric not null,
+  captain_name text,
+  captain_price_cr numeric default 0,
+  vice_captain_name text,
+  vice_captain_price_cr numeric default 0,
+  team_login_id text,
+  team_password text,
+  squad jsonb default '[]'::jsonb,
+  squad_count integer default 0,
+  overseas_count integer default 0
+);
+
+-- 3. Create Live Auction State Table
+create table if not exists public.auction_state (
+  id text primary key default 'live_room',
+  active_player_id text,
+  current_bid_cr numeric default 0,
+  current_bidder_id text,
+  bid_history jsonb default '[]'::jsonb,
+  hammer_status text default 'IDLE',
+  timer_running boolean default false,
+  timer_seconds integer default 15,
+  updated_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- 4. Enable Supabase Realtime
+alter publication supabase_realtime add table public.players;
+alter publication supabase_realtime add table public.teams;
+alter publication supabase_realtime add table public.auction_state;
+```
+4. Click **Run** (Green button). You will see `Success. No rows returned`.
+
+### Step 3: Copy Your API Keys
+1. In Supabase, click **Project Settings** (gear icon at bottom left) -> **API** (or **Data API**).
+2. Copy:
+   * **Project URL** (looks like `https://xxxxxxxxxxxxxxxxxxxx.supabase.co`)
+   * **Project API Keys -> `anon` public** (starts with `eyJhbGciOi...`)
+
+### Step 4: Paste into Master Admin Cockpit
+1. Open your live app: `https://your-app.vercel.app/#/admin`
+2. Unlock the cockpit with password (default: `admin@2026`).
+3. Click the **"☁️ Cloud Sync (Supabase)"** button in the admin bar.
+4. Paste your **Project URL** and **Anon Key**.
+5. Click **🧪 Test Connection** — you will see `✅ Connected to Supabase! All tables & Realtime active.`
+6. Click **💾 Save & Connect Supabase**.
+
+✨ **Done!** Every player registering from their phone, every bid from a team laptop, and the live broadcast overlay will now synchronize globally in real time with zero cost!
+

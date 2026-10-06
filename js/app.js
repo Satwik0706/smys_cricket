@@ -7,10 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnToggleSound = document.getElementById('btnToggleSound');
   const soundIcon = document.getElementById('soundIcon');
   const btnPopoutBroadcast = document.getElementById('btnPopoutBroadcast');
-  const btnCloudSettings = document.getElementById('btnCloudSettings');
+  const btnAdminCloudSettings = document.getElementById('btnAdminCloudSettings');
   const cloudModal = document.getElementById('cloudSettingsModal');
   const btnCloseCloudModal = document.getElementById('btnCloseCloudModal');
   const btnSaveCloudConfig = document.getElementById('btnSaveCloudConfig');
+  const btnTestCloudConnection = document.getElementById('btnTestCloudConnection');
+  const btnDisconnectCloud = document.getElementById('btnDisconnectCloud');
+  const btnCopySqlSchema = document.getElementById('btnCopySqlSchema');
+  const cloudStatusBadge = document.getElementById('cloudStatusBadge');
+  const cloudFeedbackMsg = document.getElementById('cloudFeedbackMsg');
   const sqlSchemaDisplay = document.getElementById('sqlSchemaDisplay');
 
   // Lock Badges
@@ -39,25 +44,126 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- Cloud Settings Modal ---
-  btnCloudSettings.addEventListener('click', () => {
-    document.getElementById('inputSupabaseUrl').value = localStorage.getItem('cricket_supabase_url') || '';
-    document.getElementById('inputSupabaseKey').value = localStorage.getItem('cricket_supabase_key') || '';
-    cloudModal.classList.add('active');
-  });
+  // --- Cloud Status Indicator Helper ---
+  function updateCloudStatusUI() {
+    const isConnected = window.auctionStore && window.auctionStore.isCloudSyncEnabled;
+    if (cloudStatusBadge) {
+      if (isConnected) {
+        cloudStatusBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+        cloudStatusBadge.style.color = '#10B981';
+        cloudStatusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        cloudStatusBadge.textContent = '🟢 Cloud Connected (Supabase Realtime Active)';
+      } else {
+        cloudStatusBadge.style.background = 'rgba(255, 255, 255, 0.08)';
+        cloudStatusBadge.style.color = 'var(--text-secondary)';
+        cloudStatusBadge.style.borderColor = 'var(--border-subtle)';
+        cloudStatusBadge.textContent = '⚪ Local Offline Sync';
+      }
+    }
+  }
 
-  btnCloseCloudModal.addEventListener('click', () => {
-    cloudModal.classList.remove('active');
+  window.addEventListener('cricket_cloud_status', () => {
+    updateCloudStatusUI();
   });
+  updateCloudStatusUI();
 
-  btnSaveCloudConfig.addEventListener('click', () => {
-    const url = document.getElementById('inputSupabaseUrl').value.trim();
-    const key = document.getElementById('inputSupabaseKey').value.trim();
-    localStorage.setItem('cricket_supabase_url', url);
-    localStorage.setItem('cricket_supabase_key', key);
-    alert('Cloud configuration saved! Connect your GitHub repo to Vercel for 1-click live deployment.');
-    cloudModal.classList.remove('active');
-  });
+  // --- Master Admin Cloud Settings Modal ---
+  if (btnAdminCloudSettings) {
+    btnAdminCloudSettings.addEventListener('click', () => {
+      document.getElementById('inputSupabaseUrl').value = localStorage.getItem('cricket_supabase_url') || '';
+      document.getElementById('inputSupabaseKey').value = localStorage.getItem('cricket_supabase_key') || '';
+      updateCloudStatusUI();
+      if (cloudFeedbackMsg) cloudFeedbackMsg.style.display = 'none';
+      cloudModal.classList.add('active');
+    });
+  }
+
+  if (btnCloseCloudModal) {
+    btnCloseCloudModal.addEventListener('click', () => {
+      cloudModal.classList.remove('active');
+    });
+  }
+
+  if (btnSaveCloudConfig) {
+    btnSaveCloudConfig.addEventListener('click', async () => {
+      const url = document.getElementById('inputSupabaseUrl').value.trim();
+      const key = document.getElementById('inputSupabaseKey').value.trim();
+      if (!url || !key) {
+        alert('Please enter both Supabase Project URL and Anon Key.');
+        return;
+      }
+      localStorage.setItem('cricket_supabase_url', url);
+      localStorage.setItem('cricket_supabase_key', key);
+      window.auctionStore.initSupabase();
+      updateCloudStatusUI();
+
+      if (cloudFeedbackMsg) {
+        cloudFeedbackMsg.style.display = 'block';
+        cloudFeedbackMsg.style.background = 'rgba(16, 185, 129, 0.15)';
+        cloudFeedbackMsg.style.color = '#10B981';
+        cloudFeedbackMsg.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+        cloudFeedbackMsg.textContent = '✅ Cloud configuration saved! Supabase Realtime is now syncing across all devices.';
+      }
+    });
+  }
+
+  if (btnTestCloudConnection) {
+    btnTestCloudConnection.addEventListener('click', async () => {
+      const url = document.getElementById('inputSupabaseUrl').value.trim();
+      const key = document.getElementById('inputSupabaseKey').value.trim();
+      btnTestCloudConnection.disabled = true;
+      btnTestCloudConnection.textContent = 'Testing...';
+      const result = await window.auctionStore.testSupabaseConnection(url, key);
+      btnTestCloudConnection.disabled = false;
+      btnTestCloudConnection.textContent = '🧪 Test Connection';
+
+      if (cloudFeedbackMsg) {
+        cloudFeedbackMsg.style.display = 'block';
+        if (result.success) {
+          cloudFeedbackMsg.style.background = 'rgba(16, 185, 129, 0.15)';
+          cloudFeedbackMsg.style.color = '#10B981';
+          cloudFeedbackMsg.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+          cloudFeedbackMsg.textContent = '✅ ' + result.message;
+        } else {
+          cloudFeedbackMsg.style.background = 'rgba(239, 68, 68, 0.15)';
+          cloudFeedbackMsg.style.color = '#EF4444';
+          cloudFeedbackMsg.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+          cloudFeedbackMsg.textContent = '❌ ' + result.message;
+        }
+      }
+    });
+  }
+
+  if (btnDisconnectCloud) {
+    btnDisconnectCloud.addEventListener('click', () => {
+      if (confirm('Disconnect Supabase and switch back to local offline mode?')) {
+        window.auctionStore.disconnectSupabase();
+        document.getElementById('inputSupabaseUrl').value = '';
+        document.getElementById('inputSupabaseKey').value = '';
+        updateCloudStatusUI();
+        if (cloudFeedbackMsg) {
+          cloudFeedbackMsg.style.display = 'block';
+          cloudFeedbackMsg.style.background = 'rgba(255, 255, 255, 0.08)';
+          cloudFeedbackMsg.style.color = 'var(--text-secondary)';
+          cloudFeedbackMsg.style.border = '1px solid var(--border-subtle)';
+          cloudFeedbackMsg.textContent = 'Cloud disconnected. Operating in local mode.';
+        }
+      }
+    });
+  }
+
+  if (btnCopySqlSchema) {
+    btnCopySqlSchema.addEventListener('click', () => {
+      if (window.SUPABASE_SQL_SCHEMA) {
+        navigator.clipboard.writeText(window.SUPABASE_SQL_SCHEMA.trim()).then(() => {
+          btnCopySqlSchema.textContent = '✅ Copied to Clipboard!';
+          setTimeout(() => {
+            btnCopySqlSchema.textContent = '📋 Copy SQL Schema';
+          }, 2500);
+        });
+      }
+    });
+  }
 
   // --- Navigation & Dedicated Portal Routing ---
   const portalDropdownSelector = document.getElementById('portalDropdownSelector');

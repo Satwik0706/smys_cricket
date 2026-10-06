@@ -50,6 +50,8 @@ create table if not exists public.players (
   sold_to_team text,
   sold_price_cr numeric,
   auction_sequence integer default 999,
+  cric_heroes_name text,
+  cric_heroes_phone text,
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
@@ -63,6 +65,13 @@ create table if not exists public.teams (
   logo_url text,
   purse_left_cr numeric not null,
   total_purse_cr numeric not null,
+  captain_name text,
+  captain_price_cr numeric default 0,
+  vice_captain_name text,
+  vice_captain_price_cr numeric default 0,
+  team_login_id text,
+  team_password text,
+  squad jsonb default '[]'::jsonb,
   squad_count integer default 0,
   overseas_count integer default 0
 );

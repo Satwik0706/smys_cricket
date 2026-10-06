@@ -12,6 +12,9 @@ class AuctionStore {
   constructor() {
     this.channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('cricket_auction_channel') : null;
     this.listeners = [];
+    this.supabase = null;
+    this.supabaseChannel = null;
+    this.isCloudSyncEnabled = false;
     this.loadState();
 
     if (this.channel) {
@@ -35,6 +38,265 @@ class AuctionStore {
         }
       }
     });
+
+    // Initialize Supabase Cloud Sync if credentials are saved
+    this.initSupabase();
+  }
+
+  initSupabase() {
+    const url = localStorage.getItem('cricket_supabase_url');
+    const key = localStorage.getItem('cricket_supabase_key');
+    if (url && key && window.supabase) {
+      try {
+        this.supabase = window.supabase.createClient(url, key);
+        this.isCloudSyncEnabled = true;
+        this.setupRealtimeListeners();
+        this.fetchCloudData();
+        window.dispatchEvent(new CustomEvent('cricket_cloud_status', { detail: { connected: true } }));
+      } catch (err) {
+        console.warn("Supabase initialization error:", err);
+        this.supabase = null;
+        this.isCloudSyncEnabled = false;
+        window.dispatchEvent(new CustomEvent('cricket_cloud_status', { detail: { connected: false } }));
+      }
+    } else {
+      this.supabase = null;
+      this.isCloudSyncEnabled = false;
+      window.dispatchEvent(new CustomEvent('cricket_cloud_status', { detail: { connected: false } }));
+    }
+  }
+
+  async testSupabaseConnection(url, key) {
+    if (!window.supabase) return { success: false, message: "Supabase client library not loaded." };
+    if (!url || !key) return { success: false, message: "Please provide both Supabase Project URL and Anon Key." };
+    try {
+      const testClient = window.supabase.createClient(url.trim(), key.trim());
+      const { data, error } = await testClient.from('players').select('id').limit(1);
+      if (error) {
+        return { success: false, message: "Supabase error: " + error.message + " (Check URL, Key, or run SQL schema)" };
+      }
+      return { success: true, message: "Connected to Supabase! All tables & Realtime active." };
+    } catch (e) {
+      return { success: false, message: "Connection failed: " + (e.message || e) };
+    }
+  }
+
+  disconnectSupabase() {
+    localStorage.removeItem('cricket_supabase_url');
+    localStorage.removeItem('cricket_supabase_key');
+    if (this.supabase && this.supabaseChannel) {
+      try { this.supabase.removeChannel(this.supabaseChannel); } catch (e) {}
+    }
+    this.supabase = null;
+    this.supabaseChannel = null;
+    this.isCloudSyncEnabled = false;
+    window.dispatchEvent(new CustomEvent('cricket_cloud_status', { detail: { connected: false } }));
+  }
+
+  async fetchCloudData() {
+    if (!this.supabase) return;
+    try {
+      // 1. Fetch Players from Supabase
+      const { data: dbPlayers, error: pErr } = await this.supabase.from('players').select('*');
+      if (!pErr && dbPlayers && dbPlayers.length > 0) {
+        dbPlayers.forEach(row => {
+          const mapped = {
+            id: row.id,
+            name: row.name,
+            role: row.role,
+            battingStyle: row.batting_style || 'Right-hand bat',
+            bowlingStyle: row.bowling_style || '',
+            country: row.country || 'India',
+            age: row.age || 24,
+            isOverseas: (row.country && row.country.toLowerCase() !== 'india'),
+            matches: row.matches || 0,
+            runs: row.runs || 0,
+            wickets: row.wickets || 0,
+            strikeRate: parseFloat(row.strike_rate) || 0,
+            economy: parseFloat(row.economy) || 0,
+            cricHeroesName: row.cric_heroes_name || '',
+            cricHeroesPhone: row.cric_heroes_phone || '',
+            photoUrl: row.photo_url || window.DEFAULT_CRICKET_AVATAR,
+            tierId: row.tier_id,
+            basePriceCr: parseFloat(row.base_price_cr) || 0.20,
+            status: row.status || 'PENDING',
+            auctionSequence: row.auction_sequence || 999,
+            soldToTeam: row.sold_to_team,
+            soldPriceCr: row.sold_price_cr ? parseFloat(row.sold_price_cr) : null
+          };
+          const idx = this.state.players.findIndex(x => x.id === mapped.id);
+          if (idx >= 0) {
+            this.state.players[idx] = Object.assign(this.state.players[idx], mapped);
+          } else {
+            this.state.players.push(mapped);
+          }
+        });
+      }
+
+      // 2. Fetch Teams from Supabase
+      const { data: dbTeams, error: tErr } = await this.supabase.from('teams').select('*');
+      if (!tErr && dbTeams && dbTeams.length > 0) {
+        dbTeams.forEach(t => {
+          const mappedTeam = {
+            id: t.id,
+            name: t.name,
+            shortCode: t.short_code,
+            primaryColor: t.primary_color || '#0EA5E9',
+            secondaryColor: t.secondary_color || '#071E3D',
+            logoEmoji: t.logo_url || '🏏',
+            purseLeftCr: parseFloat(t.purse_left_cr) || 0,
+            totalPurseCr: parseFloat(t.total_purse_cr) || 100,
+            captainName: t.captain_name || '',
+            captainPriceCr: parseFloat(t.captain_price_cr) || 0,
+            viceCaptainName: t.vice_captain_name || '',
+            viceCaptainPriceCr: parseFloat(t.vice_captain_price_cr) || 0,
+            teamLoginId: t.team_login_id || (t.short_code.toLowerCase() + '_101'),
+            teamPassword: t.team_password || (t.short_code + '@1234'),
+            squad: Array.isArray(t.squad) ? t.squad : [],
+            overseasCount: t.overseas_count || 0
+          };
+          const idx = this.state.teams.findIndex(x => x.id === mappedTeam.id);
+          if (idx >= 0) {
+            this.state.teams[idx] = Object.assign(this.state.teams[idx], mappedTeam);
+          } else {
+            this.state.teams.push(mappedTeam);
+          }
+        });
+      }
+
+      // 3. Fetch Live Auction State
+      const { data: liveRow, error: lErr } = await this.supabase.from('auction_state').select('*').eq('id', 'live_room').maybeSingle();
+      if (!lErr && liveRow) {
+        this.state.live.activePlayerId = liveRow.active_player_id;
+        this.state.live.currentBidCr = parseFloat(liveRow.current_bid_cr) || 0;
+        this.state.live.currentBidderId = liveRow.current_bidder_id;
+        this.state.live.bidHistory = Array.isArray(liveRow.bid_history) ? liveRow.bid_history : [];
+        this.state.live.hammerStatus = liveRow.hammer_status || 'IDLE';
+        this.state.live.timerRunning = !!liveRow.timer_running;
+        this.state.live.timerSeconds = liveRow.timer_seconds || 15;
+      }
+
+      this.saveLocal();
+      this.notify();
+    } catch (e) {
+      console.warn("Supabase fetch data error:", e);
+    }
+  }
+
+  setupRealtimeListeners() {
+    if (!this.supabase) return;
+    try {
+      if (this.supabaseChannel) {
+        this.supabase.removeChannel(this.supabaseChannel);
+      }
+      this.supabaseChannel = this.supabase.channel('public_cricket_auction_realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'auction_state' }, payload => {
+          if (payload && payload.new) {
+            const row = payload.new;
+            this.state.live.activePlayerId = row.active_player_id;
+            this.state.live.currentBidCr = parseFloat(row.current_bid_cr) || 0;
+            this.state.live.currentBidderId = row.current_bidder_id;
+            this.state.live.bidHistory = Array.isArray(row.bid_history) ? row.bid_history : [];
+            this.state.live.hammerStatus = row.hammer_status || 'IDLE';
+            this.state.live.timerRunning = !!row.timer_running;
+            this.state.live.timerSeconds = row.timer_seconds || 15;
+            this.saveLocal();
+            this.notify();
+          }
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, () => {
+          this.fetchCloudData();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'teams' }, () => {
+          this.fetchCloudData();
+        })
+        .subscribe();
+    } catch (err) {
+      console.warn("Supabase realtime setup error:", err);
+    }
+  }
+
+  syncPlayerToCloud(player) {
+    if (!this.supabase || !player) return;
+    try {
+      this.supabase.from('players').upsert({
+        id: player.id,
+        name: player.name,
+        role: player.role,
+        batting_style: player.battingStyle,
+        bowling_style: player.bowlingStyle,
+        country: player.country,
+        age: player.age,
+        matches: player.matches,
+        runs: player.runs,
+        wickets: player.wickets,
+        strike_rate: player.strikeRate,
+        economy: player.economy,
+        photo_url: player.photoUrl,
+        tier_id: player.tierId,
+        base_price_cr: player.basePriceCr,
+        status: player.status,
+        sold_to_team: player.soldToTeam,
+        sold_price_cr: player.soldPriceCr,
+        auction_sequence: player.auctionSequence,
+        cric_heroes_name: player.cricHeroesName,
+        cric_heroes_phone: player.cricHeroesPhone
+      }).then(({ error }) => {
+        if (error) console.warn("Player cloud upsert error", error);
+      });
+    } catch (e) {
+      console.warn("Player cloud sync error", e);
+    }
+  }
+
+  syncTeamToCloud(team) {
+    if (!this.supabase || !team) return;
+    try {
+      this.supabase.from('teams').upsert({
+        id: team.id,
+        name: team.name,
+        short_code: team.shortCode,
+        primary_color: team.primaryColor,
+        secondary_color: team.secondaryColor,
+        logo_url: team.logoEmoji,
+        purse_left_cr: team.purseLeftCr,
+        total_purse_cr: team.totalPurseCr,
+        captain_name: team.captainName,
+        captain_price_cr: team.captainPriceCr,
+        vice_captain_name: team.viceCaptainName,
+        vice_captain_price_cr: team.viceCaptainPriceCr,
+        team_login_id: team.teamLoginId,
+        team_password: team.teamPassword,
+        squad: team.squad,
+        squad_count: team.squad.length,
+        overseas_count: team.overseasCount || 0
+      }).then(({ error }) => {
+        if (error) console.warn("Team cloud upsert error", error);
+      });
+    } catch (e) {
+      console.warn("Team cloud sync error", e);
+    }
+  }
+
+  syncAuctionStateToCloud() {
+    if (!this.supabase) return;
+    try {
+      this.supabase.from('auction_state').upsert({
+        id: 'live_room',
+        active_player_id: this.state.live.activePlayerId,
+        current_bid_cr: this.state.live.currentBidCr,
+        current_bidder_id: this.state.live.currentBidderId,
+        bid_history: this.state.live.bidHistory,
+        hammer_status: this.state.live.hammerStatus,
+        timer_running: this.state.live.timerRunning,
+        timer_seconds: this.state.live.timerSeconds,
+        updated_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.warn("Auction state cloud upsert error", error);
+      });
+    } catch (e) {
+      console.warn("Auction state sync error", e);
+    }
   }
 
   loadState() {
@@ -99,6 +361,7 @@ class AuctionStore {
     if (this.channel) {
       this.channel.postMessage({ type: 'STATE_SYNC', payload: this.state });
     }
+    this.syncAuctionStateToCloud();
     this.notify();
   }
 
@@ -193,6 +456,7 @@ class AuctionStore {
 
     this.state.teams.push(newTeam);
     this.broadcast();
+    this.syncTeamToCloud(newTeam);
     return newTeam;
   }
 
@@ -202,6 +466,9 @@ class AuctionStore {
       this.state.live.currentBidderId = null;
     }
     this.broadcast();
+    if (this.supabase) {
+      this.supabase.from('teams').delete().eq('id', teamId).then();
+    }
   }
 
   // --- DYNAMIC PLAYER REGISTRATION ---
@@ -234,6 +501,7 @@ class AuctionStore {
 
     this.state.players.push(newPlayer);
     this.broadcast();
+    this.syncPlayerToCloud(newPlayer);
     return newPlayer;
   }
 
@@ -245,6 +513,7 @@ class AuctionStore {
     p.basePriceCr = parseFloat(basePriceCr);
     if (sequenceOrder) p.auctionSequence = parseInt(sequenceOrder);
     this.broadcast();
+    this.syncPlayerToCloud(p);
   }
 
   rejectPlayer(playerId) {
@@ -252,6 +521,7 @@ class AuctionStore {
     if (!p) return;
     p.status = "REJECTED";
     this.broadcast();
+    this.syncPlayerToCloud(p);
   }
 
   deletePlayer(playerId) {
@@ -260,6 +530,9 @@ class AuctionStore {
       this.resetLiveAuctionState();
     }
     this.broadcast();
+    if (this.supabase) {
+      this.supabase.from('players').delete().eq('id', playerId).then();
+    }
   }
 
   // --- TIER MANAGEMENT ---
@@ -428,6 +701,8 @@ class AuctionStore {
     };
 
     this.broadcast();
+    this.syncPlayerToCloud(player);
+    this.syncTeamToCloud(winningTeam);
 
     // Trigger Fanfare
     if (window.auctionAudio) window.auctionAudio.playSoldFanfare();
@@ -446,6 +721,7 @@ class AuctionStore {
     this.state.live.soldDetails = null;
 
     this.broadcast();
+    this.syncPlayerToCloud(player);
     if (window.auctionAudio) window.auctionAudio.playUnsoldBuzzer();
   }
 

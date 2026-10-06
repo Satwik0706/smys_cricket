@@ -53,9 +53,6 @@
       <button class="icon-btn" id="btnPopoutBroadcast" title="Pop out broadcast overlay for OBS / Projector">
         <span>🚀</span> Pop-out OBS
       </button>
-      <button class="icon-btn" id="btnCloudSettings" title="Supabase & Cloud Sync Settings">
-        <span>☁️</span> Cloud Sync
-      </button>
     </div>
   </header>
 
@@ -329,6 +326,9 @@
         <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
           <button class="icon-btn" id="btnOpenCreateTeamModal" style="background:linear-gradient(135deg, #10B981, #059669); border:none; font-weight:700;">
             <span>➕</span> Create New Team
+          </button>
+          <button class="icon-btn" id="btnAdminCloudSettings" style="background:linear-gradient(135deg, #0284C7, #0EA5E9); border:none; font-weight:700; color:#FFFFFF;" title="Configure Supabase Cloud Database & Global Live Sync">
+            <span>☁️</span> Cloud Sync (Supabase)
           </button>
           <button class="icon-btn" id="btnExportAdminExcel" style="background:linear-gradient(135deg, #0284C7, #0369A1); border:none; font-weight:700;" title="Download complete player list, bids, and team rosters">
             <span>📊</span> Export Full Excel
@@ -861,38 +861,62 @@
   <!-- MODAL: CLOUD & SUPABASE SETUP                                -->
   <!-- ============================================================ -->
   <div id="cloudSettingsModal" class="modal-overlay">
-    <div class="modal-box">
-      <h3 class="modal-title">☁️ Supabase Cloud & Vercel Sync Setup</h3>
-      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:16px;">
-        Connect your free Supabase project to allow players worldwide to register and teams to bid live when deployed to Vercel.
+    <div class="modal-box" style="max-width: 660px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 class="modal-title" style="margin-bottom:0;">☁️ Supabase Cloud Synchronization</h3>
+        <span id="cloudStatusBadge" style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:800; background:rgba(255,255,255,0.08); color:var(--text-secondary); border:1px solid var(--border-subtle);">
+          ⚪ Local Offline Sync
+        </span>
+      </div>
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px; line-height:1.5;">
+        Connect your free Supabase project to enable live cross-device sync between mobile player registrations, franchise tables, and the stadium OBS telecast overlay.
       </p>
 
-      <div class="form-group" style="margin-bottom:12px;">
+      <div class="form-group" style="margin-bottom:14px;">
         <label class="form-label">Supabase Project URL</label>
-        <input type="text" id="inputSupabaseUrl" class="form-input" placeholder="https://xyzcompany.supabase.co">
+        <input type="text" id="inputSupabaseUrl" class="form-input" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co">
       </div>
 
-      <div class="form-group" style="margin-bottom:16px;">
+      <div class="form-group" style="margin-bottom:18px;">
         <label class="form-label">Supabase Anon Public API Key</label>
         <input type="password" id="inputSupabaseKey" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
       </div>
 
-      <div style="display:flex; gap:12px; margin-bottom:20px;">
-        <button class="btn-primary" id="btnSaveCloudConfig" style="flex:1;">
-          Save & Enable Cloud Sync
+      <!-- Action Buttons -->
+      <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+        <button class="btn-primary" id="btnSaveCloudConfig" style="flex:2; min-width:180px;">
+          💾 Save & Connect Supabase
+        </button>
+        <button type="button" class="icon-btn" id="btnTestCloudConnection" style="flex:1; min-width:140px; justify-content:center; background:rgba(56,189,248,0.15); border-color:var(--sky-bright); color:var(--sky-bright);">
+          🧪 Test Connection
+        </button>
+        <button type="button" class="icon-btn" id="btnDisconnectCloud" style="color:var(--accent-crimson); border-color:rgba(239,68,68,0.3); justify-content:center;">
+          Disconnect
         </button>
         <button class="btn-close-popup" id="btnCloseCloudModal">Close</button>
       </div>
 
-      <div style="border-top:1px solid var(--border-subtle); padding-top:14px;">
-        <div style="font-size:0.85rem; font-weight:700; color:var(--gold-bright);">Supabase 1-Click SQL Schema:</div>
-        <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:6px;">Copy and paste this into Supabase SQL Editor:</p>
-        <div class="code-snippet" id="sqlSchemaDisplay"></div>
+      <div id="cloudFeedbackMsg" style="display:none; font-size:0.85rem; padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:18px;"></div>
+
+      <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-size:0.88rem; font-weight:800; color:var(--gold-bright);">
+            Supabase 1-Click SQL Schema:
+          </div>
+          <button type="button" id="btnCopySqlSchema" class="icon-btn" style="padding:4px 12px; font-size:0.75rem; background:rgba(245,158,11,0.15); border-color:var(--gold-primary); color:var(--gold-bright);">
+            📋 Copy SQL Schema
+          </button>
+        </div>
+        <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:8px;">
+          Paste this in <strong>Supabase -> SQL Editor</strong> and click <strong>Run</strong>:
+        </p>
+        <div class="code-snippet" id="sqlSchemaDisplay" style="max-height:160px; overflow-y:auto; font-size:0.75rem;"></div>
       </div>
     </div>
   </div>
 
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/audio.js"></script>
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
