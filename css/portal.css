@@ -289,7 +289,8 @@ body {
   margin: 0 auto;
   animation: fadeInView 0.25s var(--ease-smooth);
 }
-.portal-view.active { display: block; }
+.portal-view.active,
+main.portal-view:only-of-type { display: block; }
 
 @keyframes fadeInView {
   from { opacity: 0; transform: translateY(6px); }
@@ -1555,3 +1556,75 @@ body {
   .hammer-actions-grid { grid-template-columns: 1fr 1fr; }
   .btn-hammer-sold { grid-column: span 2; }
 }
+
+/* Toast Notification System */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast-item {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #0F172A;
+  color: #FFFFFF;
+  padding: 12px 18px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-item.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.toast-success { background: #064E3B; border: 1px solid #059669; }
+.toast-success .toast-icon { background: #059669; color: #FFF; }
+
+.toast-error { background: #4C0519; border: 1px solid #DC2626; }
+.toast-error .toast-icon { background: #DC2626; color: #FFF; }
+
+.toast-warning { background: #78350F; border: 1px solid #D97706; }
+.toast-warning .toast-icon { background: #D97706; color: #FFF; }
+
+.toast-info { background: #1E293B; border: 1px solid #334155; }
+.toast-info .toast-icon { background: #2563EB; color: #FFF; }
+
+/* Status Pills */
+.status-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.status-pill.status-pending { background: #FEF3C7; color: #B45309; }
+.status-pill.status-ready, .status-pill.status-in_auction { background: #DBEAFE; color: #1D4ED8; }
+.status-pill.status-sold { background: #D1FAE5; color: #047857; }
+.status-pill.status-unsold { background: #FEE2E2; color: #B91C1C; }
+

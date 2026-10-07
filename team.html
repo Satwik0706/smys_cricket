@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Franchise War-Room — T20 Cricket Mega Auction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!-- FRANCHISE WAR-ROOM TABLE (DEDICATED PORTAL)                  -->
+  <!-- ============================================================ -->
+  <main id="viewTeamWarroom" class="portal-view active">
+    <!-- Top Navigation Bar -->
+    <header class="portal-top-bar">
+      <div class="brand-badge">
+        <div class="brand-logo-icon">🛡️</div>
+        <div>
+          <div class="brand-title">FRANCHISE WAR-ROOM CONSOLE</div>
+          <div class="brand-subtitle">Private Bidding Paddle & Squad Dashboard</div>
+        </div>
+      </div>
+
+      <div class="portal-nav-actions">
+        <span class="portal-status-pill pill-team" id="teamLockBadge">● TABLE SECURED</span>
+        <button class="icon-btn" id="btnToggleSound" title="Toggle Sound FX">
+          <span id="soundIcon">🔊</span> Sound ON
+        </button>
+        <button class="btn-exit-portal" onclick="window.logoutTeamOrExit()">
+          ← Disconnect / Exit
+        </button>
+      </div>
+    </header>
+
+    <!-- Team Login Lock Screen -->
+    <div id="teamLockScreen" class="auth-lock-card">
+      <div class="auth-icon-circle">🛡️</div>
+      <h2 class="auth-title">Franchise Table Authentication</h2>
+      <p class="auth-desc">Enter your team's assigned Login ID and Password provided by the tournament organizer to unlock your private bidding console.</p>
+      <form id="teamLoginForm">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Team Login ID</label>
+          <input type="text" id="inputTeamLoginId" class="form-input" placeholder="e.g. csk_101" required autofocus>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label">Team Password</label>
+          <input type="password" id="inputTeamPassword" class="form-input" placeholder="e.g. CSK@8492" required>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;">Connect to Bidding Table</button>
+      </form>
+    </div>
+
+    <!-- Authenticated Team Bidding Console -->
+    <div id="teamMainContent" style="display:none; margin-top:20px;">
+      <!-- Franchise Profile Banner -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:var(--bg-surface); padding:16px 24px; border-radius:var(--r-lg); border:1px solid var(--border-subtle); box-shadow:var(--shadow-sm); flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div id="teamBadgeEmoji" style="font-size:2.2rem;">🏏</div>
+          <div>
+            <h2 id="teamAuthenticatedName" style="font-size:1.45rem; font-weight:900; color:var(--text-primary); line-height:1.2;">Team Name</h2>
+            <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;" id="teamLeadershipTag">Captain: Not Set • Vice-Captain: Not Set</div>
+          </div>
+        </div>
+        <button class="icon-btn" id="btnTeamLogout">
+          <span>🚪</span> Disconnect Table
+        </button>
+      </div>
+
+      <div class="warroom-grid">
+        <!-- Left Column: Active Player & Giant Bidding Paddle -->
+        <div class="warroom-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-subtle); padding-bottom:16px; flex-wrap:wrap; gap:12px;">
+            <div>
+              <div style="color:var(--text-muted); font-size:0.75rem; letter-spacing:1.5px; text-transform:uppercase; font-weight:700;">CURRENT ON THE BLOCK</div>
+              <h2 id="teamViewPlayerName" style="font-size:2rem; font-weight:900; color:var(--text-primary); margin:2px 0;">NO ACTIVE PLAYER</h2>
+              <div id="teamViewPlayerRole" style="color:var(--primary-600); font-weight:700; font-size:0.9rem;">Awaiting call from auctioneer</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="color:var(--text-muted); font-size:0.75rem; letter-spacing:1px; text-transform:uppercase; font-weight:700;">CURRENT BID</div>
+              <div id="teamViewCurrentBid" style="font-size:2.6rem; font-weight:900; color:#059669; line-height:1;">₹ 0.00 CR</div>
+              <div id="teamViewLeaderTag" style="font-size:0.88rem; font-weight:700; color:var(--text-secondary); margin-top:4px;">No Bids Placed</div>
+            </div>
+          </div>
+
+          <!-- Giant Interactive Bidding Paddle -->
+          <div class="paddle-container">
+            <button id="btnTeamRaisePaddle" class="btn-giant-paddle">
+              <span id="paddleActionText">BID NEXT SLAB</span>
+              <span class="paddle-subtext" style="font-size:0.88rem; font-weight:700; opacity:0.9;">TAP TO RAISE TABLE PADDLE</span>
+            </button>
+            <div id="antiBankruptcyNotice" class="alert-anti-bankruptcy" style="display:none;">
+              ⚠️ Cannot Bid: You must reserve minimum funds to fill your required squad!
+            </div>
+          </div>
+
+          <!-- Custom Increments -->
+          <div style="display:flex; justify-content:center; gap:10px; margin-top:8px; flex-wrap:wrap;">
+            <button class="chip-inc team-inc-btn" data-step="0.20">+ ₹ 20 Lakh</button>
+            <button class="chip-inc team-inc-btn" data-step="0.50">+ ₹ 50 Lakh</button>
+            <button class="chip-inc team-inc-btn" data-step="1.00">+ ₹ 1.00 Crore</button>
+          </div>
+        </div>
+
+        <!-- Right Column: Franchise Squad & Purse Dashboard -->
+        <div class="warroom-card">
+          <h3 id="teamDashboardTitle" style="color:var(--text-primary); font-size:1.2rem; font-weight:800; margin-bottom:14px;">
+            Franchise Purse & Squad Dashboard
+          </h3>
+
+          <!-- Purse Progress Bar -->
+          <div class="purse-bar-container">
+            <div class="purse-meta">
+              <span style="font-size:0.82rem; font-weight:700; color:var(--text-secondary);">Remaining Purse</span>
+              <span id="teamPurseLeftText" style="color:#059669; font-weight:900; font-size:1.1rem;">₹ 0.00 Cr</span>
+            </div>
+            <div class="purse-track">
+              <div id="teamPurseProgressBar" class="purse-fill" style="width:100%;"></div>
+            </div>
+          </div>
+
+          <!-- Squad Limits Counters -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0;">
+            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); padding:14px; border-radius:12px; text-align:center;">
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Squad Size</div>
+              <div id="teamSquadCount" style="font-size:1.6rem; font-weight:900; color:var(--text-primary);">0 / 25</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Min 18 required</div>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); padding:14px; border-radius:12px; text-align:center;">
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Overseas Quota</div>
+              <div id="teamOverseasCount" style="font-size:1.6rem; font-weight:900; color:var(--text-primary);">0 / 8</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Max 8 allowed</div>
+            </div>
+          </div>
+
+          <!-- Acquired Players Roster -->
+          <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <div style="font-size:0.85rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">
+                Acquired Squad Players (<span id="teamAcquiredCount">0</span>)
+              </div>
+            </div>
+            <div id="teamAcquiredRoster" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto;">
+              <!-- Acquired player items injected here -->
+            </div>
+            <button class="btn-primary" id="btnExportTeamExcel" style="margin-top:14px; background:linear-gradient(135deg, #10B981 0%, #059669 100%); font-size:0.9rem; padding:12px; width:100%;">
+              Download Squad Info (CSV / Excel)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- SOLD CELEBRATION MODAL -->
+  <div id="soldPopupModal" class="sold-popup-overlay">
+    <div class="sold-popup-card">
+      <div class="sold-popup-banner">PLAYER ACQUIRED</div>
+      <div class="sold-popup-sub">OFFICIAL AUCTION CONFIRMATION</div>
+
+      <div class="sold-popup-photo-frame">
+        <img id="soldPopupImg" src="" alt="Sold Player">
+      </div>
+
+      <div class="sold-popup-player-name" id="soldPopupName">PLAYER NAME</div>
+      <div class="sold-popup-team-box" id="soldPopupTeamBadge">PURCHASED BY FRANCHISE</div>
+      <div class="sold-popup-price-pill" id="soldPopupPrice">₹ 0.00 CRORE</div>
+
+      <div class="sold-popup-actions">
+        <button class="btn-download-post" id="btnDownloadPopupPost">
+          Download Celebration Graphic
+        </button>
+        <button class="btn-close-popup" id="btnClosePopupModal">
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/poster.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

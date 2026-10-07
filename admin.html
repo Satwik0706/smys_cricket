@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Master Admin & Auctioneer Cockpit — T20 Cricket Mega Auction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!-- MASTER ADMIN & AUCTIONEER COCKPIT (DEDICATED PORTAL)          -->
+  <!-- ============================================================ -->
+  <main id="viewAdmin" class="portal-view active">
+    <!-- Admin Top Navigation Bar -->
+    <header class="portal-top-bar">
+      <div class="brand-badge">
+        <div class="brand-logo-icon">👑</div>
+        <div>
+          <div class="brand-title">AUCTIONEER COMMAND COCKPIT</div>
+          <div class="brand-subtitle">Tournament Operations & Live Hammer Console</div>
+        </div>
+      </div>
+
+      <div class="portal-nav-actions">
+        <span class="portal-status-pill pill-admin" id="adminLockBadge">● ORGANIZER CONSOLE</span>
+        <button class="icon-btn" id="btnToggleSound" title="Toggle Sound FX">
+          <span id="soundIcon">🔊</span> Sound ON
+        </button>
+        <button class="btn-exit-portal" onclick="window.logoutAdminOrExit()">
+          ← Exit to Gateway
+        </button>
+      </div>
+    </header>
+
+    <!-- Admin Password Lock Gate -->
+    <div id="adminLockScreen" class="auth-lock-card">
+      <div class="auth-icon-circle">🔐</div>
+      <h2 class="auth-title">Organizer Access Verification</h2>
+      <p class="auth-desc">Enter the master administrator password to access franchise management, sequence sequencing, and live hammer bidding controls.</p>
+      <form id="adminLoginForm">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <input type="password" id="inputAdminPassword" class="form-input" placeholder="Enter admin password (default: admin@2026)" required autofocus>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;">Unlock Admin Cockpit</button>
+      </form>
+    </div>
+
+    <!-- Authenticated Admin Content -->
+    <div id="adminMainContent" style="display:none; margin-top:20px;">
+      <!-- Header Action Bar -->
+      <div class="admin-header-bar">
+        <div>
+          <h2 style="color:var(--text-primary); font-size:1.6rem; font-weight:900;">Auctioneer Command Center</h2>
+          <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:2px;">Manage franchise teams, approve player pool, set base tiers, and control live bidding hammer.</p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button class="btn-action-primary" id="btnOpenCreateTeamModal">
+            <span>+</span> Create New Team
+          </button>
+          <button class="btn-action-secondary" id="btnAdminCloudSettings" title="Configure Supabase Cloud Database & Global Live Sync">
+            <span>☁️</span> Cloud Sync
+          </button>
+          <button class="btn-action-secondary" id="btnExportAdminExcel" title="Download complete player list, bids, and team rosters">
+            <span>📊</span> Full Excel
+          </button>
+          <button class="btn-action-secondary" id="btnPrintAdminReport" title="Print or save PDF tournament summary report">
+            <span>📄</span> PDF Report
+          </button>
+          <button class="btn-action-secondary" id="btnCallNextSeq">
+            <span>⏩</span> Call Next in Seq
+          </button>
+          <button class="btn-action-secondary" id="btnChangeAdminPass" title="Change Master Password">
+            <span>🔑</span> Password
+          </button>
+          <button class="btn-action-danger" id="btnResetAuction">
+            <span>🔄</span> Reset State
+          </button>
+          <button class="btn-action-secondary" id="btnAdminLogout">
+            <span>🚪</span> Lock
+          </button>
+        </div>
+      </div>
+
+      <!-- Teams & Credentials Grid -->
+      <div class="admin-panel-card" style="margin-bottom: 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3 style="color:var(--text-primary); font-size:1.2rem; font-weight:800;">
+              Franchise Teams & War-Room Credentials (<span id="adminTeamsCount">0</span>)
+            </h3>
+            <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">
+              Configured franchises with assigned Captain/Vice-Captain and deduction calculations. Copy table credentials for franchise bidders.
+            </p>
+          </div>
+          <button class="icon-btn" id="btnOpenCreateTeamModal2" style="font-size:0.8rem;">+ Add Franchise</button>
+        </div>
+
+        <div id="adminTeamsGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
+          <!-- Team credential cards injected via JS -->
+        </div>
+      </div>
+
+      <!-- Admin Subsections: Tiers & Approvals + Live Block & Controls -->
+      <div class="admin-subsections">
+        <!-- Left Column: Tiers & Sequence Pool Builder -->
+        <div class="admin-panel-card" style="display:flex; flex-direction:column; gap:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="color:var(--text-primary); font-size:1.1rem; font-weight:800;">Auction Sets & Base Tiers</h3>
+            <button class="icon-btn" id="btnAddTier" style="padding:4px 10px; font-size:0.78rem;">+ New Tier</button>
+          </div>
+          <p style="color:var(--text-secondary); font-size:0.8rem; margin-top:-10px;">
+            Set default base prices here. Applying a tier automatically updates players assigned to that set.
+          </p>
+
+          <div id="tierListContainer" style="display:flex; flex-direction:column; gap:10px;">
+            <!-- Injected via JavaScript -->
+          </div>
+
+          <!-- Pending Player Approvals Drawer -->
+          <div style="margin-top: 10px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <h3 style="color:var(--text-primary); font-size:1rem; font-weight:800;">
+                Pending Player Approvals (<span id="pendingCountBadge">0</span>)
+              </h3>
+            </div>
+            <div id="pendingPlayersList" style="display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto;">
+              <!-- Pending player cards injected here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Auctioneer Live Controls -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <!-- Active Player on Block -->
+          <div class="active-caller-card">
+            <div class="caller-photo">
+              <img id="adminCallerImg" src="" alt="Player">
+            </div>
+            <div style="flex:1;">
+              <div style="color:var(--gold-600); font-size:0.8rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;" id="adminCallerSet">AUCTION STAGE</div>
+              <div style="font-size:1.85rem; font-weight:900; color:var(--text-primary); line-height:1.15; margin:2px 0;" id="adminCallerName">NO ACTIVE PLAYER</div>
+              <div style="color:var(--text-secondary); font-size:0.88rem;" id="adminCallerMeta">Select a player from the queue to start bidding.</div>
+              <div style="margin-top:10px; display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                <div>
+                  <span style="color:var(--text-muted); font-size:0.78rem; text-transform:uppercase; font-weight:700;">CURRENT LEAD:</span>
+                  <span style="font-weight:800; color:var(--primary-600); margin-left:6px;" id="adminCallerLeadTeam">None</span>
+                </div>
+                <div>
+                  <span style="color:var(--text-muted); font-size:0.78rem; text-transform:uppercase; font-weight:700;">CURRENT BID:</span>
+                  <span style="font-size:1.4rem; font-weight:900; color:#059669; margin-left:6px;" id="adminCallerCurrentBid">₹ 0.00 Cr</span>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:right; border-left:1px solid var(--border-subtle); padding-left:18px;">
+              <div style="font-size:2.6rem; font-weight:900; font-family:monospace; color:var(--text-primary); line-height:1;" id="adminTimerNumber">15s</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700; margin-top:4px;">COUNTDOWN</div>
+            </div>
+          </div>
+
+          <!-- Quick Increment Buttons -->
+          <div>
+            <div style="font-size:0.82rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px;">
+              Quick Increment Slabs
+            </div>
+            <div class="increment-chips-row">
+              <button class="chip-inc" data-inc="0.10">+ ₹ 10 Lakh</button>
+              <button class="chip-inc" data-inc="0.20">+ ₹ 20 Lakh</button>
+              <button class="chip-inc" data-inc="0.25">+ ₹ 25 Lakh</button>
+              <button class="chip-inc" data-inc="0.50">+ ₹ 50 Lakh</button>
+              <button class="chip-inc" data-inc="1.00">+ ₹ 1.00 Crore</button>
+            </div>
+          </div>
+
+          <!-- Team Table Quick Paddles (Auctioneer Raise) -->
+          <div>
+            <div style="font-size:0.82rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px;">
+              Raise Table Paddle (Auctioneer Floor Raise)
+            </div>
+            <div id="adminTeamPaddlesGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px;">
+              <!-- Injected via JavaScript -->
+            </div>
+          </div>
+
+          <!-- Auto-Advance Sequence Countdown Bar -->
+          <div id="adminAutoAdvanceBar" class="auto-advance-bar" style="display:none;">
+            <div class="auto-advance-content">
+              <span class="auto-advance-pulse">⏳</span>
+              <span id="autoAdvanceMsg">Auto-advancing to next player in 3s...</span>
+            </div>
+            <div class="auto-advance-actions">
+              <button type="button" class="btn-auto-advance-now" id="btnAutoCallNow">Call Next Now</button>
+              <button type="button" class="btn-auto-advance-cancel" id="btnAutoCallCancel">Pause</button>
+            </div>
+          </div>
+
+          <!-- Master Hammer Controls -->
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <div style="font-size:0.82rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px;">
+                Auctioneer Hammer Controls
+              </div>
+              <label class="auto-advance-toggle-label">
+                <input type="checkbox" id="chkAutoAdvanceSeq" checked>
+                <span>Auto-Call Next Player (SOLD / UNSOLD)</span>
+              </label>
+            </div>
+            <div class="hammer-actions-grid">
+              <button class="btn-hammer btn-hammer-timer" id="btnAdminTimer">⏱️ Start 15s Timer</button>
+              <button class="btn-hammer btn-hammer-once" id="btnAdminOnce">Going Once</button>
+              <button class="btn-hammer btn-hammer-twice" id="btnAdminTwice">Going Twice</button>
+              <button class="btn-hammer btn-hammer-sold" id="btnAdminSold">HAMMER DOWN: SOLD</button>
+              <button class="btn-hammer btn-hammer-unsold" id="btnAdminUnsold">DECLARE UNSOLD</button>
+              <button class="btn-hammer btn-hammer-undo" id="btnAdminUndo">Undo Last Bid</button>
+            </div>
+          </div>
+
+          <!-- Upcoming Sequence Queue Table -->
+          <div class="admin-panel-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <h3 style="color:var(--text-primary); font-size:1.1rem; font-weight:800;">Upcoming Sequence Queue</h3>
+              <span style="font-size:0.8rem; color:var(--text-secondary);">Ordered by Auction Sequence</span>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="table-cricket">
+                <thead>
+                  <tr>
+                    <th>Seq</th>
+                    <th>Player</th>
+                    <th>Role</th>
+                    <th>Tier Set</th>
+                    <th>Base Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="sequenceTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL: CREATE FRANCHISE TEAM -->
+  <div id="createTeamModal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 class="modal-title">Create New Franchise Team</h3>
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px;">
+        Set franchise purse, assign Captain/Vice-Captain (with budget deduction), and generate table login credentials.
+      </p>
+
+      <form id="formCreateTeam">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Franchise Name *</label>
+            <input type="text" id="newTeamName" class="form-input" placeholder="e.g. Mumbai Titans" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Short Code (2-4 Letters) *</label>
+            <input type="text" id="newTeamCode" class="form-input" placeholder="e.g. MT" maxlength="5" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Primary Brand Color</label>
+            <input type="color" id="newTeamColor" class="form-input" value="#004BA0" style="height:45px; padding:4px;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Logo Emoji / Icon</label>
+            <input type="text" id="newTeamEmoji" class="form-input" placeholder="e.g. ⚡ or 🦁" value="⚡">
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Total Purse Budget (₹ Crores) *</label>
+            <input type="number" step="0.5" id="newTeamTotalPurse" class="form-input" placeholder="100.0" value="100.0" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Captain Name</label>
+            <input type="text" id="newTeamCaptain" class="form-input" placeholder="e.g. Rohit Sharma">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Captain Retention Price (₹ Cr)</label>
+            <input type="number" step="0.1" id="newTeamCaptainPrice" class="form-input" placeholder="0.0" value="0.0">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Vice-Captain Name</label>
+            <input type="text" id="newTeamVC" class="form-input" placeholder="e.g. Jasprit Bumrah">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Vice-Captain Price (₹ Cr)</label>
+            <input type="number" step="0.1" id="newTeamVCPrice" class="form-input" placeholder="0.0" value="0.0">
+          </div>
+
+          <div class="form-group full-width" style="background:rgba(217,119,6,0.06); border:1px solid rgba(217,119,6,0.22); padding:12px; border-radius:10px;">
+            <div style="font-size:0.82rem; color:var(--gold-600); font-weight:700;">Automatic Purse Deduction Calculation:</div>
+            <div id="newTeamPursePreview" style="font-size:0.95rem; font-weight:800; color:var(--text-primary); margin-top:4px;">
+              Purse Available for Auction: ₹ 100.00 Cr
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:20px;">
+          <button type="submit" class="btn-primary" style="flex:1;">Create Team & Generate Credentials</button>
+          <button type="button" class="btn-close-popup" id="btnCloseTeamModal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CHANGE ADMIN PASSWORD -->
+  <div id="changePassModal" class="modal-overlay">
+    <div class="modal-box" style="max-width:440px;">
+      <h3 class="modal-title">Change Master Password</h3>
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:16px;">
+        Update the master password used to unlock the Administrator Cockpit.
+      </p>
+
+      <form id="formChangeAdminPass">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">New Master Password</label>
+          <input type="password" id="inputNewAdminPass" class="form-input" placeholder="Enter new password (min 4 chars)" required>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <button type="submit" class="btn-primary" style="flex:1;">Save Password</button>
+          <button type="button" class="btn-close-popup" id="btnClosePassModal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CLOUD & SUPABASE SETUP -->
+  <div id="cloudSettingsModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 660px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 class="modal-title" style="margin-bottom:0;">Supabase Cloud Synchronization</h3>
+        <span id="cloudStatusBadge" style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:800; background:#F1F5F9; color:var(--text-secondary); border:1px solid var(--border-subtle);">
+          ○ Local Offline Sync
+        </span>
+      </div>
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px; line-height:1.5;">
+        Connect your Supabase project to enable real-time cross-device sync between franchise tables, player intake, and stadium displays.
+      </p>
+
+      <div class="form-group" style="margin-bottom:14px;">
+        <label class="form-label">Supabase Project URL</label>
+        <input type="text" id="inputSupabaseUrl" class="form-input" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co">
+      </div>
+
+      <div class="form-group" style="margin-bottom:18px;">
+        <label class="form-label">Supabase Anon Public API Key</label>
+        <input type="password" id="inputSupabaseKey" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+      </div>
+
+      <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+        <button class="btn-primary" id="btnSaveCloudConfig" style="flex:2; min-width:180px;">
+          Save & Connect Supabase
+        </button>
+        <button type="button" class="btn-action-secondary" id="btnTestCloudConnection" style="flex:1; min-width:140px; justify-content:center;">
+          Test Connection
+        </button>
+        <button type="button" class="btn-action-danger" id="btnDisconnectCloud" style="justify-content:center;">
+          Disconnect
+        </button>
+        <button class="btn-close-popup" id="btnCloseCloudModal">Close</button>
+      </div>
+
+      <div id="cloudFeedbackMsg" style="display:none; font-size:0.85rem; padding:10px 14px; border-radius:var(--r-sm); margin-bottom:18px;"></div>
+
+      <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-size:0.88rem; font-weight:800; color:var(--primary-600);">
+            Supabase 1-Click SQL Schema:
+          </div>
+          <button type="button" id="btnCopySqlSchema" class="btn-action-secondary" style="padding:4px 12px; font-size:0.75rem;">
+            Copy SQL Schema
+          </button>
+        </div>
+        <div class="code-snippet" id="sqlSchemaDisplay" style="max-height:160px; overflow-y:auto; font-size:0.75rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/poster.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

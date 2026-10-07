@@ -93,6 +93,11 @@ create table if not exists public.auction_state (
 alter publication supabase_realtime add table public.players;
 alter publication supabase_realtime add table public.teams;
 alter publication supabase_realtime add table public.auction_state;
+
+-- Disable RLS for seamless tournament operations with public anon key
+alter table public.players disable row level security;
+alter table public.teams disable row level security;
+alter table public.auction_state disable row level security;
 `;
 
 const DEFAULT_CRICKET_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='%230F172A'/><circle cx='100' cy='72' r='36' fill='%23334155'/><circle cx='100' cy='72' r='28' fill='%23475569'/><path d='M36,176 C36,132 68,120 100,120 C132,120 164,132 164,176 Z' fill='%23334155'/><circle cx='100' cy='142' r='18' fill='%231E293B'/><text x='100' y='148' font-size='20' text-anchor='middle'>🏏</text></svg>";

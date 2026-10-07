@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Auction Telecast HUD — Stadium & OBS Stream Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/portal.css">
+  <link rel="stylesheet" href="css/broadcast.css">
+</head>
+<body class="broadcast-page">
+
+  <!-- ============================================================ -->
+  <!-- LIVE TELECAST & OBS STREAM OVERLAY (DEDICATED PORTAL)        -->
+  <!-- ============================================================ -->
+  <main id="viewBroadcast" class="portal-view active">
+    <div class="broadcast-view">
+      <!-- Top Broadcast Header -->
+      <div class="broadcast-header">
+        <div class="broadcast-badge-live">
+          <div class="live-pulse-dot"></div>
+          <span>LIVE AUCTION</span>
+        </div>
+
+        <div class="broadcast-set-info">
+          <div class="broadcast-set-title" id="bcSetTitle">AUCTION ARENA</div>
+          <div class="broadcast-set-sub" id="bcSetSub">T20 PREMIER CRICKET MEGA AUCTION</div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="broadcast-timer-box" id="bcTimerBox">
+            <span style="font-size:1.1rem;">⏱️</span>
+            <span class="broadcast-timer-number" id="bcTimerNumber">00:15</span>
+          </div>
+          <button class="icon-btn" id="btnToggleSound" title="Toggle Sound FX">
+            <span id="soundIcon">🔊</span> Sound
+          </button>
+          <button class="icon-btn" id="btnBcFullscreen" title="Toggle Fullscreen">
+            <span>⛶</span> Fullscreen
+          </button>
+          <button class="icon-btn" id="btnPopoutBroadcast" title="Pop out broadcast overlay for OBS / Projector">
+            <span>↗</span> Pop-out
+          </button>
+          <button class="btn-exit-portal" onclick="window.location.href='index.html'">
+            ← Exit
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Stage Split Screen -->
+      <div class="broadcast-arena">
+        <!-- Left: High-Impact Player Card -->
+        <div class="broadcast-player-card">
+          <div class="player-img-frame">
+            <img id="bcPlayerImg" src="" alt="Player">
+          </div>
+          <div class="player-card-name" id="bcPlayerName">STAGE EMPTY</div>
+          <div class="player-card-role-pill" id="bcPlayerRole">AWAITING NEXT CALL</div>
+          <div class="player-stats-grid">
+            <div class="player-stat-col">
+              <div class="stat-label">Matches</div>
+              <div class="stat-val" id="bcStatMatches">0</div>
+            </div>
+            <div class="player-stat-col">
+              <div class="stat-label">Runs</div>
+              <div class="stat-val" id="bcStatRuns">0</div>
+            </div>
+            <div class="player-stat-col">
+              <div class="stat-label">Strike Rate</div>
+              <div class="stat-val" id="bcStatSR">0.0</div>
+            </div>
+          </div>
+          <div class="player-base-badge" id="bcBasePriceBadge">
+            BASE PRICE: ₹ 0.00 CR
+          </div>
+        </div>
+
+        <!-- Right: Current Bid Hero & History Ladder -->
+        <div class="broadcast-bidding-hud">
+          <div class="highest-bid-hero">
+            <div>
+              <div class="current-bid-label">CURRENT HIGHEST BID</div>
+              <div class="current-bid-amount" id="bcCurrentBid">₹ 0.00 CR</div>
+              <div class="current-team-leader">
+                <span style="color:var(--text-muted); font-weight:700;">HELD BY:</span>
+                <span class="leader-badge" id="bcLeaderBadge" style="background:#1E293B;">NO BIDS YET</span>
+              </div>
+            </div>
+
+            <!-- Dynamic Hammer Warning Banner -->
+            <div id="bcHammerBanner" class="hammer-banner" style="display:none;"></div>
+          </div>
+
+          <!-- Bidding War Ladder -->
+          <div class="bid-history-ladder">
+            <div class="bid-ladder-title">Live Bidding History</div>
+            <div id="bcBidLadderList">
+              <!-- Bidding events injected here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Broadcast Ticker -->
+      <div class="broadcast-bottom-ticker">
+        <div class="ticker-title">PURSE TRACKER</div>
+        <div class="ticker-scroll-wrap">
+          <div class="ticker-track" id="bcTickerTrack">
+            <!-- Marquee ticker injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- SOLD CELEBRATION MODAL -->
+  <div id="soldPopupModal" class="sold-popup-overlay">
+    <div class="sold-popup-card">
+      <div class="sold-popup-banner">⚡ S O L D ⚡</div>
+      <div class="sold-popup-sub">OFFICIAL MEGA AUCTION ANNOUNCEMENT</div>
+
+      <div class="sold-popup-photo-frame">
+        <img id="soldPopupImg" src="" alt="Sold Player">
+      </div>
+
+      <div class="sold-popup-player-name" id="soldPopupName">PLAYER NAME</div>
+      <div class="sold-popup-team-box" id="soldPopupTeamBadge">PURCHASED BY FRANCHISE</div>
+      <div class="sold-popup-price-pill" id="soldPopupPrice">₹ 0.00 CRORE</div>
+
+      <div class="sold-popup-actions">
+        <button class="btn-download-post" id="btnDownloadPopupPost">
+          Download Instagram Post
+        </button>
+        <button class="btn-close-popup" id="btnClosePopupModal">
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/poster.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>T20 Cricket Mega Auction & Live Telecasting System</title>
+  <title>T20 Cricket Mega Auction — Official Tournament Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/portal.css">
-  <link rel="stylesheet" href="css/broadcast.css">
 </head>
 <body>
 
   <!-- ============================================================ -->
-  <!-- 🏛️ VIEW 0: TOURNAMENT ENTRANCE HUB (SEPARATE PORTALS GATEWAY)-->
+  <!-- TOURNAMENT ENTRANCE GATEWAY HUB                              -->
   <!-- ============================================================ -->
   <main id="viewHub" class="portal-view active">
     <!-- Hub Top Navigation Bar -->
@@ -30,19 +29,22 @@
         <button class="icon-btn" id="btnToggleSound" title="Toggle Sound FX">
           <span id="soundIcon">🔊</span> Sound ON
         </button>
+        <a href="studio.html" class="icon-btn" title="Open Media Poster Studio">
+          <span>📸</span> Poster Studio
+        </a>
       </div>
     </header>
 
     <!-- Stadium Atmosphere Banner Hero -->
     <div class="hub-banner-hero">
       <div class="hub-hero-inner">
-        <div class="hub-hero-tag">🏆 OFFICIAL TOURNAMENT PLATFORM • 2026 SEASON</div>
+        <div class="hub-hero-tag">OFFICIAL TOURNAMENT PLATFORM • 2026 SEASON</div>
         <h1 class="hub-hero-title">Cricket Mega Auction System</h1>
-        <p class="hub-hero-desc">Real-time synchronized tournament operations engine with isolated franchise consoles, automated sequencer, and stadium broadcast telecasting.</p>
+        <p class="hub-hero-desc">Real-time synchronized tournament operations platform with isolated franchise consoles, automated sequencing, and high-impact stadium telecast HUD.</p>
       </div>
     </div>
 
-    <!-- Floating White Modern Structure (Inspired by Reference UI) -->
+    <!-- Floating White Modern Structure -->
     <div class="hub-floating-card">
       <!-- Top Meta Pill Strip -->
       <div class="hub-meta-strip">
@@ -54,7 +56,7 @@
             <span>👥</span> 18–25 PLAYERS / TEAM
           </span>
           <span class="meta-chip chip-emerald" id="hubLiveIndicator">
-            <span>⚡</span> LIVE AUCTION ARENA
+            <span>⚡</span> ARENA READY
           </span>
         </div>
         <div>
@@ -69,8 +71,8 @@
         <div class="hub-tournament-heading">
           <div class="tournament-trophy-badge">🏆</div>
           <div class="hub-name-wrap">
-            <h2>T20 Premier Mega Auction</h2>
-            <p>Select your dedicated portal below. Each portal provides isolated role-based access.</p>
+            <h2>Premier T20 Mega Auction</h2>
+            <p>Select your dedicated portal below. Each portal operates as an independent, role-secured workspace.</p>
           </div>
         </div>
 
@@ -80,7 +82,7 @@
         </div>
       </div>
 
-      <!-- Live Tournament Vitals Meter (All Dynamic, No Hardcoding) -->
+      <!-- Live Tournament Vitals Meter -->
       <div class="hub-vitals-strip">
         <div class="hub-vital-col">
           <span class="hub-vital-icon">🛡️</span>
@@ -116,946 +118,70 @@
     <!-- 4 High-Impact Dedicated Action Cards (Isolated Portals) -->
     <div class="hub-portals-grid">
       <!-- Card 1: Live Broadcast Arena -->
-      <div class="portal-action-card card-live" onclick="window.navigateToPortal('viewBroadcast')">
+      <a href="broadcast.html" class="portal-action-card card-live" style="text-decoration:none; color:inherit;">
         <div>
           <div class="portal-card-top">
             <div class="portal-icon-box">📺</div>
             <span class="portal-status-pill pill-live">STADIUM / OBS</span>
           </div>
           <h3 class="portal-card-title">Live Broadcast HUD</h3>
-          <p class="portal-card-desc">Full-screen TV broadcast overlay for stadium LED displays, projectors, and OBS Studio with live bid ladder and SOLD fanfare.</p>
+          <p class="portal-card-desc">Full-screen TV broadcast overlay for stadium LED screens, projectors, and OBS Studio with live bid ladder, marquee purse tracker, and sold fanfare.</p>
         </div>
-        <button type="button" class="btn-enter-portal btn-accent-live">
+        <div class="btn-enter-portal btn-accent-live">
           <span>Enter Live Telecast Arena</span>
           <span>→</span>
-        </button>
-      </div>
+        </div>
+      </a>
 
       <!-- Card 2: Franchise War-Room -->
-      <div class="portal-action-card card-warroom" onclick="window.navigateToPortal('viewTeamWarroom')">
+      <a href="team.html" class="portal-action-card card-warroom" style="text-decoration:none; color:inherit;">
         <div>
           <div class="portal-card-top">
             <div class="portal-icon-box">🛡️</div>
             <span class="portal-status-pill pill-team">FRANCHISE TABLE 🔒</span>
           </div>
           <h3 class="portal-card-title">Franchise War-Room</h3>
-          <p class="portal-card-desc">Dedicated console for team owners and bidders. Sign in with table credentials to raise live bidding paddles and track your purse.</p>
+          <p class="portal-card-desc">Dedicated console for franchise owners and table bidders. Sign in with table credentials to raise live bidding paddles and track your purse.</p>
         </div>
-        <button type="button" class="btn-enter-portal btn-accent-warroom">
+        <div class="btn-enter-portal btn-accent-warroom">
           <span>Connect Bidding Console</span>
           <span>→</span>
-        </button>
-      </div>
+        </div>
+      </a>
 
       <!-- Card 3: Player Registration -->
-      <div class="portal-action-card card-player" onclick="window.navigateToPortal('viewRegistration')">
+      <a href="register.html" class="portal-action-card card-player" style="text-decoration:none; color:inherit;">
         <div>
           <div class="portal-card-top">
             <div class="portal-icon-box">📝</div>
-            <span class="portal-status-pill pill-player">PUBLIC ACCESS</span>
+            <span class="portal-status-pill pill-player">PUBLIC INTAKE</span>
           </div>
           <h3 class="portal-card-title">Player Registration</h3>
-          <p class="portal-card-desc">For cricketers and coaches. Submit your credentials, playing style, CricHeroes statistics, contact details, and photos.</p>
+          <p class="portal-card-desc">Official cricketer credentials intake. Submit your playing style, career statistics, CricHeroes profile details, contact information, and photo.</p>
         </div>
-        <button type="button" class="btn-enter-portal btn-accent-player">
+        <div class="btn-enter-portal btn-accent-player">
           <span>Open Player Portal</span>
           <span>→</span>
-        </button>
-      </div>
+        </div>
+      </a>
 
       <!-- Card 4: Master Admin Cockpit -->
-      <div class="portal-action-card card-admin" onclick="window.navigateToPortal('viewAdmin')">
+      <a href="admin.html" class="portal-action-card card-admin" style="text-decoration:none; color:inherit;">
         <div>
           <div class="portal-card-top">
             <div class="portal-icon-box">👑</div>
-            <span class="portal-status-pill pill-admin">ORGANIZER 🔒</span>
+            <span class="portal-status-pill pill-admin">ORGANIZER ONLY 🔒</span>
           </div>
           <h3 class="portal-card-title">Master Admin Cockpit</h3>
-          <p class="portal-card-desc">Password-protected control center. Manage franchises, set purse budgets, approve player pool, and swing the live auction hammer.</p>
+          <p class="portal-card-desc">Password-protected control center. Manage franchises, calculate purse budgets, approve player pool, and control the live auction hammer.</p>
         </div>
-        <button type="button" class="btn-enter-portal btn-accent-admin">
+        <div class="btn-enter-portal btn-accent-admin">
           <span>Enter Admin Console</span>
           <span>→</span>
-        </button>
-      </div>
+        </div>
+      </a>
     </div>
   </main>
-
-  <!-- ============================================================ -->
-  <!-- 📝 PORTAL 1: DYNAMIC PLAYER REGISTRATION                     -->
-  <!-- ============================================================ -->
-  <main id="viewRegistration" class="portal-view">
-    <header class="portal-top-bar" style="margin-bottom:24px;">
-      <div class="brand-badge">
-        <div class="brand-logo-icon">📝</div>
-        <div>
-          <div class="brand-title">PLAYER REGISTRATION PORTAL</div>
-          <div class="brand-subtitle">Official Cricketer Credentials Intake</div>
-        </div>
-      </div>
-      <div class="portal-nav-actions">
-        <span class="portal-status-pill pill-player">● PUBLIC REGISTRATION</span>
-        <button class="btn-exit-portal" onclick="window.navigateToPortal('viewHub')">
-          ← Exit to Gateway
-        </button>
-      </div>
-    </header>
-
-    <div class="reg-layout">
-      <!-- Registration Form -->
-      <div class="reg-form-card">
-        <div class="form-header">
-          <h2>Player Registration Form</h2>
-          <p>Submit your cricket credentials to enter the upcoming tournament auction pool.</p>
-        </div>
-
-        <form id="playerRegForm">
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Full Name *</label>
-              <input type="text" id="regName" class="form-input" placeholder="e.g. Sanju Samson" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Country / State *</label>
-              <input type="text" id="regCountry" class="form-input" placeholder="e.g. India (Kerala)" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Age *</label>
-              <input type="number" id="regAge" class="form-input" placeholder="26" min="15" max="45" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Batting Style</label>
-              <select id="regBattingStyle" class="form-select">
-                <option value="Right-hand bat">Right-hand bat</option>
-                <option value="Left-hand bat">Left-hand bat</option>
-              </select>
-            </div>
-
-            <div class="form-group full-width">
-              <label class="form-label">Playing Roles (Select One or More) *</label>
-              <div class="role-options">
-                <label class="role-chip">
-                  <input type="checkbox" name="regRole" value="Batter" checked>
-                  <span>🏏 Pure Batter</span>
-                </label>
-                <label class="role-chip">
-                  <input type="checkbox" name="regRole" value="Fast Bowler">
-                  <span>⚡ Fast Bowler</span>
-                </label>
-                <label class="role-chip">
-                  <input type="checkbox" name="regRole" value="Spin Bowler">
-                  <span>🌀 Spin Bowler</span>
-                </label>
-                <label class="role-chip">
-                  <input type="checkbox" name="regRole" value="All-Rounder">
-                  <span>⭐ All-Rounder</span>
-                </label>
-                <label class="role-chip">
-                  <input type="checkbox" name="regRole" value="Wicketkeeper">
-                  <span>🧤 Wicketkeeper</span>
-                </label>
-                <label class="role-chip">
-                  <input type="checkbox" name="regRole" value="Finisher">
-                  <span>💥 Finisher</span>
-                </label>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Bowling Style</label>
-              <input type="text" id="regBowlingStyle" class="form-input" placeholder="e.g. Right-arm fast-medium">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">T20 Matches Played</label>
-              <input type="number" id="regMatches" class="form-input" placeholder="0" min="0">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Total Runs</label>
-              <input type="number" id="regRuns" class="form-input" placeholder="0" min="0">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Batting Strike Rate</label>
-              <input type="number" step="0.1" id="regStrikeRate" class="form-input" placeholder="0.0" min="0">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Total Wickets</label>
-              <input type="number" id="regWickets" class="form-input" placeholder="0" min="0">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Economy Rate</label>
-              <input type="number" step="0.01" id="regEconomy" class="form-input" placeholder="0.0" min="0">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">CricHeroes Profile Name *</label>
-              <input type="text" id="regCricHeroesName" class="form-input" placeholder="e.g. Rahul_Sharma_77" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">CricHeroes Phone / WhatsApp No *</label>
-              <input type="tel" id="regCricHeroesPhone" class="form-input" placeholder="e.g. +91 9876543210" required>
-            </div>
-
-            <!-- Zero-Cost Photo Upload / Drive Link -->
-            <div class="form-group full-width">
-              <label class="form-label">Profile Photo (Mobile Camera / Gallery / PC Drop) *</label>
-              <div class="photo-dropzone" id="photoDropzone">
-                <div class="dropzone-icon">📷</div>
-                <strong>Tap to Take Photo or Choose from Gallery / Computer</strong>
-                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Auto-compressed in 100ms • Works on Android, iPhone & PC</div>
-                <button type="button" class="btn-action-primary" id="btnChoosePhoto" style="margin-top:10px;">
-                  📁 Select Photo / Camera
-                </button>
-                <div id="uploadSuccessBadge" style="display:none; color:var(--accent-emerald); font-weight:700; font-size:0.85rem; margin-top:8px;">
-                  ✅ Photo compressed & ready!
-                </div>
-                <input type="file" id="regPhotoFile" accept="image/*" style="display:none">
-              </div>
-              <input type="url" id="regPhotoUrl" class="form-input" style="margin-top: 10px;" placeholder="Or paste Image URL / Google Drive link">
-            </div>
-          </div>
-
-          <button type="submit" class="btn-primary" style="margin-top: 20px;">Submit Player Application 🚀</button>
-        </form>
-      </div>
-
-      <!-- Live Dynamic Card Preview -->
-      <div class="reg-preview-box">
-        <div style="font-size:0.85rem; text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); margin-bottom:12px; font-weight:700;">
-          Live Trading Card Preview
-        </div>
-        <div class="broadcast-player-card" id="regLiveCard">
-          <div class="player-img-frame">
-            <img id="cardPreviewImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23F1F5F9'/><circle cx='100' cy='72' r='36' fill='%23CBD5E1'/><circle cx='100' cy='72' r='28' fill='%2394A3B8'/><path d='M36,176 C36,132 68,120 100,120 C132,120 164,132 164,176 Z' fill='%23CBD5E1'/><circle cx='100' cy='142' r='18' fill='%23E2E8F0'/><text x='100' y='148' font-size='20' text-anchor='middle'>🏏</text></svg>" alt="Player Avatar">
-          </div>
-          <div class="player-card-name" id="cardPreviewName">PLAYER NAME</div>
-          <div class="player-card-role-pill" id="cardPreviewRole">🏏 BATTER • INDIA</div>
-          <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight:700; margin-top:-10px; margin-bottom:12px;" id="cardPreviewCricHeroes">
-            📱 CricHeroes: Not linked
-          </div>
-          <div class="player-stats-grid">
-            <div class="player-stat-col">
-              <div class="stat-label">Matches</div>
-              <div class="stat-val" id="cardPreviewMatches">0</div>
-            </div>
-            <div class="player-stat-col">
-              <div class="stat-label">Runs</div>
-              <div class="stat-val" id="cardPreviewRuns">0</div>
-            </div>
-            <div class="player-stat-col">
-              <div class="stat-label">Strike Rate</div>
-              <div class="stat-val" id="cardPreviewSR">0.0</div>
-            </div>
-          </div>
-          <div class="player-base-badge">
-            STATUS: READY FOR AUCTION REVIEW
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ============================================================ -->
-  <!-- 👑 PORTAL 2: MASTER ADMIN COCKPIT & SEQUENCER                -->
-  <!-- ============================================================ -->
-  <main id="viewAdmin" class="portal-view">
-    <header class="portal-top-bar" style="margin-bottom:24px;">
-      <div class="brand-badge">
-        <div class="brand-logo-icon">👑</div>
-        <div>
-          <div class="brand-title">MASTER ADMIN & AUCTIONEER COCKPIT</div>
-          <div class="brand-subtitle">Tournament Operations & Hammer Control</div>
-        </div>
-      </div>
-      <div class="portal-nav-actions">
-        <span class="portal-status-pill pill-admin">● ORGANIZER 🔒</span>
-        <button class="btn-exit-portal" onclick="window.logoutAdminOrExit()">
-          🚪 Admin Logout / Exit
-        </button>
-      </div>
-    </header>
-
-    <!-- Admin Password Lock Gate -->
-    <div id="adminLockScreen" class="auth-lock-card">
-      <div class="auth-icon-circle">🔐</div>
-      <h2 class="auth-title">Admin Access Protected</h2>
-      <p class="auth-desc">Enter the master administrator password to manage teams, auction sequence, and hammer controls.</p>
-      <form id="adminLoginForm">
-        <div class="form-group" style="margin-bottom: 16px;">
-          <input type="password" id="inputAdminPassword" class="form-input" placeholder="Enter admin password (default: admin@2026)" required>
-        </div>
-        <button type="submit" class="btn-primary">Unlock Admin Cockpit 🔓</button>
-      </form>
-    </div>
-
-    <!-- Authenticated Admin Content -->
-    <div id="adminMainContent" style="display:none;">
-      <div class="admin-header-bar">
-        <div>
-          <h2 style="color:var(--text-white); font-size:1.6rem; font-weight:900;">Auctioneer Cockpit</h2>
-          <p style="color:var(--text-secondary); font-size:0.85rem;">Create franchise teams, approve players, configure tiers, and swing the live auction hammer.</p>
-        </div>
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-          <button class="btn-action-primary" id="btnOpenCreateTeamModal">
-            <span>➕</span> Create New Team
-          </button>
-          <button class="btn-action-secondary" id="btnAdminCloudSettings" title="Configure Supabase Cloud Database & Global Live Sync">
-            <span>☁️</span> Cloud Sync
-          </button>
-          <button class="btn-action-secondary" id="btnExportAdminExcel" title="Download complete player list, bids, and team rosters">
-            <span>📊</span> Full Excel
-          </button>
-          <button class="btn-action-secondary" id="btnPrintAdminReport" title="Print or save PDF tournament summary report">
-            <span>📄</span> PDF Report
-          </button>
-          <button class="btn-action-secondary" id="btnCallNextSeq">
-            <span>⏩</span> Call Next in Seq
-          </button>
-          <button class="btn-action-secondary" id="btnChangeAdminPass" title="Change Master Password">
-            <span>🔑</span> Key
-          </button>
-          <button class="btn-action-danger" id="btnResetAuction">
-            <span>🔄</span> Reset
-          </button>
-          <button class="btn-action-secondary" id="btnAdminLogout">
-            <span>🚪</span> Logout
-          </button>
-        </div>
-      </div>
-
-      <!-- Teams & Credentials Grid -->
-      <div class="admin-panel-card" style="margin-bottom: 28px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-          <div>
-            <h3 style="color:var(--text-white); font-size:1.2rem; font-weight:800;">
-              Franchise Teams & War-Room Credentials (<span id="adminTeamsCount">0</span>)
-            </h3>
-            <p style="font-size:0.8rem; color:var(--text-secondary);">
-              Teams created with Captain/Vice-Captain and course deductions. Copy credentials and provide to franchise owners.
-            </p>
-          </div>
-          <button class="icon-btn" id="btnOpenCreateTeamModal2" style="font-size:0.8rem;">+ Add Franchise</button>
-        </div>
-
-        <div id="adminTeamsGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
-          <!-- Team credential cards injected via JS -->
-        </div>
-      </div>
-
-      <div class="admin-subsections">
-        <!-- Left: Tiers & Sequence Builder -->
-        <div class="admin-panel-card" style="display:flex; flex-direction:column; gap:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="color:var(--text-white); font-size:1.1rem; font-weight:800;">Auction Tiers & Base Prices</h3>
-            <button class="icon-btn" id="btnAddTier" style="padding:4px 10px; font-size:0.78rem;">+ New Tier</button>
-          </div>
-          <p style="color:var(--text-secondary); font-size:0.8rem;">Change base prices here to automatically apply to players in that tier.</p>
-
-          <div id="tierListContainer" style="display:flex; flex-direction:column; gap:10px;">
-            <!-- Injected via JavaScript -->
-          </div>
-
-          <!-- Pending Player Approvals Drawer -->
-          <div style="margin-top: 10px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
-            <h3 style="color:var(--text-white); font-size:1rem; font-weight:800; margin-bottom:8px;">
-              Pending Approvals (<span id="pendingCountBadge">0</span>)
-            </h3>
-            <div id="pendingPlayersList" style="display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto;">
-              <!-- Pending player cards injected here -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: Auctioneer Cockpit Controls -->
-        <div style="display:flex; flex-direction:column; gap:24px;">
-          <!-- Active Player on Block -->
-          <div class="active-caller-card">
-            <div class="caller-photo">
-              <img id="adminCallerImg" src="" alt="Player">
-            </div>
-            <div>
-              <div style="color:var(--gold-600); font-size:0.85rem; font-weight:800; letter-spacing:2px;" id="adminCallerSet">AUCTION STAGE</div>
-              <div style="font-size:2rem; font-weight:900;" id="adminCallerName">NO ACTIVE PLAYER</div>
-              <div style="color:var(--text-secondary); font-size:0.9rem;" id="adminCallerMeta">Select a player from the sequence queue to start bidding.</div>
-              <div style="margin-top:10px; display:flex; align-items:center; gap:16px;">
-                <div>
-                  <span style="color:var(--text-secondary); font-size:0.8rem;">CURRENT LEAD:</span>
-                  <span style="font-weight:800; color:var(--primary-600); margin-left:6px;" id="adminCallerLeadTeam">None</span>
-                </div>
-                <div>
-                  <span style="color:var(--text-secondary); font-size:0.8rem;">BID:</span>
-                  <span style="font-size:1.4rem; font-weight:900; color:#059669; margin-left:6px;" id="adminCallerCurrentBid">₹ 0.00 Cr</span>
-                </div>
-              </div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:2.8rem; font-weight:900; font-family:monospace; color:#0F172A;" id="adminTimerNumber">15s</div>
-              <div style="font-size:0.8rem; color:var(--text-secondary);">COUNTDOWN</div>
-            </div>
-          </div>
-
-          <!-- Quick Increment Buttons -->
-          <div>
-            <div style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">
-              Quick Bid Increments
-            </div>
-            <div class="increment-chips-row">
-              <button class="chip-inc" data-inc="0.10">+ ₹ 10 Lakh</button>
-              <button class="chip-inc" data-inc="0.20">+ ₹ 20 Lakh</button>
-              <button class="chip-inc" data-inc="0.25">+ ₹ 25 Lakh</button>
-              <button class="chip-inc" data-inc="0.50">+ ₹ 50 Lakh</button>
-              <button class="chip-inc" data-inc="1.00">+ ₹ 1.00 Crore</button>
-            </div>
-          </div>
-
-          <!-- Team Quick Bidding Triggers (Auctioneer Table Raise) -->
-          <div>
-            <div style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">
-              Tap Team Paddle (Auctioneer Table Raise)
-            </div>
-            <div id="adminTeamPaddlesGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px;">
-              <!-- Injected via JavaScript -->
-            </div>
-          </div>
-
-          <!-- ⚡ Auto-Advance Sequence Countdown Bar -->
-          <div id="adminAutoAdvanceBar" class="auto-advance-bar" style="display:none;">
-            <div class="auto-advance-content">
-              <span class="auto-advance-pulse">⏳</span>
-              <span id="autoAdvanceMsg">Auto-advancing to next player in 3s...</span>
-            </div>
-            <div class="auto-advance-actions">
-              <button type="button" class="btn-auto-advance-now" id="btnAutoCallNow">⏩ Call Next Now</button>
-              <button type="button" class="btn-auto-advance-cancel" id="btnAutoCallCancel">⏸️ Pause</button>
-            </div>
-          </div>
-
-          <!-- Master Hammer Actions -->
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-              <div style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;">
-                Auctioneer Hammer Controls
-              </div>
-              <label class="auto-advance-toggle-label">
-                <input type="checkbox" id="chkAutoAdvanceSeq" checked>
-                <span>⚡ Auto-Call Next Player (SOLD / UNSOLD)</span>
-              </label>
-            </div>
-            <div class="hammer-actions-grid">
-              <button class="btn-hammer btn-hammer-timer" id="btnAdminTimer">⏱️ Start 15s Timer</button>
-              <button class="btn-hammer btn-hammer-once" id="btnAdminOnce">⚠️ Going Once</button>
-              <button class="btn-hammer btn-hammer-twice" id="btnAdminTwice">🚨 Going Twice</button>
-              <button class="btn-hammer btn-hammer-sold" id="btnAdminSold">🔨 HAMMER DOWN: SOLD!</button>
-              <button class="btn-hammer btn-hammer-unsold" id="btnAdminUnsold">❌ UNSOLD</button>
-              <button class="btn-hammer btn-hammer-undo" id="btnAdminUndo">↩️ Undo Bid</button>
-            </div>
-          </div>
-
-          <!-- Auction Sequence Pool Table -->
-          <div class="admin-panel-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-              <h3 style="color:var(--text-white); font-size:1.1rem; font-weight:800;">Upcoming Sequence Queue</h3>
-              <span style="font-size:0.8rem; color:var(--text-secondary);">Sorted by Sequence</span>
-            </div>
-            <div style="overflow-x:auto;">
-              <table class="table-cricket">
-                <thead>
-                  <tr>
-                    <th>Seq #</th>
-                    <th>Player</th>
-                    <th>Role</th>
-                    <th>Tier</th>
-                    <th>Base Price</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="sequenceTableBody">
-                  <!-- Injected via JavaScript -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ============================================================ -->
-  <!-- 🛡️ PORTAL 3: FRANCHISE WAR-ROOM CONSOLE                     -->
-  <!-- ============================================================ -->
-  <main id="viewTeamWarroom" class="portal-view">
-    <header class="portal-top-bar" style="margin-bottom:24px;">
-      <div class="brand-badge">
-        <div class="brand-logo-icon">🛡️</div>
-        <div>
-          <div class="brand-title">FRANCHISE WAR-ROOM TABLE</div>
-          <div class="brand-subtitle">Private Bidding Paddle Console</div>
-        </div>
-      </div>
-      <div class="portal-nav-actions">
-        <span class="portal-status-pill pill-team">● TABLE SECURED 🔒</span>
-        <button class="btn-exit-portal" onclick="window.logoutTeamOrExit()">
-          🚪 Disconnect Table / Exit
-        </button>
-      </div>
-    </header>
-
-    <!-- Team Login Lock Screen -->
-    <div id="teamLockScreen" class="auth-lock-card">
-      <div class="auth-icon-circle">🛡️</div>
-      <h2 class="auth-title">Franchise Table Login</h2>
-      <p class="auth-desc">Enter your team's assigned Login ID and Password provided by the tournament administrator to access your table bidding console.</p>
-      <form id="teamLoginForm">
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label class="form-label">Team Login ID</label>
-          <input type="text" id="inputTeamLoginId" class="form-input" placeholder="e.g. csk_101" required>
-        </div>
-        <div class="form-group" style="margin-bottom: 20px;">
-          <label class="form-label">Team Password</label>
-          <input type="password" id="inputTeamPassword" class="form-input" placeholder="e.g. CSK@8492" required>
-        </div>
-        <button type="submit" class="btn-primary">Connect to Bidding Table 🚀</button>
-      </form>
-    </div>
-
-    <!-- Authenticated Team Bidding Console -->
-    <div id="teamMainContent" style="display:none;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:var(--bg-card); padding:16px 24px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); box-shadow:var(--shadow-sm);">
-        <div style="display:flex; align-items:center; gap:16px;">
-          <div id="teamBadgeEmoji" style="font-size:2rem;">🏏</div>
-          <div>
-            <h2 id="teamAuthenticatedName" style="font-size:1.4rem; font-weight:900; color:var(--text-white);">Team Name</h2>
-            <div style="font-size:0.8rem; color:var(--text-secondary);" id="teamLeadershipTag">Captain: Name • Vice-Captain: Name</div>
-          </div>
-        </div>
-        <button class="icon-btn" id="btnTeamLogout">
-          <span>🚪</span> Disconnect Table
-        </button>
-      </div>
-
-      <div class="warroom-grid">
-        <!-- Left: Active Player & Giant Bidding Paddle -->
-        <div class="warroom-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle); padding-bottom:16px;">
-            <div>
-              <div style="color:var(--text-muted); font-size:0.8rem; letter-spacing:2px; text-transform:uppercase;">CURRENT ON THE BLOCK</div>
-              <h2 id="teamViewPlayerName" style="font-size:2.2rem; font-weight:900; color:var(--text-white);">NO ACTIVE PLAYER</h2>
-              <div id="teamViewPlayerRole" style="color:var(--primary-600); font-weight:700;">Awaiting call from auctioneer</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="color:var(--text-muted); font-size:0.8rem; letter-spacing:1px;">CURRENT BID</div>
-              <div id="teamViewCurrentBid" style="font-size:3rem; font-weight:900; color:#059669;">₹ 0.00 CR</div>
-              <div id="teamViewLeaderTag" style="font-size:0.9rem; font-weight:700; color:var(--text-secondary);">No Bids Placed</div>
-            </div>
-          </div>
-
-          <!-- Giant Bidding Paddle -->
-          <div class="paddle-container">
-            <button id="btnTeamRaisePaddle" class="btn-giant-paddle">
-              <span id="paddleActionText">BID NEXT SLAB</span>
-              <span class="paddle-subtext" style="font-size:0.9rem; font-weight:700; opacity:0.9;">TAP TO RAISE TABLE PADDLE 🏏</span>
-            </button>
-            <div id="antiBankruptcyNotice" class="alert-anti-bankruptcy" style="display:none;">
-              ⚠️ Cannot Bid: You must reserve minimum funds to fill your required squad!
-            </div>
-          </div>
-
-          <!-- Custom Bidding Step -->
-          <div style="display:flex; justify-content:center; gap:12px; margin-top:12px;">
-            <button class="chip-inc team-inc-btn" data-step="0.20">+ ₹ 20 Lakh</button>
-            <button class="chip-inc team-inc-btn" data-step="0.50">+ ₹ 50 Lakh</button>
-            <button class="chip-inc team-inc-btn" data-step="1.00">+ ₹ 1.00 Crore</button>
-          </div>
-        </div>
-
-        <!-- Right: Team Squad & Purse Dashboard -->
-        <div class="warroom-card">
-          <h3 id="teamDashboardTitle" style="color:var(--text-white); font-size:1.2rem; font-weight:800; margin-bottom:12px;">
-            Franchise Purse & Squad
-          </h3>
-
-          <!-- Purse Bar -->
-          <div class="purse-bar-container">
-            <div class="purse-meta">
-              <span>Remaining Purse</span>
-              <span id="teamPurseLeftText" style="color:#059669;">₹ 0.00 Cr</span>
-            </div>
-            <div class="purse-track">
-              <div id="teamPurseProgressBar" class="purse-fill" style="width:100%;"></div>
-            </div>
-          </div>
-
-          <!-- Squad Limits -->
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0;">
-            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); padding:12px; border-radius:12px; text-align:center;">
-              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Squad Count</div>
-              <div id="teamSquadCount" style="font-size:1.6rem; font-weight:900; color:#0F172A;">0 / 25</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Min 18 required</div>
-            </div>
-            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); padding:12px; border-radius:12px; text-align:center;">
-              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Overseas Slots</div>
-              <div id="teamOverseasCount" style="font-size:1.6rem; font-weight:900; color:#0F172A;">0 / 8</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Max 8 allowed</div>
-            </div>
-          </div>
-
-          <!-- Roster of Players Acquired -->
-          <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
-            <div style="font-size:0.85rem; font-weight:800; color:var(--text-secondary); margin-bottom:10px;">
-              ACQUIRED PLAYERS & RETENTIONS (<span id="teamAcquiredCount">0</span>)
-            </div>
-            <div id="teamAcquiredRoster" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto;">
-              <!-- Acquired player items injected here -->
-            </div>
-            <button class="btn-primary" id="btnExportTeamExcel" style="margin-top:14px; background:linear-gradient(135deg, #10B981 0%, #059669 100%); font-size:0.9rem; padding:12px;">
-              📊 Download Squad Info (Excel / CSV)
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ============================================================ -->
-  <!-- 📺 PORTAL 4: LIVE TELECAST & OBS STREAM OVERLAY              -->
-  <!-- ============================================================ -->
-  <main id="viewBroadcast" class="portal-view">
-    <div class="broadcast-view">
-      <!-- Top Broadcast Header -->
-      <div class="broadcast-header">
-        <div class="broadcast-badge-live">
-          <div class="live-pulse-dot"></div>
-          <span>LIVE AUCTION</span>
-        </div>
-
-        <div class="broadcast-set-info">
-          <div class="broadcast-set-title" id="bcSetTitle">AUCTION ARENA</div>
-          <div class="broadcast-set-sub" id="bcSetSub">T20 PREMIER CRICKET MEGA AUCTION</div>
-        </div>
-
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div class="broadcast-timer-box" id="bcTimerBox">
-            <span style="font-size:1.2rem;">⏱️</span>
-            <span class="broadcast-timer-number" id="bcTimerNumber">00:15</span>
-          </div>
-          <button class="icon-btn" id="btnBcFullscreen" title="Toggle Fullscreen Arena">
-            <span>⛶</span> Fullscreen
-          </button>
-          <button class="icon-btn" id="btnPopoutBroadcast" title="Pop out broadcast overlay for OBS / Projector">
-            <span>🚀</span> Pop-out OBS
-          </button>
-          <button class="btn-exit-portal" onclick="window.navigateToPortal('viewHub')">
-            ← Exit Screen
-          </button>
-        </div>
-      </div>
-
-      <!-- Main Stage Split Screen -->
-      <div class="broadcast-arena">
-        <!-- Left: 3D Player Card -->
-        <div class="broadcast-player-card">
-          <div class="player-img-frame">
-            <img id="bcPlayerImg" src="" alt="Player">
-          </div>
-          <div class="player-card-name" id="bcPlayerName">STAGE EMPTY</div>
-          <div class="player-card-role-pill" id="bcPlayerRole">AWAITING NEXT CALL</div>
-          <div class="player-stats-grid">
-            <div class="player-stat-col">
-              <div class="stat-label">Matches</div>
-              <div class="stat-val" id="bcStatMatches">0</div>
-            </div>
-            <div class="player-stat-col">
-              <div class="stat-label">Runs</div>
-              <div class="stat-val" id="bcStatRuns">0</div>
-            </div>
-            <div class="player-stat-col">
-              <div class="stat-label">Strike Rate</div>
-              <div class="stat-val" id="bcStatSR">0.0</div>
-            </div>
-          </div>
-          <div class="player-base-badge" id="bcBasePriceBadge">
-            BASE PRICE: ₹ 0.00 CR
-          </div>
-        </div>
-
-        <!-- Right: Current Bid Hero & History Ladder -->
-        <div class="broadcast-bidding-hud">
-          <div class="highest-bid-hero">
-            <div>
-              <div class="current-bid-label">CURRENT HIGHEST BID</div>
-              <div class="current-bid-amount" id="bcCurrentBid">₹ 0.00 CR</div>
-              <div class="current-team-leader">
-                <span style="color:var(--text-muted); font-weight:700;">HELD BY:</span>
-                <span class="leader-badge" id="bcLeaderBadge" style="background:#1E293B;">NO BIDS YET</span>
-              </div>
-            </div>
-
-            <!-- Dynamic Hammer Warning Banner -->
-            <div id="bcHammerBanner" class="hammer-banner" style="display:none;"></div>
-          </div>
-
-          <!-- Bidding War Ladder -->
-          <div class="bid-history-ladder">
-            <div class="bid-ladder-title">Live Bidding History</div>
-            <div id="bcBidLadderList">
-              <!-- Bidding events injected here -->
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bottom Broadcast Ticker -->
-      <div class="broadcast-bottom-ticker">
-        <div class="ticker-title">PURSE TRACKER</div>
-        <div class="ticker-scroll-wrap">
-          <div class="ticker-track" id="bcTickerTrack">
-            <!-- Marquee ticker injected here -->
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ============================================================ -->
-  <!-- 📸 PORTAL 5: INSTAGRAM & SOCIAL MEDIA POSTER STUDIO          -->
-  <!-- ============================================================ -->
-  <main id="viewPosterStudio" class="portal-view">
-    <header class="portal-top-bar" style="margin-bottom:24px;">
-      <div class="brand-badge">
-        <div class="brand-logo-icon">📸</div>
-        <div>
-          <div class="brand-title">INSTAGRAM POSTER STUDIO</div>
-          <div class="brand-subtitle">Official 1080x1080 Match Celebration Graphics</div>
-        </div>
-      </div>
-      <div class="portal-nav-actions">
-        <button class="btn-exit-portal" onclick="window.navigateToPortal('viewHub')">
-          ← Exit to Gateway
-        </button>
-      </div>
-    </header>
-
-    <div style="max-width:900px; margin:0 auto; text-align:center;">
-      <h2 style="color:var(--text-white); font-size:2rem; font-weight:900; margin-bottom:8px;">
-        📸 Instagram & Social Media Graphic Studio
-      </h2>
-      <p style="color:var(--text-secondary); margin-bottom:24px;">
-        High-definition 1080x1080 official match graphics rendered on demand with zero delay.
-      </p>
-
-      <div style="display:flex; justify-content:center; margin-bottom:20px;">
-        <canvas id="studioPosterCanvas" width="1080" height="1080" style="max-width:440px; border-radius:20px; box-shadow:0 15px 40px rgba(0,0,0,0.15); border:3px solid var(--gold-500);"></canvas>
-      </div>
-
-      <div style="display:flex; justify-content:center; gap:16px;">
-        <button class="btn-primary" id="btnDownloadStudioPoster" style="max-width:320px;">
-          📥 Download 1080x1080 Poster (PNG)
-        </button>
-      </div>
-    </div>
-  </main>
-
-  <!-- ============================================================ -->
-  <!-- 🌟 THE LIVE SCREEN INSTAGRAM "SOLD" POP-UP MODAL             -->
-  <!-- ============================================================ -->
-  <div id="soldPopupModal" class="sold-popup-overlay">
-    <div class="sold-popup-card">
-      <div class="sold-popup-banner">⚡ S O L D ⚡</div>
-      <div class="sold-popup-sub">OFFICIAL MEGA AUCTION ANNOUNCEMENT</div>
-
-      <div class="sold-popup-photo-frame">
-        <img id="soldPopupImg" src="" alt="Sold Player">
-      </div>
-
-      <div class="sold-popup-player-name" id="soldPopupName">PLAYER NAME</div>
-      
-      <div class="sold-popup-team-box" id="soldPopupTeamBadge">
-        PURCHASED BY FRANCHISE
-      </div>
-
-      <div class="sold-popup-price-pill" id="soldPopupPrice">
-        ₹ 0.00 CRORE
-      </div>
-
-      <div class="sold-popup-actions">
-        <button class="btn-download-post" id="btnDownloadPopupPost">
-          <span>📥</span> Download Instagram Post
-        </button>
-        <button class="btn-close-popup" id="btnClosePopupModal">
-          Dismiss
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Confetti Canvas -->
-  <canvas id="confettiCanvas"></canvas>
-
-  <!-- ============================================================ -->
-  <!-- MODAL: CREATE FRANCHISE TEAM (WITH CAPTAIN / VC DEDUCTION)   -->
-  <!-- ============================================================ -->
-  <div id="createTeamModal" class="modal-overlay">
-    <div class="modal-box">
-      <h3 class="modal-title">➕ Create New Franchise Team</h3>
-      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px;">
-        Configure franchise purse, assign Captain/Vice-Captain (with course deduction), and generate login credentials.
-      </p>
-
-      <form id="formCreateTeam">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Franchise Name *</label>
-            <input type="text" id="newTeamName" class="form-input" placeholder="e.g. Mumbai Titans" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Short Code (2-4 Letters) *</label>
-            <input type="text" id="newTeamCode" class="form-input" placeholder="e.g. MT" maxlength="5" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Primary Brand Color</label>
-            <input type="color" id="newTeamColor" class="form-input" value="#004BA0" style="height:45px; padding:4px;">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Logo Emoji / Icon</label>
-            <input type="text" id="newTeamEmoji" class="form-input" placeholder="e.g. ⚡ or 🦁" value="⚡">
-          </div>
-
-          <div class="form-group full-width">
-            <label class="form-label">Total Purse Budget (₹ Crores) *</label>
-            <input type="number" step="0.5" id="newTeamTotalPurse" class="form-input" placeholder="100.0" value="100.0" required>
-          </div>
-
-          <!-- Captain Name & Deduction -->
-          <div class="form-group">
-            <label class="form-label">Captain Name</label>
-            <input type="text" id="newTeamCaptain" class="form-input" placeholder="e.g. Rohit Sharma">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Captain Retention Price (₹ Cr)</label>
-            <input type="number" step="0.1" id="newTeamCaptainPrice" class="form-input" placeholder="0.0" value="0.0">
-          </div>
-
-          <!-- Vice-Captain Name & Deduction -->
-          <div class="form-group">
-            <label class="form-label">Vice-Captain Name</label>
-            <input type="text" id="newTeamVC" class="form-input" placeholder="e.g. Jasprit Bumrah">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Vice-Captain Price (₹ Cr)</label>
-            <input type="number" step="0.1" id="newTeamVCPrice" class="form-input" placeholder="0.0" value="0.0">
-          </div>
-
-          <!-- Dynamic Purse Calculation Preview -->
-          <div class="form-group full-width" style="background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.25); padding:12px; border-radius:10px;">
-            <div style="font-size:0.85rem; color:var(--gold-600); font-weight:700;">Automatic Purse Deduction Preview:</div>
-            <div id="newTeamPursePreview" style="font-size:0.95rem; font-weight:800; color:var(--text-white); margin-top:4px;">
-              Purse Available for Auction: ₹ 100.00 Cr
-            </div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap:12px; margin-top:20px;">
-          <button type="submit" class="btn-primary" style="flex:1;">Create Team & Generate Credentials 🚀</button>
-          <button type="button" class="btn-close-popup" id="btnCloseTeamModal">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- MODAL: CHANGE ADMIN PASSWORD                                 -->
-  <!-- ============================================================ -->
-  <div id="changePassModal" class="modal-overlay">
-    <div class="modal-box" style="max-width:440px;">
-      <h3 class="modal-title">🔑 Change Admin Password</h3>
-      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:16px;">
-        Update the master password used to unlock the Administrator Cockpit.
-      </p>
-
-      <form id="formChangeAdminPass">
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label">New Master Password</label>
-          <input type="password" id="inputNewAdminPass" class="form-input" placeholder="Enter new password (min 4 chars)" required>
-        </div>
-        <div style="display:flex; gap:12px;">
-          <button type="submit" class="btn-primary" style="flex:1;">Save Password</button>
-          <button type="button" class="btn-close-popup" id="btnClosePassModal">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- MODAL: CLOUD & SUPABASE SETUP                                -->
-  <!-- ============================================================ -->
-  <div id="cloudSettingsModal" class="modal-overlay">
-    <div class="modal-box" style="max-width: 660px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3 class="modal-title" style="margin-bottom:0;">☁️ Supabase Cloud Synchronization</h3>
-        <span id="cloudStatusBadge" style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:800; background:#F1F5F9; color:var(--text-secondary); border:1px solid var(--border-subtle);">
-          ⚪ Local Offline Sync
-        </span>
-      </div>
-      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px; line-height:1.5;">
-        Connect your free Supabase project to enable live cross-device sync between mobile player registrations, franchise tables, and the stadium OBS telecast overlay.
-      </p>
-
-      <div class="form-group" style="margin-bottom:14px;">
-        <label class="form-label">Supabase Project URL</label>
-        <input type="text" id="inputSupabaseUrl" class="form-input" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co">
-      </div>
-
-      <div class="form-group" style="margin-bottom:18px;">
-        <label class="form-label">Supabase Anon Public API Key</label>
-        <input type="password" id="inputSupabaseKey" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-      </div>
-
-      <!-- Action Buttons -->
-      <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
-        <button class="btn-primary" id="btnSaveCloudConfig" style="flex:2; min-width:180px;">
-          💾 Save & Connect Supabase
-        </button>
-        <button type="button" class="btn-action-secondary" id="btnTestCloudConnection" style="flex:1; min-width:140px; justify-content:center;">
-          🧪 Test Connection
-        </button>
-        <button type="button" class="btn-action-danger" id="btnDisconnectCloud" style="justify-content:center;">
-          Disconnect
-        </button>
-        <button class="btn-close-popup" id="btnCloseCloudModal">Close</button>
-      </div>
-
-      <div id="cloudFeedbackMsg" style="display:none; font-size:0.85rem; padding:10px 14px; border-radius:var(--r-sm); margin-bottom:18px;"></div>
-
-      <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <div style="font-size:0.88rem; font-weight:800; color:var(--primary-600);">
-            Supabase 1-Click SQL Schema:
-          </div>
-          <button type="button" id="btnCopySqlSchema" class="btn-action-secondary" style="padding:4px 12px; font-size:0.75rem;">
-            📋 Copy SQL Schema
-          </button>
-        </div>
-        <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:8px;">
-          Paste this in <strong>Supabase -> SQL Editor</strong> and click <strong>Run</strong>:
-        </p>
-        <div class="code-snippet" id="sqlSchemaDisplay" style="max-height:160px; overflow-y:auto; font-size:0.75rem;"></div>
-      </div>
-    </div>
-  </div>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
