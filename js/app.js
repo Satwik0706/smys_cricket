@@ -165,19 +165,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Navigation & Dedicated Portal Routing ---
-  const portalDropdownSelector = document.getElementById('portalDropdownSelector');
+  // --- Navigation & Dedicated Isolated Portal Routing ---
+  window.navigateToPortal = (portalId) => window.switchPortal(portalId);
 
   window.switchPortal = (portalId) => {
-    portalTabs.forEach(tab => {
-      tab.classList.toggle('active', tab.dataset.portal === portalId);
-    });
+    // If leaving admin cockpit, cancel any pending auto-advance sequencer timer
+    if (portalId !== 'viewAdmin' && typeof cancelAutoAdvance === 'function') {
+      cancelAutoAdvance();
+    }
+
     portalViews.forEach(view => {
       view.classList.toggle('active', view.id === portalId);
     });
-    if (portalDropdownSelector) {
-      portalDropdownSelector.value = portalId;
-    }
 
     // Clean URL Hash Routing
     const hashMap = {
@@ -192,23 +191,60 @@ document.addEventListener('DOMContentLoaded', () => {
       window.location.hash = '#/' + hashMap[portalId];
     }
 
+    // Scroll to top of the portal
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
     if (portalId === 'viewPosterStudio') {
       renderStudioPoster();
     }
   };
 
-  // Dropdown Selector Change
-  if (portalDropdownSelector) {
-    portalDropdownSelector.addEventListener('change', (e) => {
-      window.switchPortal(e.target.value);
+  // Exit & Isolation Helpers
+  window.logoutTeamOrExit = () => {
+    if (activeLoggedInTeamId) {
+      if (confirm('Disconnect from franchise table and exit to tournament gateway?')) {
+        activeLoggedInTeamId = null;
+        sessionStorage.removeItem('cricket_active_team_id');
+        checkTeamAuth();
+        window.switchPortal('viewHub');
+      }
+    } else {
+      window.switchPortal('viewHub');
+    }
+  };
+
+  window.logoutAdminOrExit = () => {
+    const isAuthed = sessionStorage.getItem('cricket_admin_auth') === 'true';
+    if (isAuthed) {
+      if (confirm('Log out from Master Admin Cockpit and return to gateway?')) {
+        sessionStorage.removeItem('cricket_admin_auth');
+        checkAdminAuth();
+        window.switchPortal('viewHub');
+      }
+    } else {
+      window.switchPortal('viewHub');
+    }
+  };
+
+  window.toggleGlobalSound = () => {
+    const isMuted = window.auctionAudio.toggleMute();
+    const text = isMuted ? 'Sound OFF' : 'Sound ON';
+    const icon = isMuted ? '🔇' : '🔊';
+    if (soundIcon) soundIcon.textContent = icon;
+    if (btnToggleSound) btnToggleSound.innerHTML = `<span id="soundIcon">${icon}</span> ${text}`;
+    document.querySelectorAll('.sound-icon-display').forEach(el => el.textContent = icon);
+  };
+
+  const btnAdminCloudSettingsTop = document.getElementById('btnAdminCloudSettingsTop');
+  if (btnAdminCloudSettingsTop) {
+    btnAdminCloudSettingsTop.addEventListener('click', () => {
+      document.getElementById('inputSupabaseUrl').value = localStorage.getItem('cricket_supabase_url') || '';
+      document.getElementById('inputSupabaseKey').value = localStorage.getItem('cricket_supabase_key') || '';
+      updateCloudStatusUI();
+      if (cloudFeedbackMsg) cloudFeedbackMsg.style.display = 'none';
+      cloudModal.classList.add('active');
     });
   }
-
-  portalTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      window.switchPortal(tab.dataset.portal);
-    });
-  });
 
   // Handle URL Hash on load & history navigation
   function handleRouteFromHash() {
@@ -219,7 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
       'player': 'viewRegistration',
       'admin': 'viewAdmin',
       'team': 'viewTeamWarroom',
+      'warroom': 'viewTeamWarroom',
       'broadcast': 'viewBroadcast',
+      'live': 'viewBroadcast',
       'obs': 'viewBroadcast',
       'studio': 'viewPosterStudio'
     };
@@ -570,7 +608,83 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ⚡ Auto-Advance Sequencer Controls (Auto-Call Next Player)
+  let autoAdvanceTimer = null;
+  let autoAdvanceSecondsLeft = 0;
+
+  function cancelAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearInterval(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+    const bar = document.getElementById('adminAutoAdvanceBar');
+    if (bar) bar.style.display = 'none';
+  }
+
+  function triggerAutoAdvance(isSold, winningTeam, priceCr) {
+    const chk = document.getElementById('chkAutoAdvanceSeq');
+    if (!chk || !chk.checked) return;
+
+    cancelAutoAdvance();
+
+    const bar = document.getElementById('adminAutoAdvanceBar');
+    const msg = document.getElementById('autoAdvanceMsg');
+    const nextPlayer = window.auctionStore.getNextPlayerInSequence();
+
+    if (!nextPlayer) {
+      if (bar && msg) {
+        bar.style.display = 'flex';
+        msg.innerHTML = `🏁 <strong>Auction Pool Finished:</strong> All approved players in sequence have been called!`;
+      }
+      return;
+    }
+
+    autoAdvanceSecondsLeft = isSold ? 3 : 2;
+    if (bar && msg) {
+      bar.style.display = 'flex';
+      const statusText = isSold 
+        ? `🎉 <strong>SOLD</strong> to ${winningTeam ? winningTeam.name : 'Team'} (₹${priceCr.toFixed(2)} Cr)!`
+        : `❌ <strong>UNSOLD!</strong>`;
+      msg.innerHTML = `${statusText} Calling next in sequence (<strong>${nextPlayer.name}</strong>) in <span id="autoAdvanceCountdown">${autoAdvanceSecondsLeft}s</span>...`;
+    }
+
+    autoAdvanceTimer = setInterval(() => {
+      autoAdvanceSecondsLeft--;
+      const countEl = document.getElementById('autoAdvanceCountdown');
+      if (countEl) countEl.textContent = `${autoAdvanceSecondsLeft}s`;
+
+      if (autoAdvanceSecondsLeft <= 0) {
+        cancelAutoAdvance();
+        const next = window.auctionStore.getNextPlayerInSequence();
+        if (next) {
+          window.auctionStore.callPlayerToStage(next.id);
+        }
+      }
+    }, 1000);
+  }
+
+  const btnAutoCallNow = document.getElementById('btnAutoCallNow');
+  if (btnAutoCallNow) {
+    btnAutoCallNow.addEventListener('click', () => {
+      cancelAutoAdvance();
+      const next = window.auctionStore.getNextPlayerInSequence();
+      if (next) {
+        window.auctionStore.callPlayerToStage(next.id);
+      } else {
+        alert('No uncalled players in the sequence queue!');
+      }
+    });
+  }
+
+  const btnAutoCallCancel = document.getElementById('btnAutoCallCancel');
+  if (btnAutoCallCancel) {
+    btnAutoCallCancel.addEventListener('click', () => {
+      cancelAutoAdvance();
+    });
+  }
+
   btnCallNextSeq.addEventListener('click', () => {
+    cancelAutoAdvance();
     const nextPlayer = window.auctionStore.getNextPlayerInSequence();
     if (!nextPlayer) {
       alert('No uncalled players in the sequence queue! Approve pending registrations or assign sequence numbers.');
@@ -619,11 +733,22 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Cannot sell: No franchise has placed a bid yet!');
       return;
     }
-    window.auctionStore.hammerSold();
+    const currentPrice = window.auctionStore.state.live.currentBidCr;
+    const winningTeam = window.auctionStore.getTeam(window.auctionStore.state.live.currentBidderId);
+    const sold = window.auctionStore.hammerSold();
+    if (sold) {
+      triggerAutoAdvance(true, winningTeam, currentPrice);
+    }
   });
 
-  btnAdminUnsold.addEventListener('click', () => window.auctionStore.hammerUnsold());
-  btnAdminUndo.addEventListener('click', () => window.auctionStore.undoLastBid());
+  btnAdminUnsold.addEventListener('click', () => {
+    window.auctionStore.hammerUnsold();
+    triggerAutoAdvance(false, null, 0);
+  });
+  btnAdminUndo.addEventListener('click', () => {
+    cancelAutoAdvance();
+    window.auctionStore.undoLastBid();
+  });
 
   function startCountdown() {
     if (timerInterval) clearInterval(timerInterval);
@@ -764,6 +889,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let lastSoldId = null;
 
   window.auctionStore.subscribe((state) => {
+    renderHub(state);
     renderAdminCockpit(state);
     renderTeamWarroom(state);
     renderBroadcast(state);
@@ -789,6 +915,63 @@ document.addEventListener('DOMContentLoaded', () => {
       soldPopupModal.classList.remove('active');
     }
   });
+
+  // Render Dynamic Entrance Hub (Zero Hardcoded Values)
+  function renderHub(state) {
+    const avatarStack = document.getElementById('hubTeamAvatarStack');
+    if (avatarStack) {
+      avatarStack.innerHTML = '';
+      if (!state.teams || state.teams.length === 0) {
+        avatarStack.innerHTML = '<span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">No teams registered yet</span>';
+      } else {
+        state.teams.slice(0, 7).forEach(t => {
+          const bubble = document.createElement('div');
+          bubble.className = 'team-avatar-bubble';
+          bubble.title = `${t.name} (Purse: ₹${t.purseLeftCr.toFixed(2)} Cr)`;
+          bubble.style.borderColor = t.primaryColor || '#2563EB';
+          bubble.textContent = t.logoEmoji || (t.shortCode ? t.shortCode.slice(0, 2) : '🏏');
+          avatarStack.appendChild(bubble);
+        });
+        if (state.teams.length > 7) {
+          const more = document.createElement('div');
+          more.className = 'team-count-bubble';
+          more.textContent = `+${state.teams.length - 7}`;
+          avatarStack.appendChild(more);
+        }
+      }
+    }
+
+    // Dynamic Tournament Vitals
+    const teamsCount = document.getElementById('hubTeamsCount');
+    if (teamsCount) teamsCount.textContent = `${state.teams.length} Teams`;
+
+    const playersCount = document.getElementById('hubPlayersCount');
+    if (playersCount) {
+      const poolCount = state.players.filter(p => p.status === 'READY' || p.status === 'IN_AUCTION').length;
+      playersCount.textContent = `${poolCount} Players`;
+    }
+
+    const totalPurse = document.getElementById('hubTotalPurse');
+    if (totalPurse) {
+      const total = state.teams.reduce((acc, t) => acc + (parseFloat(t.totalPurseCr) || 100), 0);
+      totalPurse.textContent = `₹ ${total.toFixed(0)} Cr`;
+    }
+
+    const purseChip = document.getElementById('hubPurseChip');
+    if (purseChip) {
+      if (state.teams.length > 0) {
+        const avgPurse = (state.teams.reduce((acc, t) => acc + (parseFloat(t.totalPurseCr) || 100), 0) / state.teams.length);
+        purseChip.innerHTML = `<span>💰</span> ₹ ${avgPurse.toFixed(1)} CR PURSE / TEAM`;
+      } else {
+        purseChip.innerHTML = `<span>💰</span> ₹ 100.0 CR PURSE / TEAM`;
+      }
+    }
+
+    const syncStatus = document.getElementById('hubSyncStatus');
+    if (syncStatus) {
+      syncStatus.textContent = (window.auctionStore && window.auctionStore.isCloudSyncEnabled) ? '🟢 Cloud Sync' : '⚪ Local Sync';
+    }
+  }
 
   // Render Admin Cockpit
   function renderAdminCockpit(state) {
@@ -1164,20 +1347,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bottom Ticker
     const tickerTrack = document.getElementById('bcTickerTrack');
-    tickerTrack.innerHTML = '';
-    if (state.teams.length === 0) {
-      tickerTrack.innerHTML = '<div class="ticker-item">Awaiting franchise team registration...</div>';
-    } else {
-      state.teams.forEach(t => {
-        const item = document.createElement('div');
-        item.className = 'ticker-item';
-        item.innerHTML = `
-          <span style="color:${t.primaryColor}; font-weight:800;">[${t.shortCode}]</span>
-          Purse: ₹${t.purseLeftCr.toFixed(1)} Cr (${t.squad.length}/25)
-        `;
-        tickerTrack.appendChild(item);
-      });
+    if (tickerTrack) {
+      tickerTrack.innerHTML = '';
+      if (state.teams.length === 0) {
+        tickerTrack.innerHTML = '<div class="ticker-item">Awaiting franchise team registration...</div>';
+      } else {
+        const loopTeams = state.teams.concat(state.teams);
+        loopTeams.forEach(t => {
+          const item = document.createElement('div');
+          item.className = 'ticker-item';
+          item.innerHTML = `
+            <span style="color:${t.primaryColor}; font-weight:800;">[${t.shortCode}]</span>
+            <span><strong>${t.name}</strong></span>
+            <span style="color:#059669; font-weight:800;">Purse: ₹${t.purseLeftCr.toFixed(2)} Cr</span>
+            <span>Squad: ${t.squad.length}/25</span>
+          `;
+          tickerTrack.appendChild(item);
+        });
+      }
     }
+  }
+
+  // Live Broadcast Fullscreen Toggle
+  const btnBcFullscreen = document.getElementById('btnBcFullscreen');
+  if (btnBcFullscreen) {
+    btnBcFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        btnBcFullscreen.innerHTML = '<span>⛶</span> Exit Full';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        btnBcFullscreen.innerHTML = '<span>⛶</span> Fullscreen';
+      }
+    });
   }
 
   // Render Studio Poster Canvas
