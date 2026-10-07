@@ -235,17 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.sound-icon-display').forEach(el => el.textContent = icon);
   };
 
-  const btnAdminCloudSettingsTop = document.getElementById('btnAdminCloudSettingsTop');
-  if (btnAdminCloudSettingsTop) {
-    btnAdminCloudSettingsTop.addEventListener('click', () => {
-      document.getElementById('inputSupabaseUrl').value = localStorage.getItem('cricket_supabase_url') || '';
-      document.getElementById('inputSupabaseKey').value = localStorage.getItem('cricket_supabase_key') || '';
-      updateCloudStatusUI();
-      if (cloudFeedbackMsg) cloudFeedbackMsg.style.display = 'none';
-      cloudModal.classList.add('active');
-    });
-  }
-
   // Handle URL Hash on load & history navigation
   function handleRouteFromHash() {
     const hash = window.location.hash.replace('#/', '').replace('#', '').toLowerCase();
@@ -967,9 +956,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const syncStatus = document.getElementById('hubSyncStatus');
-    if (syncStatus) {
-      syncStatus.textContent = (window.auctionStore && window.auctionStore.isCloudSyncEnabled) ? '🟢 Cloud Sync' : '⚪ Local Sync';
+    const arenaStatus = document.getElementById('hubArenaStatus');
+    if (arenaStatus) {
+      const active = window.auctionStore.getActivePlayer();
+      arenaStatus.textContent = active ? 'In Auction' : 'Stage Ready';
     }
   }
 
