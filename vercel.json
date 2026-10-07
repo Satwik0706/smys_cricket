@@ -1,5 +1,15 @@
 {
   "version": 2,
-  "name": "cricket-mega-auction-live",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/team", "destination": "/team.html" },
+    { "source": "/warroom", "destination": "/team.html" },
+    { "source": "/broadcast", "destination": "/broadcast.html" },
+    { "source": "/live", "destination": "/broadcast.html" },
+    { "source": "/register", "destination": "/register.html" },
+    { "source": "/player", "destination": "/register.html" },
+    { "source": "/studio", "destination": "/studio.html" },
+    { "source": "/hub", "destination": "/index.html" }
+  ]
 }

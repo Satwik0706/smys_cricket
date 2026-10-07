@@ -598,9 +598,79 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnChoosePhoto = document.getElementById('btnChoosePhoto');
   const uploadSuccessBadge = document.getElementById('uploadSuccessBadge');
 
+  // Standardize any uploaded photo to 500x500 high-res square avatar with smart center-crop
+  function processAndStandardizeImage(imgSource, callback) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const targetSize = 500; // Standard official avatar resolution
+      canvas.width = targetSize;
+      canvas.height = targetSize;
+      const ctx = canvas.getContext('2d');
+
+      // 1:1 Aspect ratio calculation with smart face/upper-body centering
+      let srcX = 0, srcY = 0, srcW = img.width, srcH = img.height;
+      if (img.width > img.height) {
+        srcW = img.height;
+        srcX = (img.width - img.height) / 2;
+      } else if (img.height > img.width) {
+        srcH = img.width;
+        srcY = Math.max(0, (img.height - img.width) * 0.3); // Upper-body/face bias
+      }
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, targetSize, targetSize);
+      const standardizedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      callback(standardizedDataUrl);
+    };
+    img.src = imgSource;
+  }
+
+  function handleImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) {
+      window.showToast('Please upload a valid image file (JPG, PNG, WebP).', 'warning');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      processAndStandardizeImage(event.target.result, (standardized) => {
+        currentPhotoDataUrl = standardized;
+        if (cardPreviewImg) cardPreviewImg.src = currentPhotoDataUrl;
+        if (uploadSuccessBadge) {
+          uploadSuccessBadge.style.display = 'block';
+          uploadSuccessBadge.textContent = '✓ Photo auto-cropped & standardized to 500×500 high-res portrait!';
+        }
+        window.showToast('Photo standardized to 500×500 avatar!', 'success');
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
   if (photoDropzone && regPhotoFile) {
     photoDropzone.addEventListener('click', () => regPhotoFile.click());
+
+    // Drag and drop support
+    photoDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      photoDropzone.style.borderColor = 'var(--primary-600)';
+      photoDropzone.style.background = 'rgba(37, 99, 235, 0.05)';
+    });
+    photoDropzone.addEventListener('dragleave', () => {
+      photoDropzone.style.borderColor = '';
+      photoDropzone.style.background = '';
+    });
+    photoDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      photoDropzone.style.borderColor = '';
+      photoDropzone.style.background = '';
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleImageFile(e.dataTransfer.files[0]);
+      }
+    });
   }
+
   if (btnChoosePhoto && regPhotoFile) {
     btnChoosePhoto.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -610,42 +680,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (regPhotoFile) {
     regPhotoFile.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const maxDim = 450;
-          let w = img.width;
-          let h = img.height;
-          if (w > h) {
-            if (w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; }
-          } else {
-            if (h > maxDim) { h = Math.round(h * maxDim / h); h = maxDim; }
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          currentPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.82);
-          if (cardPreviewImg) cardPreviewImg.src = currentPhotoDataUrl;
-          if (uploadSuccessBadge) uploadSuccessBadge.style.display = 'block';
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
+      if (e.target.files && e.target.files[0]) {
+        handleImageFile(e.target.files[0]);
+      }
     });
   }
 
   if (regPhotoUrl) {
     regPhotoUrl.addEventListener('input', () => {
-      if (regPhotoUrl.value.trim()) {
-        currentPhotoDataUrl = regPhotoUrl.value.trim();
-        if (cardPreviewImg) cardPreviewImg.src = currentPhotoDataUrl;
-        if (uploadSuccessBadge) uploadSuccessBadge.style.display = 'block';
+      const url = regPhotoUrl.value.trim();
+      if (url) {
+        processAndStandardizeImage(url, (standardized) => {
+          currentPhotoDataUrl = standardized;
+          if (cardPreviewImg) cardPreviewImg.src = currentPhotoDataUrl;
+          if (uploadSuccessBadge) {
+            uploadSuccessBadge.style.display = 'block';
+            uploadSuccessBadge.textContent = '✓ URL image standardized to 500×500!';
+          }
+        });
       }
     });
   }
