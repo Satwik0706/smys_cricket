@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="portal-nav-actions">
-        <span class="portal-status-pill pill-player">● PUBLIC REGISTRATION</span>
+        <span id="regCloudStatusPill" class="portal-status-pill pill-player">● CONNECTING CLOUD...</span>
         <button class="btn-exit-portal" onclick="window.location.href='index.html'">
           ← Exit to Gateway
         </button>
@@ -37,6 +37,11 @@
         <div class="form-header">
           <h2>Player Registration Form</h2>
           <p>Submit your cricket credentials to enter the upcoming tournament auction pool.</p>
+        </div>
+
+        <!-- Offline Warning Banner (Displayed if Supabase credentials are missing or disconnected) -->
+        <div id="regCloudWarningBanner" style="display:none; background:#FFFBEB; border:1px solid #FDE68A; color:#B45309; padding:12px 16px; border-radius:10px; margin-bottom:18px; font-size:0.84rem; line-height:1.5;">
+          <strong>⚠️ Offline Local Mode:</strong> Real-time tournament cloud sync is not configured in <code>js/config.js</code>. Submissions on this phone will only be saved locally and will <strong>not</strong> appear on the organizer's admin console. Please ask the organizer to configure Supabase in <code>js/config.js</code>.
         </div>
 
         <form id="playerRegForm">

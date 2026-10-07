@@ -12,10 +12,15 @@ const TOURNAMENT_CONFIG = {
   maxOverseas: 8,
   timerSeconds: 15,
   
-  // Supabase Configuration (Leave empty for instant offline local mode)
-  // When ready for Vercel, paste your Supabase Project URL & Anon Public Key here or in the UI Settings modal
-  supabaseUrl: localStorage.getItem('cricket_supabase_url') || "",
-  supabaseAnonKey: localStorage.getItem('cricket_supabase_key') || "",
+  // Supabase Real-Time Cloud Configuration
+  // -------------------------------------------------------------
+  // TO MAKE REAL-TIME WORK FOR EVERYONE ACROSS ALL DEVICES:
+  // Paste your Supabase Project URL and Anon Public Key below.
+  // Any phone, laptop, or tablet visiting the site will automatically
+  // connect to the live database in real time.
+  // -------------------------------------------------------------
+  supabaseUrl: "https://uiwqmyhzunfbmtigjusx.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpd3FteWh6dW5mYm10aWdqdXN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzMDc5MTcsImV4cCI6MjEwNjg4MzkxN30.0OxbuUu-vOD3k9Ym7sZgMt0KWlOBhVjtrBVWeArzZ6o",
 
   // Standard increment slab ladder (in Crores/Lakhs)
   getIncrement(currentBidCr) {
@@ -46,7 +51,7 @@ create table if not exists public.players (
   photo_url text,
   tier_id text,
   base_price_cr numeric default 0.20,
-  status text default 'PENDING', -- PENDING, APPROVED, IN_AUCTION, SOLD, UNSOLD
+  status text default 'PENDING', -- PENDING, READY, IN_AUCTION, SOLD, UNSOLD, REJECTED
   sold_to_team text,
   sold_price_cr numeric,
   auction_sequence integer default 999,
@@ -89,15 +94,29 @@ create table if not exists public.auction_state (
   updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 
--- Enable Supabase Realtime
+-- Initialize default live auction room if missing
+insert into public.auction_state (id, hammer_status) values ('live_room', 'IDLE')
+on conflict (id) do nothing;
+
+-- 4. Enable Supabase Realtime
 alter publication supabase_realtime add table public.players;
 alter publication supabase_realtime add table public.teams;
 alter publication supabase_realtime add table public.auction_state;
 
--- Disable RLS for seamless tournament operations with public anon key
+-- 5. Open public read/write access for seamless tournament operations with anon key
 alter table public.players disable row level security;
 alter table public.teams disable row level security;
 alter table public.auction_state disable row level security;
+
+-- Add permissive policies (guarantees anon access even if RLS remains enabled)
+drop policy if exists "Allow all on players" on public.players;
+create policy "Allow all on players" on public.players for all using (true) with check (true);
+
+drop policy if exists "Allow all on teams" on public.teams;
+create policy "Allow all on teams" on public.teams for all using (true) with check (true);
+
+drop policy if exists "Allow all on auction_state" on public.auction_state;
+create policy "Allow all on auction_state" on public.auction_state for all using (true) with check (true);
 `;
 
 const DEFAULT_CRICKET_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='%230F172A'/><circle cx='100' cy='72' r='36' fill='%23334155'/><circle cx='100' cy='72' r='28' fill='%23475569'/><path d='M36,176 C36,132 68,120 100,120 C132,120 164,132 164,176 Z' fill='%23334155'/><circle cx='100' cy='142' r='18' fill='%231E293B'/><text x='100' y='148' font-size='20' text-anchor='middle'>🏏</text></svg>";

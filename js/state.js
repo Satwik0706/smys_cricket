@@ -43,21 +43,32 @@ class AuctionStore {
     this.initSupabase();
   }
 
+  getSupabaseCredentials() {
+    const configUrl = (typeof TOURNAMENT_CONFIG !== 'undefined' && TOURNAMENT_CONFIG.supabaseUrl) ? TOURNAMENT_CONFIG.supabaseUrl : '';
+    const configKey = (typeof TOURNAMENT_CONFIG !== 'undefined' && TOURNAMENT_CONFIG.supabaseAnonKey) ? TOURNAMENT_CONFIG.supabaseAnonKey : '';
+    const localUrl = localStorage.getItem('cricket_supabase_url') || '';
+    const localKey = localStorage.getItem('cricket_supabase_key') || '';
+
+    // Prioritize localStorage override if user tested in admin cockpit, else shared TOURNAMENT_CONFIG
+    const url = (localUrl || configUrl || '').trim();
+    const key = (localKey || configKey || '').trim();
+    return { url, key };
+  }
+
   initSupabase() {
-    const url = localStorage.getItem('cricket_supabase_url');
-    const key = localStorage.getItem('cricket_supabase_key');
+    const { url, key } = this.getSupabaseCredentials();
     if (url && key && window.supabase) {
       try {
         this.supabase = window.supabase.createClient(url, key);
         this.isCloudSyncEnabled = true;
         this.setupRealtimeListeners();
         this.fetchCloudData();
-        window.dispatchEvent(new CustomEvent('cricket_cloud_status', { detail: { connected: true } }));
+        window.dispatchEvent(new CustomEvent('cricket_cloud_status', { detail: { connected: true, url } }));
       } catch (err) {
         console.warn("Supabase initialization error:", err);
         this.supabase = null;
         this.isCloudSyncEnabled = false;
-        window.dispatchEvent(new CustomEvent('cricket_cloud_status', { detail: { connected: false } }));
+        window.dispatchEvent(new CustomEvent('cricket_cloud_status', { detail: { connected: false, error: err.message } }));
       }
     } else {
       this.supabase = null;
@@ -84,6 +95,10 @@ class AuctionStore {
   disconnectSupabase() {
     localStorage.removeItem('cricket_supabase_url');
     localStorage.removeItem('cricket_supabase_key');
+    if (this.cloudSyncInterval) {
+      clearInterval(this.cloudSyncInterval);
+      this.cloudSyncInterval = null;
+    }
     if (this.supabase && this.supabaseChannel) {
       try { this.supabase.removeChannel(this.supabaseChannel); } catch (e) {}
     }
@@ -98,7 +113,8 @@ class AuctionStore {
     try {
       // 1. Fetch Players from Supabase
       const { data: dbPlayers, error: pErr } = await this.supabase.from('players').select('*');
-      if (!pErr && dbPlayers && dbPlayers.length > 0) {
+      if (!pErr && Array.isArray(dbPlayers)) {
+        const cloudPlayerMap = new Map();
         dbPlayers.forEach(row => {
           const mapped = {
             id: row.id,
@@ -124,18 +140,35 @@ class AuctionStore {
             soldToTeam: row.sold_to_team,
             soldPriceCr: row.sold_price_cr ? parseFloat(row.sold_price_cr) : null
           };
-          const idx = this.state.players.findIndex(x => x.id === mapped.id);
+          cloudPlayerMap.set(mapped.id, mapped);
+        });
+
+        // Upsert cloud players into local state
+        cloudPlayerMap.forEach((cloudPlayer, id) => {
+          const idx = this.state.players.findIndex(x => x.id === id);
           if (idx >= 0) {
-            this.state.players[idx] = Object.assign(this.state.players[idx], mapped);
+            this.state.players[idx] = Object.assign(this.state.players[idx], cloudPlayer);
           } else {
-            this.state.players.push(mapped);
+            this.state.players.push(cloudPlayer);
           }
         });
+
+        // Filter out players removed from cloud (keep recent local pending creations in flight)
+        if (dbPlayers.length > 0) {
+          this.state.players = this.state.players.filter(p => {
+            if (cloudPlayerMap.has(p.id)) return true;
+            if (p.status === 'PENDING' && p.id && p.id.startsWith('ply_')) {
+              const ts = parseInt(p.id.split('_')[1]);
+              if (!isNaN(ts) && (Date.now() - ts < 45000)) return true;
+            }
+            return false;
+          });
+        }
       }
 
       // 2. Fetch Teams from Supabase
       const { data: dbTeams, error: tErr } = await this.supabase.from('teams').select('*');
-      if (!tErr && dbTeams && dbTeams.length > 0) {
+      if (!tErr && Array.isArray(dbTeams) && dbTeams.length > 0) {
         dbTeams.forEach(t => {
           const mappedTeam = {
             id: t.id,
@@ -187,7 +220,7 @@ class AuctionStore {
     if (!this.supabase) return;
     try {
       if (this.supabaseChannel) {
-        this.supabase.removeChannel(this.supabaseChannel);
+        try { this.supabase.removeChannel(this.supabaseChannel); } catch (e) {}
       }
       this.supabaseChannel = this.supabase.channel('public_cricket_auction_realtime')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'auction_state' }, payload => {
@@ -210,16 +243,30 @@ class AuctionStore {
         .on('postgres_changes', { event: '*', schema: 'public', table: 'teams' }, () => {
           this.fetchCloudData();
         })
-        .subscribe();
+        .subscribe((status, err) => {
+          if (status === 'SUBSCRIBED') {
+            this.fetchCloudData();
+          }
+        });
+
+      // Background fallback polling: Guarantees updates from other phones/devices
+      // arrive in ~3 seconds even if mobile sleep or websockets hiccup
+      if (this.cloudSyncInterval) clearInterval(this.cloudSyncInterval);
+      this.cloudSyncInterval = setInterval(() => {
+        if (this.supabase && this.isCloudSyncEnabled) {
+          this.fetchCloudData();
+        }
+      }, 3500);
     } catch (err) {
       console.warn("Supabase realtime setup error:", err);
     }
   }
 
-  syncPlayerToCloud(player) {
-    if (!this.supabase || !player) return;
+  async syncPlayerToCloud(player) {
+    if (!this.supabase) return { success: false, error: 'NO_CLOUD' };
+    if (!player) return { success: false, error: 'NO_PLAYER' };
     try {
-      this.supabase.from('players').upsert({
+      const { data, error } = await this.supabase.from('players').upsert({
         id: player.id,
         name: player.name,
         role: player.role,
@@ -241,11 +288,15 @@ class AuctionStore {
         auction_sequence: player.auctionSequence,
         cric_heroes_name: player.cricHeroesName,
         cric_heroes_phone: player.cricHeroesPhone
-      }).then(({ error }) => {
-        if (error) console.warn("Player cloud upsert error", error);
       });
+      if (error) {
+        console.warn("Player cloud upsert error", error);
+        return { success: false, error: error.message };
+      }
+      return { success: true };
     } catch (e) {
       console.warn("Player cloud sync error", e);
+      return { success: false, error: e.message || String(e) };
     }
   }
 
@@ -472,11 +523,11 @@ class AuctionStore {
   }
 
   // --- DYNAMIC PLAYER REGISTRATION ---
-  registerPlayer(data) {
+  async registerPlayer(data) {
     const id = "ply_" + Date.now();
     const newPlayer = {
       id: id,
-      name: data.name.trim(),
+      name: (data.name || "").trim(),
       role: data.role || "Batter",
       battingStyle: data.battingStyle || "Right-hand bat",
       bowlingStyle: data.bowlingStyle || "Right-arm medium",
@@ -490,7 +541,7 @@ class AuctionStore {
       economy: parseFloat(data.economy) || 0,
       cricHeroesName: (data.cricHeroesName || "").trim(),
       cricHeroesPhone: (data.cricHeroesPhone || "").trim(),
-      photoUrl: data.photoUrl || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='%230F172A'/><circle cx='100' cy='72' r='36' fill='%23334155'/><circle cx='100' cy='72' r='28' fill='%23475569'/><path d='M36,176 C36,132 68,120 100,120 C132,120 164,132 164,176 Z' fill='%23334155'/><circle cx='100' cy='142' r='18' fill='%231E293B'/><text x='100' y='148' font-size='20' text-anchor='middle'>🏏</text></svg>",
+      photoUrl: data.photoUrl || window.DEFAULT_CRICKET_AVATAR,
       tierId: null, // Admin will assign
       basePriceCr: parseFloat(data.requestedBasePriceCr) || 0.20,
       status: "PENDING", // Needs Admin review & tier allocation
@@ -500,38 +551,51 @@ class AuctionStore {
     };
 
     this.state.players.push(newPlayer);
+    this.saveLocal();
     this.broadcast();
-    this.syncPlayerToCloud(newPlayer);
-    return newPlayer;
+
+    if (this.supabase) {
+      const syncResult = await this.syncPlayerToCloud(newPlayer);
+      return { player: newPlayer, cloudSynced: syncResult.success, error: syncResult.error };
+    } else {
+      return { player: newPlayer, cloudSynced: false, error: 'NO_CLOUD' };
+    }
   }
 
-  approvePlayer(playerId, tierId, basePriceCr, sequenceOrder) {
+  async approvePlayer(playerId, tierId, basePriceCr, sequenceOrder) {
     const p = this.state.players.find(x => x.id === playerId);
     if (!p) return;
     p.status = "READY";
     p.tierId = tierId;
     p.basePriceCr = parseFloat(basePriceCr);
     if (sequenceOrder) p.auctionSequence = parseInt(sequenceOrder);
+    this.saveLocal();
     this.broadcast();
-    this.syncPlayerToCloud(p);
+    await this.syncPlayerToCloud(p);
   }
 
-  rejectPlayer(playerId) {
+  async rejectPlayer(playerId) {
     const p = this.state.players.find(x => x.id === playerId);
     if (!p) return;
     p.status = "REJECTED";
+    this.saveLocal();
     this.broadcast();
-    this.syncPlayerToCloud(p);
+    await this.syncPlayerToCloud(p);
   }
 
-  deletePlayer(playerId) {
+  async deletePlayer(playerId) {
     this.state.players = this.state.players.filter(p => p.id !== playerId);
     if (this.state.live.activePlayerId === playerId) {
       this.resetLiveAuctionState();
     }
+    this.saveLocal();
     this.broadcast();
     if (this.supabase) {
-      this.supabase.from('players').delete().eq('id', playerId).then();
+      try {
+        await this.supabase.from('players').delete().eq('id', playerId);
+      } catch (e) {
+        console.warn("Player cloud delete error:", e);
+      }
     }
   }
 

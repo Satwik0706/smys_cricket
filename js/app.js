@@ -100,8 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btnAdminCloudSettings.addEventListener('click', () => {
       const urlInput = document.getElementById('inputSupabaseUrl');
       const keyInput = document.getElementById('inputSupabaseKey');
-      if (urlInput) urlInput.value = localStorage.getItem('cricket_supabase_url') || '';
-      if (keyInput) keyInput.value = localStorage.getItem('cricket_supabase_key') || '';
+      const creds = window.auctionStore.getSupabaseCredentials ? window.auctionStore.getSupabaseCredentials() : { url: '', key: '' };
+      if (urlInput) urlInput.value = creds.url;
+      if (keyInput) keyInput.value = creds.key;
       updateCloudStatusUI();
       if (cloudFeedbackMsg) cloudFeedbackMsg.style.display = 'none';
       if (cloudModal) cloudModal.classList.add('active');
@@ -111,6 +112,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCloseCloudModal && cloudModal) {
     btnCloseCloudModal.addEventListener('click', () => {
       cloudModal.classList.remove('active');
+    });
+  }
+
+  const btnCopyConfigSnippet = document.getElementById('btnCopyConfigSnippet');
+  if (btnCopyConfigSnippet) {
+    btnCopyConfigSnippet.addEventListener('click', () => {
+      const urlInput = document.getElementById('inputSupabaseUrl');
+      const keyInput = document.getElementById('inputSupabaseKey');
+      const url = urlInput ? urlInput.value.trim() : '';
+      const key = keyInput ? keyInput.value.trim() : '';
+      const snippet = `  supabaseUrl: "${url}",\n  supabaseAnonKey: "${key}",`;
+      navigator.clipboard.writeText(snippet);
+      window.showToast('Config snippet copied! Paste into js/config.js for global real-time sync across all devices.', 'success', 5000);
     });
   }
 
@@ -134,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cloudFeedbackMsg.style.background = 'rgba(16, 185, 129, 0.12)';
         cloudFeedbackMsg.style.color = '#059669';
         cloudFeedbackMsg.style.border = '1px solid rgba(16, 185, 129, 0.35)';
-        cloudFeedbackMsg.textContent = 'Configuration saved! Supabase Realtime is now syncing across all devices.';
+        cloudFeedbackMsg.innerHTML = '<strong>✓ Saved for this browser!</strong><br>To allow <strong>players on their phones</strong> to register in real time without manual setup, paste these keys into <code>js/config.js</code> or use "Copy config.js Snippet" below.';
       }
       window.showToast('Supabase credentials saved successfully.', 'success');
     });
@@ -703,35 +717,83 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (playerRegForm) {
-    playerRegForm.addEventListener('submit', (e) => {
+    playerRegForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const submitBtn = playerRegForm.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn ? submitBtn.textContent : 'Submit Registration';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting & Syncing...';
+      }
+
       const checkedRoles = Array.from(document.querySelectorAll('input[name="regRole"]:checked')).map(cb => cb.value);
       const role = checkedRoles.length > 0 ? checkedRoles.join(', ') : 'Batter';
 
-      const newPlayer = window.auctionStore.registerPlayer({
-        name: document.getElementById('regName').value.trim(),
-        country: document.getElementById('regCountry').value.trim(),
-        age: document.getElementById('regAge').value,
-        battingStyle: document.getElementById('regBattingStyle').value,
-        bowlingStyle: document.getElementById('regBowlingStyle') ? document.getElementById('regBowlingStyle').value.trim() : '',
-        role: role,
-        matches: document.getElementById('regMatches').value || 0,
-        runs: document.getElementById('regRuns').value || 0,
-        strikeRate: document.getElementById('regStrikeRate').value || 0,
-        wickets: document.getElementById('regWickets').value || 0,
-        economy: document.getElementById('regEconomy').value || 0,
-        cricHeroesName: document.getElementById('regCricHeroesName') ? document.getElementById('regCricHeroesName').value.trim() : '',
-        cricHeroesPhone: document.getElementById('regCricHeroesPhone') ? document.getElementById('regCricHeroesPhone').value.trim() : '',
-        photoUrl: currentPhotoDataUrl || window.DEFAULT_CRICKET_AVATAR
-      });
+      try {
+        const result = await window.auctionStore.registerPlayer({
+          name: document.getElementById('regName').value.trim(),
+          country: document.getElementById('regCountry').value.trim(),
+          age: document.getElementById('regAge').value,
+          battingStyle: document.getElementById('regBattingStyle').value,
+          bowlingStyle: document.getElementById('regBowlingStyle') ? document.getElementById('regBowlingStyle').value.trim() : '',
+          role: role,
+          matches: document.getElementById('regMatches').value || 0,
+          runs: document.getElementById('regRuns').value || 0,
+          strikeRate: document.getElementById('regStrikeRate').value || 0,
+          wickets: document.getElementById('regWickets').value || 0,
+          economy: document.getElementById('regEconomy').value || 0,
+          cricHeroesName: document.getElementById('regCricHeroesName') ? document.getElementById('regCricHeroesName').value.trim() : '',
+          cricHeroesPhone: document.getElementById('regCricHeroesPhone') ? document.getElementById('regCricHeroesPhone').value.trim() : '',
+          photoUrl: currentPhotoDataUrl || window.DEFAULT_CRICKET_AVATAR
+        });
 
-      window.showToast(`Registration submitted for ${newPlayer.name}! Awaiting organizer approval.`, 'success', 5000);
-      playerRegForm.reset();
-      currentPhotoDataUrl = window.DEFAULT_CRICKET_AVATAR;
-      if (uploadSuccessBadge) uploadSuccessBadge.style.display = 'none';
-      updateCardPreview();
+        if (result && result.cloudSynced) {
+          window.showToast(`✅ Registration submitted for ${result.player.name}! Synced to live tournament cloud.`, 'success', 6000);
+        } else if (result && result.error === 'NO_CLOUD') {
+          window.showToast(`⚠️ Registration saved locally on this device, but Cloud Sync is offline! To sync across phones and organizer screens, configure Supabase in js/config.js.`, 'warning', 8000);
+        } else {
+          window.showToast(`⚠️ Saved locally, but cloud sync failed: ${result?.error || 'Unknown error'}`, 'warning', 7000);
+        }
+
+        playerRegForm.reset();
+        currentPhotoDataUrl = window.DEFAULT_CRICKET_AVATAR;
+        if (uploadSuccessBadge) uploadSuccessBadge.style.display = 'none';
+        updateCardPreview();
+      } catch (err) {
+        window.showToast(`Registration error: ${err.message}`, 'danger');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
+        }
+      }
     });
   }
+
+  // Live Cloud indicator updater for Registration Portal
+  function updateRegCloudStatus() {
+    const pill = document.getElementById('regCloudStatusPill');
+    const banner = document.getElementById('regCloudWarningBanner');
+    const isCloud = window.auctionStore && window.auctionStore.isCloudSyncEnabled;
+    if (pill) {
+      if (isCloud) {
+        pill.textContent = '🟢 REALTIME CLOUD ACTIVE';
+        pill.style.background = 'rgba(16, 185, 129, 0.12)';
+        pill.style.color = '#059669';
+        pill.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+      } else {
+        pill.textContent = '⚠️ OFFLINE LOCAL MODE';
+        pill.style.background = 'rgba(239, 68, 68, 0.1)';
+        pill.style.color = '#DC2626';
+        pill.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+      }
+    }
+    if (banner) {
+      banner.style.display = isCloud ? 'none' : 'block';
+    }
+  }
+  window.addEventListener('cricket_cloud_status', updateRegCloudStatus);
+  setTimeout(updateRegCloudStatus, 300);
 
   // ============================================================
   // ADMIN COCKPIT & LIVE HAMMER LOGIC

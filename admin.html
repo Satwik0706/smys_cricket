@@ -363,12 +363,20 @@
         <input type="password" id="inputSupabaseKey" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
       </div>
 
-      <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+      <div style="background:#EFF6FF; border:1px solid #BFDBFE; color:#1E40AF; padding:10px 14px; border-radius:8px; margin-bottom:14px; font-size:0.82rem; line-height:1.5;">
+        <strong>📢 Global Multi-Device Sync:</strong><br>
+        Saving here activates Supabase in <em>this browser</em>. For <strong>all players and franchise phones</strong> to connect automatically without manual setup, paste your URL & Anon Key into <code>js/config.js</code>!
+      </div>
+
+      <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
         <button class="btn-primary" id="btnSaveCloudConfig" style="flex:2; min-width:180px;">
           Save & Connect Supabase
         </button>
-        <button type="button" class="btn-action-secondary" id="btnTestCloudConnection" style="flex:1; min-width:140px; justify-content:center;">
+        <button type="button" class="btn-action-secondary" id="btnTestCloudConnection" style="flex:1; min-width:130px; justify-content:center;">
           Test Connection
+        </button>
+        <button type="button" class="btn-action-secondary" id="btnCopyConfigSnippet" style="flex:1; min-width:160px; justify-content:center;">
+          📋 Copy config.js Snippet
         </button>
         <button type="button" class="btn-action-danger" id="btnDisconnectCloud" style="justify-content:center;">
           Disconnect
