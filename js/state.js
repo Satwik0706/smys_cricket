@@ -195,6 +195,7 @@ class AuctionStore {
             this.state.teams.push(mappedTeam);
           }
         });
+        this.state.teams.forEach(t => this.recalculateTeamPurse(t));
       }
 
       // 3. Fetch Live Auction State
@@ -360,6 +361,7 @@ class AuctionStore {
         if (!this.state.players) this.state.players = [];
         if (!this.state.adminPassword) this.state.adminPassword = "admin@2026"; // Default secure password
         if (!this.state.live) this.resetLiveAuctionState();
+        this.state.teams.forEach(t => this.recalculateTeamPurse(t));
         return;
       } catch (e) {
         console.error("State parse error, rebuilding fresh state", e);
@@ -451,6 +453,25 @@ class AuctionStore {
   }
 
   // --- DYNAMIC TEAM MANAGEMENT ---
+  recalculateTeamPurse(team) {
+    if (!team) return 0;
+    const total = parseFloat(team.totalPurseCr) || 100.0;
+    const capPrice = parseFloat(team.captainPriceCr) || 0;
+    const vcPrice = parseFloat(team.viceCaptainPriceCr) || 0;
+
+    // Sum all auction purchases in team squad (excluding pre-retained captain/vc)
+    const auctionSpent = (Array.isArray(team.squad) ? team.squad : []).reduce((sum, sq) => {
+      if (sq.playerId && (sq.playerId.startsWith('cap_') || sq.playerId.startsWith('vc_'))) {
+        return sum;
+      }
+      return sum + (parseFloat(sq.priceCr) || 0);
+    }, 0);
+
+    const totalSpent = capPrice + vcPrice + auctionSpent;
+    team.purseLeftCr = parseFloat(Math.max(0, total - totalSpent).toFixed(2));
+    return team.purseLeftCr;
+  }
+
   createTeam(data) {
     const totalPurse = parseFloat(data.totalPurseCr) || 100.0;
     const captainPrice = parseFloat(data.captainPriceCr) || 0.0;
@@ -506,6 +527,7 @@ class AuctionStore {
     }
 
     this.state.teams.push(newTeam);
+    this.recalculateTeamPurse(newTeam);
     this.broadcast();
     this.syncTeamToCloud(newTeam);
     return newTeam;
@@ -583,7 +605,46 @@ class AuctionStore {
     await this.syncPlayerToCloud(p);
   }
 
+  releasePlayer(playerId) {
+    const player = this.state.players.find(p => p.id === playerId);
+    if (!player) return false;
+
+    if (player.soldToTeam) {
+      const team = this.state.teams.find(t => t.id === player.soldToTeam);
+      if (team) {
+        team.squad = team.squad.filter(s => s.playerId !== playerId);
+        team.overseasCount = team.squad.filter(s => s.isOverseas).length;
+        this.recalculateTeamPurse(team);
+        this.syncTeamToCloud(team);
+      }
+    }
+
+    player.status = "READY";
+    player.soldToTeam = null;
+    player.soldPriceCr = null;
+
+    if (this.state.live.activePlayerId === playerId) {
+      this.resetLiveAuctionState();
+    }
+
+    this.saveLocal();
+    this.broadcast();
+    this.syncPlayerToCloud(player);
+    return true;
+  }
+
   async deletePlayer(playerId) {
+    const player = this.state.players.find(p => p.id === playerId);
+    if (player && player.soldToTeam) {
+      const team = this.state.teams.find(t => t.id === player.soldToTeam);
+      if (team) {
+        team.squad = team.squad.filter(s => s.playerId !== playerId);
+        team.overseasCount = team.squad.filter(s => s.isOverseas).length;
+        this.recalculateTeamPurse(team);
+        this.syncTeamToCloud(team);
+      }
+    }
+
     this.state.players = this.state.players.filter(p => p.id !== playerId);
     if (this.state.live.activePlayerId === playerId) {
       this.resetLiveAuctionState();
@@ -726,11 +787,21 @@ class AuctionStore {
     const winningTeam = this.state.teams.find(t => t.id === this.state.live.currentBidderId);
 
     if (!player || !winningTeam) return false;
+    if (player.status === "SOLD") return false; // Prevent accidental double deductions
 
-    const finalPrice = this.state.live.currentBidCr;
+    const finalPrice = parseFloat(this.state.live.currentBidCr) || 0;
 
-    // Deduct Purse
-    winningTeam.purseLeftCr = parseFloat((winningTeam.purseLeftCr - finalPrice).toFixed(2));
+    // Remove player if already exists anywhere in any team squad
+    this.state.teams.forEach(t => {
+      const idx = t.squad.findIndex(s => s.playerId === player.id);
+      if (idx >= 0) {
+        t.squad.splice(idx, 1);
+        t.overseasCount = t.squad.filter(s => s.isOverseas).length;
+        this.recalculateTeamPurse(t);
+      }
+    });
+
+    // Add to winning franchise squad
     winningTeam.squad.push({
       playerId: player.id,
       name: player.name,
@@ -743,13 +814,15 @@ class AuctionStore {
       wickets: player.wickets || 0,
       strikeRate: player.strikeRate || 0,
       priceCr: finalPrice,
-      isOverseas: player.isOverseas
+      isOverseas: !!player.isOverseas
     });
-    if (player.isOverseas) {
-      winningTeam.overseasCount = (winningTeam.overseasCount || 0) + 1;
-    }
+    winningTeam.overseasCount = winningTeam.squad.filter(s => s.isOverseas).length;
 
-    // Update Player
+    // Deduct available purse ONLY now upon actual confirmed purchase
+    // The franchise's totalPurseCr remains unchanged
+    this.recalculateTeamPurse(winningTeam);
+
+    // Update Player Record
     player.status = "SOLD";
     player.soldToTeam = winningTeam.id;
     player.soldPriceCr = finalPrice;
@@ -778,7 +851,22 @@ class AuctionStore {
     const player = this.getActivePlayer();
     if (!player) return;
 
+    // If this player was previously marked sold, refund that franchise immediately
+    if (player.soldToTeam) {
+      const prevTeam = this.state.teams.find(t => t.id === player.soldToTeam);
+      if (prevTeam) {
+        prevTeam.squad = prevTeam.squad.filter(s => s.playerId !== player.id);
+        prevTeam.overseasCount = prevTeam.squad.filter(s => s.isOverseas).length;
+        this.recalculateTeamPurse(prevTeam);
+        this.syncTeamToCloud(prevTeam);
+      }
+    }
+
+    // When player is not purchased, all franchises' budgets remain completely unchanged!
     player.status = "UNSOLD";
+    player.soldToTeam = null;
+    player.soldPriceCr = null;
+
     this.state.live.hammerStatus = "UNSOLD";
     this.state.live.timerRunning = false;
     this.state.live.currentBidderId = null;

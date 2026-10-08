@@ -612,32 +612,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnChoosePhoto = document.getElementById('btnChoosePhoto');
   const uploadSuccessBadge = document.getElementById('uploadSuccessBadge');
 
-  // Standardize any uploaded photo to 500x500 high-res square avatar with smart center-crop
+  // Standardize any uploaded photo of any size to standard 600x600 high-res avatar,
+  // strictly maintaining original aspect ratio without cropping (Aspect-Fit with sports studio backdrop)
   function processAndStandardizeImage(imgSource, callback) {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const targetSize = 500; // Standard official avatar resolution
+      const targetSize = 600; // Standard official broadcast & avatar resolution
       canvas.width = targetSize;
       canvas.height = targetSize;
       const ctx = canvas.getContext('2d');
 
-      // 1:1 Aspect ratio calculation with smart face/upper-body centering
-      let srcX = 0, srcY = 0, srcW = img.width, srcH = img.height;
-      if (img.width > img.height) {
-        srcW = img.height;
-        srcX = (img.width - img.height) / 2;
-      } else if (img.height > img.width) {
-        srcH = img.width;
-        srcY = Math.max(0, (img.height - img.width) * 0.3); // Upper-body/face bias
-      }
+      // Proportional Aspect-Fit calculation: 100% of the image is preserved without ANY cropping
+      const scale = Math.min(targetSize / img.width, targetSize / img.height);
+      const drawW = img.width * scale;
+      const drawH = img.height * scale;
+      const dx = (targetSize - drawW) / 2;
+      const dy = (targetSize - drawH) / 2;
 
+      // Professional stadium studio backdrop with subtle radial glow
+      const bgGrad = ctx.createRadialGradient(
+        targetSize / 2, targetSize / 2, 40,
+        targetSize / 2, targetSize / 2, targetSize * 0.72
+      );
+      bgGrad.addColorStop(0, '#1E293B');
+      bgGrad.addColorStop(0.65, '#0F172A');
+      bgGrad.addColorStop(1, '#080C16');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, targetSize, targetSize);
+
+      // Render the uncropped image with high-definition smoothing
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, targetSize, targetSize);
-      const standardizedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      ctx.drawImage(img, 0, 0, img.width, img.height, dx, dy, drawW, drawH);
+
+      const standardizedDataUrl = canvas.toDataURL('image/jpeg', 0.92);
       callback(standardizedDataUrl);
+    };
+    img.onerror = () => {
+      callback(imgSource || window.DEFAULT_CRICKET_AVATAR);
     };
     img.src = imgSource;
   }
@@ -654,9 +668,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cardPreviewImg) cardPreviewImg.src = currentPhotoDataUrl;
         if (uploadSuccessBadge) {
           uploadSuccessBadge.style.display = 'block';
-          uploadSuccessBadge.textContent = '✓ Photo auto-cropped & standardized to 500×500 high-res portrait!';
+          uploadSuccessBadge.textContent = '✓ Photo standardized to 600×600 aspect-fit portrait (zero cropping)!';
         }
-        window.showToast('Photo standardized to 500×500 avatar!', 'success');
+        window.showToast('Photo standardized to 600×600 aspect-fit (no cropping)!', 'success');
       });
     };
     reader.readAsDataURL(file);
@@ -709,7 +723,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (cardPreviewImg) cardPreviewImg.src = currentPhotoDataUrl;
           if (uploadSuccessBadge) {
             uploadSuccessBadge.style.display = 'block';
-            uploadSuccessBadge.textContent = '✓ URL image standardized to 500×500!';
+            uploadSuccessBadge.textContent = '✓ URL image standardized to 600×600 (zero cropping)!';
           }
         });
       }
@@ -1136,6 +1150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAdminCockpit(state);
     renderTeamWarroom(state);
     renderBroadcast(state);
+    renderStudioPoster();
 
     // Sold Modal - ONLY trigger on Broadcast or relevant Team console (never block Admin)
     const isBroadcastPage = window.location.pathname.includes('broadcast.html') || (document.getElementById('viewBroadcast') && document.getElementById('viewBroadcast').classList.contains('active'));
@@ -1227,6 +1242,24 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderAdminCockpit(state) {
     if (!adminTeamsGrid) return;
 
+    // Executive KPI Summary
+    const kpiTeamsCount = document.getElementById('kpiTeamsCount');
+    const kpiPoolCount = document.getElementById('kpiPoolCount');
+    const kpiSoldCount = document.getElementById('kpiSoldCount');
+    const kpiUnsoldCount = document.getElementById('kpiUnsoldCount');
+    const kpiTurnover = document.getElementById('kpiTurnover');
+
+    const soldPlayers = state.players.filter(p => p.status === 'SOLD');
+    const unsoldPlayers = state.players.filter(p => p.status === 'UNSOLD');
+    const poolPlayers = state.players.filter(p => p.status === 'READY');
+    const totalTurnover = soldPlayers.reduce((acc, p) => acc + (parseFloat(p.soldPriceCr) || 0), 0);
+
+    if (kpiTeamsCount) kpiTeamsCount.textContent = state.teams.length;
+    if (kpiPoolCount) kpiPoolCount.textContent = poolPlayers.length;
+    if (kpiSoldCount) kpiSoldCount.textContent = soldPlayers.length;
+    if (kpiUnsoldCount) kpiUnsoldCount.textContent = unsoldPlayers.length;
+    if (kpiTurnover) kpiTurnover.textContent = `₹ ${totalTurnover.toFixed(2)} Cr`;
+
     if (adminTeamsCount) adminTeamsCount.textContent = state.teams.length;
     adminTeamsGrid.innerHTML = '';
 
@@ -1259,9 +1292,24 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>Vice-Captain: <strong style="color:var(--text-primary);">${team.viceCaptainName || 'None'}</strong> ${team.viceCaptainPriceCr ? `(₹${team.viceCaptainPriceCr} Cr)` : ''}</div>
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:8px 12px; border-radius:8px; margin-bottom:10px;">
-            <span style="font-size:0.75rem; color:var(--text-muted);">Purse Available:</span>
-            <span style="font-weight:900; color:#059669;">₹ ${team.purseLeftCr.toFixed(2)} Cr / ₹ ${team.totalPurseCr} Cr</span>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:8px 10px; border-radius:8px; margin-bottom:10px; text-align:center;">
+            <div>
+              <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Total Budget</div>
+              <div style="font-weight:800; font-size:0.85rem; color:var(--text-primary);">₹ ${team.totalPurseCr.toFixed(1)} Cr</div>
+            </div>
+            <div>
+              <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Spent</div>
+              <div style="font-weight:800; font-size:0.85rem; color:#D97706;">₹ ${(team.totalPurseCr - team.purseLeftCr).toFixed(2)} Cr</div>
+            </div>
+            <div>
+              <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Available</div>
+              <div style="font-weight:900; font-size:0.88rem; color:#059669;">₹ ${team.purseLeftCr.toFixed(2)} Cr</div>
+            </div>
+          </div>
+
+          <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:8px; display:flex; justify-content:space-between;">
+            <span>Squad: <strong>${team.squad.length}/25</strong></span>
+            <span>Overseas: <strong>${team.overseasCount || 0}/8</strong></span>
           </div>
 
           <div style="border-top:1px dashed var(--border-subtle); padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
@@ -1453,6 +1501,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <button class="icon-btn btn-call-stage" data-id="${p.id}" style="padding:4px 10px; font-size:0.75rem;">
                 ${isCurrent ? 'Current' : 'Call to Stage'}
               </button>
+              ${p.status === 'SOLD' ? `<button class="btn-action-secondary btn-release-player" data-id="${p.id}" style="padding:4px 8px; font-size:0.72rem; color:#059669; border-color:#A7F3D0;" title="Release from franchise and refund purse">Refund</button>` : ''}
               <button class="btn-action-danger btn-del-player" data-id="${p.id}" style="padding:4px 8px; font-size:0.72rem;">✕</button>
             </td>
           `;
@@ -1461,6 +1510,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('.btn-call-stage').forEach(b => {
           b.onclick = () => window.auctionStore.callPlayerToStage(b.dataset.id);
+        });
+        document.querySelectorAll('.btn-release-player').forEach(b => {
+          b.onclick = () => {
+            if (confirm('Release player from franchise squad and refund purse?')) {
+              window.auctionStore.releasePlayer(b.dataset.id);
+              window.showToast('Player released back to pool and purse refunded.', 'success');
+            }
+          };
         });
         document.querySelectorAll('.btn-del-player').forEach(b => {
           b.onclick = () => {
@@ -1538,16 +1595,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Squad & Purse Dashboard
     const teamDashTitle = document.getElementById('teamDashboardTitle');
+    const teamTotalPurseText = document.getElementById('teamTotalPurseText');
+    const teamPurseSpentText = document.getElementById('teamPurseSpentText');
     const teamPurseLeftText = document.getElementById('teamPurseLeftText');
+    const teamMaxBidAllowedText = document.getElementById('teamMaxBidAllowedText');
+    const teamPursePctText = document.getElementById('teamPursePctText');
     const teamPurseBar = document.getElementById('teamPurseProgressBar');
     const teamSquadCount = document.getElementById('teamSquadCount');
     const teamOverseasCount = document.getElementById('teamOverseasCount');
 
     if (teamDashTitle) teamDashTitle.textContent = `${team.name} Dashboard`;
+    if (teamTotalPurseText) teamTotalPurseText.textContent = `₹ ${(team.totalPurseCr || 100).toFixed(2)} Cr`;
+    const spent = Math.max(0, (team.totalPurseCr || 100) - team.purseLeftCr);
+    if (teamPurseSpentText) teamPurseSpentText.textContent = `₹ ${spent.toFixed(2)} Cr`;
     if (teamPurseLeftText) teamPurseLeftText.textContent = `₹ ${team.purseLeftCr.toFixed(2)} Cr`;
+    if (teamMaxBidAllowedText) teamMaxBidAllowedText.textContent = `₹ ${Math.max(0, maxAllowedBid).toFixed(2)} Cr`;
+
     if (teamPurseBar) {
-      const pursePct = Math.max(0, Math.min(100, (team.purseLeftCr / team.totalPurseCr) * 100));
+      const pursePct = Math.max(0, Math.min(100, (team.purseLeftCr / (team.totalPurseCr || 100)) * 100));
       teamPurseBar.style.width = `${pursePct}%`;
+      if (teamPursePctText) teamPursePctText.textContent = `${pursePct.toFixed(0)}% Available`;
     }
     if (teamSquadCount) teamSquadCount.textContent = `${team.squad.length} / 25`;
     if (teamOverseasCount) teamOverseasCount.textContent = `${team.overseasCount || 0} / 8`;
@@ -1561,9 +1628,21 @@ document.addEventListener('DOMContentLoaded', () => {
         acquiredList.innerHTML = '<div style="color:var(--text-muted); font-size:0.82rem; padding:8px 0;">No players acquired yet.</div>';
       } else {
         team.squad.forEach(sq => {
+          const p = state.players.find(x => x.id === sq.playerId);
+          const photo = (p && p.photoUrl) || window.DEFAULT_CRICKET_AVATAR;
           const d = document.createElement('div');
           d.className = 'acquired-player-item';
-          d.innerHTML = `<span><strong>${sq.name}</strong> (${sq.role})</span><span style="color:#059669; font-weight:800;">₹ ${sq.priceCr.toFixed(2)} Cr</span>`;
+          d.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:8px;';
+          d.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img src="${photo}" style="width:28px; height:28px; border-radius:50%; object-fit:contain; background:#1E293B;">
+              <div>
+                <strong style="color:var(--text-primary); font-size:0.85rem;">${sq.name}</strong>
+                <span style="font-size:0.75rem; color:var(--text-muted); margin-left:4px;">(${sq.role})</span>
+              </div>
+            </div>
+            <span style="color:#059669; font-weight:800; font-size:0.88rem;">₹ ${sq.priceCr.toFixed(2)} Cr</span>
+          `;
           acquiredList.appendChild(d);
         });
       }

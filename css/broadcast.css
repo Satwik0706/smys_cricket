@@ -478,9 +478,14 @@ body.broadcast-page {
   border: 4px solid #F59E0B;
   box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
   overflow: hidden;
-  background: #F1F5F9;
+  background: radial-gradient(circle, #1E293B 0%, #080C16 100%);
 }
-.sold-popup-photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+.sold-popup-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: radial-gradient(circle, #1E293B 0%, #080C16 100%);
+}
 
 .sold-popup-player-name {
   font-family: 'Barlow Condensed', sans-serif;

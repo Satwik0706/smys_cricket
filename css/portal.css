@@ -1043,6 +1043,80 @@ main.portal-view:only-of-type { display: block; }
   top: 84px;
 }
 
+.card-preview-stage {
+  position: sticky;
+  top: 84px;
+}
+.player-card-preview-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-xl);
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.card-preview-photo {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #2563EB;
+  background: radial-gradient(circle, #1E293B 0%, #080C16 100%);
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.25);
+}
+.card-preview-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: radial-gradient(circle, #1E293B 0%, #080C16 100%);
+}
+.card-preview-name {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+.card-preview-role {
+  display: inline-block;
+  background: var(--primary-bg);
+  border: 1px solid var(--primary-border);
+  color: #1D4ED8;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: var(--r-full);
+  margin-bottom: 12px;
+}
+.card-preview-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.preview-stat-col {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  padding: 10px 6px;
+}
+.preview-stat-lbl {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.preview-stat-val {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
 /* ============================================================ */
 /* ──────────── ADMIN COCKPIT ───────────────────────────────── */
 /* ============================================================ */
@@ -1051,7 +1125,7 @@ main.portal-view:only-of-type { display: block; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   background: var(--bg-surface);
   padding: 18px 24px;
   border-radius: var(--r-lg);
@@ -1059,6 +1133,58 @@ main.portal-view:only-of-type { display: block; }
   box-shadow: var(--shadow-sm);
   gap: 16px;
   flex-wrap: wrap;
+}
+
+.admin-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.kpi-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.18s var(--ease-snappy);
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-md);
+}
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+.kpi-val {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.kpi-val.val-sold { color: #059669; }
+.kpi-val.val-spent { color: #2563EB; }
+.kpi-lbl {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
 }
 
 .admin-subsections {
@@ -1138,7 +1264,12 @@ main.portal-view:only-of-type { display: block; }
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
 }
-.caller-photo img { width: 100%; height: 100%; object-fit: cover; }
+.caller-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: radial-gradient(circle, #1E293B 0%, #080C16 100%);
+}
 
 /* Quick Increment Chips */
 .increment-chips-row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -1339,6 +1470,77 @@ main.portal-view:only-of-type { display: block; }
   width: 100%;
 }
 
+/* ─── Team Financial Budget Breakdown Grid ───────────────── */
+.team-budget-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+@media (min-width: 640px) {
+  .team-budget-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.budget-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  padding: 12px 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.18s var(--ease-snappy);
+}
+.budget-card:hover {
+  border-color: var(--border-mid);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.budget-card-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 3px;
+}
+
+.budget-card-val {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.budget-card-val.val-amber { color: #D97706; }
+.budget-card-val.val-emerald { color: #059669; }
+.budget-card-val.val-blue { color: #2563EB; }
+
+.budget-card-sub {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.budget-policy-notice {
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.78rem;
+  color: #1E40AF;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.45;
+}
+
 .purse-bar-container {
   margin: 14px 0 20px;
 }
@@ -1384,9 +1586,14 @@ main.portal-view:only-of-type { display: block; }
   border: 3px solid #2563EB;
   box-shadow: 0 4px 20px rgba(37, 99, 235, 0.2);
   overflow: hidden;
-  background: #F1F5F9;
+  background: radial-gradient(circle, #1E293B 0%, #080C16 100%);
 }
-.player-img-frame img { width: 100%; height: 100%; object-fit: cover; }
+.player-img-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: radial-gradient(circle, #1E293B 0%, #080C16 100%);
+}
 
 .player-card-name {
   font-family: var(--font-display);

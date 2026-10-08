@@ -98,7 +98,15 @@ class AuctionPosterGenerator {
     // Load or fallback image
     try {
       const img = await this.loadImage(player.photoUrl);
-      ctx.drawImage(img, photoX, photoY, photoSize, photoSize);
+      const scale = Math.min(photoSize / img.width, photoSize / img.height);
+      const drawW = img.width * scale;
+      const drawH = img.height * scale;
+      const drawX = photoX + (photoSize - drawW) / 2;
+      const drawY = photoY + (photoSize - drawH) / 2;
+
+      ctx.fillStyle = "#0F172A";
+      ctx.fillRect(photoX, photoY, photoSize, photoSize);
+      ctx.drawImage(img, drawX, drawY, drawW, drawH);
     } catch (e) {
       // High-end placeholder
       ctx.fillStyle = "#1e293b";
