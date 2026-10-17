@@ -6,18 +6,193 @@
   <title>SMYS Intra Hostel Cricket - Player Registration</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=Kaushan+Script&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/register.css">
 </head>
 <body>
 
   <div class="reg-container">
-    <!-- Header Banner Artwork -->
-    <header class="reg-header">
-      <img src="assets/reg-header.jpg" alt="SMYS Intra Hostel Cricket - Player Registration" class="reg-header-img">
+    
+    <!-- ============================================================ -->
+    <!-- 1. PURE-CODE HERO HEADER ARTWORK                             -->
+    <!-- ============================================================ -->
+    <header class="reg-hero-banner">
+      <!-- Left Floodlight Tower -->
+      <div class="hero-light-tower hero-light-tower-left">
+        <div class="floodlight-rig">
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+        </div>
+        <div class="floodlight-pole"></div>
+      </div>
+
+      <!-- Right Floodlight Tower -->
+      <div class="hero-light-tower hero-light-tower-right">
+        <div class="floodlight-rig">
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+          <div class="floodlight-bulb"></div>
+        </div>
+        <div class="floodlight-pole"></div>
+      </div>
+
+      <!-- Vector Batsman & Blue Powder Explosion (Left) -->
+      <div class="hero-art-batsman">
+        <svg viewBox="0 0 200 220" width="100%" height="100%">
+          <defs>
+            <radialGradient id="blueBlastGrad" cx="45%" cy="55%" r="50%">
+              <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9"/>
+              <stop offset="50%" stop-color="#2563EB" stop-opacity="0.75"/>
+              <stop offset="100%" stop-color="#1D4ED8" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="batGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#D97706"/>
+              <stop offset="50%" stop-color="#B45309"/>
+              <stop offset="100%" stop-color="#78350F"/>
+            </linearGradient>
+          </defs>
+          <!-- Dynamic Blue Paint Dust / Powder Splatters -->
+          <circle cx="90" cy="110" r="75" fill="url(#blueBlastGrad)"/>
+          <path d="M40 70 Q 20 40 50 20 Q 80 40 70 70 Z" fill="#38BDF8" opacity="0.6"/>
+          <path d="M120 40 Q 150 15 135 60 Q 110 50 120 40 Z" fill="#60A5FA" opacity="0.5"/>
+          <path d="M20 130 Q 5 110 25 90 Q 35 120 20 130 Z" fill="#2563EB" opacity="0.55"/>
+          <circle cx="35" cy="35" r="4" fill="#38BDF8"/>
+          <circle cx="20" cy="65" r="3" fill="#60A5FA"/>
+          <circle cx="140" cy="30" r="5" fill="#38BDF8"/>
+          <circle cx="160" cy="55" r="3.5" fill="#93C5FD"/>
+          
+          <!-- Batsman Silhouette & Bat -->
+          <!-- Cricket Bat Swinging Upward -->
+          <rect x="75" y="10" width="14" height="60" rx="3" transform="rotate(-36 75 10)" fill="url(#batGrad)" stroke="#0C2340" stroke-width="2"/>
+          <rect x="68" y="58" width="6" height="22" rx="2" transform="rotate(-36 75 10)" fill="#E2E8F0" stroke="#0C2340" stroke-width="1.5"/>
+          
+          <!-- Helmet & Head -->
+          <circle cx="102" cy="74" r="14" fill="#0C2340"/>
+          <path d="M92 72 Q 82 72 84 80 L 104 80 Z" fill="#38BDF8"/>
+          <path d="M82 76 Q 80 84 94 84" stroke="#FFF" stroke-width="2" fill="none"/>
+          
+          <!-- Torso, Arms & Batting Stance -->
+          <path d="M96 86 L 82 120 L 102 124 L 118 90 Z" fill="#1E3A8A"/>
+          <!-- Arms holding bat -->
+          <path d="M92 88 L 76 68 L 86 62 L 100 82 Z" fill="#0C2340"/>
+          <circle cx="76" cy="65" r="6" fill="#FBBF24"/> <!-- Batting Glove -->
+          <circle cx="82" cy="58" r="6" fill="#FBBF24"/>
+          <!-- Legs & Batting Pads -->
+          <path d="M82 120 L 76 168 L 92 170 L 98 124 Z" fill="#FFFFFF" stroke="#0C2340" stroke-width="2"/>
+          <path d="M98 122 L 108 165 L 122 163 L 108 122 Z" fill="#F1F5F9" stroke="#0C2340" stroke-width="2"/>
+          <!-- Pad Straps -->
+          <line x1="77" y1="135" x2="94" y2="137" stroke="#0C2340" stroke-width="1.5"/>
+          <line x1="76" y1="150" x2="93" y2="152" stroke="#0C2340" stroke-width="1.5"/>
+          <!-- Boots -->
+          <path d="M72 168 L 62 176 L 90 176 Z" fill="#0C2340"/>
+          <path d="M106 165 L 124 175 L 102 175 Z" fill="#0C2340"/>
+        </svg>
+      </div>
+
+      <!-- Vector Bowler & Orange Powder Explosion (Right) -->
+      <div class="hero-art-bowler">
+        <svg viewBox="0 0 200 220" width="100%" height="100%">
+          <defs>
+            <radialGradient id="orangeBlastGrad" cx="55%" cy="55%" r="50%">
+              <stop offset="0%" stop-color="#FBBF24" stop-opacity="0.95"/>
+              <stop offset="50%" stop-color="#F59E0B" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#EA580C" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Dynamic Gold/Orange Paint Splatters -->
+          <circle cx="110" cy="110" r="75" fill="url(#orangeBlastGrad)"/>
+          <path d="M150 60 Q 180 30 145 15 Q 125 40 150 60 Z" fill="#FBBF24" opacity="0.6"/>
+          <path d="M80 35 Q 50 15 65 55 Q 90 45 80 35 Z" fill="#F59E0B" opacity="0.5"/>
+          <circle cx="165" cy="40" r="4.5" fill="#F59E0B"/>
+          <circle cx="178" cy="70" r="3.5" fill="#FBBF24"/>
+          <circle cx="55" cy="30" r="4" fill="#FBBF24"/>
+
+          <!-- Bowler Flying Ball in Action with Motion Trail -->
+          <line x1="60" y1="35" x2="35" y2="25" stroke="#EF4444" stroke-width="2" stroke-dasharray="3,2" opacity="0.8"/>
+          <circle cx="28" cy="22" r="8" fill="#DC2626" stroke="#991B1B" stroke-width="1.5"/>
+          <path d="M23 18 C28 17 31 24 25 28" stroke="#FFF" stroke-width="1" fill="none"/>
+
+          <!-- Bowler Leaping in Delivery Action -->
+          <!-- Raised Delivery Arm -->
+          <path d="M96 66 L 68 32 L 60 40 L 88 74 Z" fill="#78350F"/>
+          <circle cx="64" cy="34" r="6" fill="#F59E0B"/>
+          <!-- Head -->
+          <circle cx="106" cy="62" r="13" fill="#0C2340"/>
+          <!-- Torso & Non-bowling arm -->
+          <path d="M96 72 L 124 116 L 105 120 L 86 82 Z" fill="#B45309"/>
+          <path d="M108 76 L 140 68 L 144 76 L 115 85 Z" fill="#78350F"/>
+          <!-- Leaping Legs -->
+          <path d="M105 120 L 126 168 L 112 172 L 95 124 Z" fill="#FFFFFF" stroke="#0C2340" stroke-width="2"/>
+          <path d="M116 122 L 155 146 L 148 156 L 110 130 Z" fill="#FFFFFF" stroke="#0C2340" stroke-width="2"/>
+          <!-- Shoes -->
+          <path d="M124 168 L 136 177 L 112 177 Z" fill="#DC2626"/>
+          <path d="M152 148 L 168 152 L 155 162 Z" fill="#DC2626"/>
+        </svg>
+      </div>
+
+      <!-- Calligraphic Quote (Right) -->
+      <div class="hero-tag-calligraphy">
+        More<br>Than a<br>Game
+      </div>
+
+      <!-- Center Branding & Typography -->
+      <div class="hero-center-content">
+        <!-- 5-Pointed Gold Crown -->
+        <div class="hero-crown-icon">
+          <svg width="42" height="30" viewBox="0 0 100 70">
+            <defs>
+              <linearGradient id="crownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FCD34D"/>
+                <stop offset="50%" stop-color="#F59E0B"/>
+                <stop offset="100%" stop-color="#D97706"/>
+              </linearGradient>
+            </defs>
+            <path d="M10 58 L 22 18 L 40 40 L 50 12 L 60 40 L 78 18 L 90 58 Z" fill="url(#crownGrad)" stroke="#B45309" stroke-width="3"/>
+            <rect x="8" y="58" width="84" height="9" rx="3" fill="url(#crownGrad)" stroke="#B45309" stroke-width="2"/>
+            <!-- Jewel dots -->
+            <circle cx="22" cy="18" r="4.5" fill="#FEF08A" stroke="#B45309" stroke-width="1.5"/>
+            <circle cx="50" cy="12" r="5" fill="#FEF08A" stroke="#B45309" stroke-width="1.5"/>
+            <circle cx="78" cy="18" r="4.5" fill="#FEF08A" stroke="#B45309" stroke-width="1.5"/>
+          </svg>
+        </div>
+
+        <!-- SMYS Big Title -->
+        <h1 class="hero-title-smys">SMYS</h1>
+
+        <!-- INTRA HOSTEL CRICKET -->
+        <h2 class="hero-title-intra">INTRA HOSTEL CRICKET</h2>
+
+        <!-- BY 75TH SATHPANTHA -->
+        <div class="hero-subtitle-by">BY 75TH SATHPANTHA</div>
+
+        <!-- Golden Capsule Banner -->
+        <div class="hero-pill-badge">
+          <span class="hero-pill-text">PLAYER REGISTRATION</span>
+        </div>
+
+        <!-- Subtitle Tags Row -->
+        <div class="hero-tags-row">
+          <span class="hero-tag-item">🏆 PLAY</span>
+          <span class="hero-tag-div">|</span>
+          <span class="hero-tag-item">👥 CONNECT</span>
+          <span class="hero-tag-div">|</span>
+          <span class="hero-tag-item">📊 COMPETE</span>
+          <span class="hero-tag-div">|</span>
+          <span class="hero-tag-item">👑 SAME HOSTEL, BIGGER GAME</span>
+        </div>
+      </div>
     </header>
 
-    <!-- Main Registration Form -->
+    <!-- ============================================================ -->
+    <!-- 2. MAIN REGISTRATION FORM                                    -->
+    <!-- ============================================================ -->
     <form id="playerRegForm" class="reg-form-body">
       
       <!-- ROW 1: Profile Photo & Personal Information -->
@@ -53,7 +228,7 @@
             <!-- Avatar Preview -->
             <div class="avatar-preview-wrap">
               <div class="avatar-circle">
-                <svg id="avatarSvgPlaceholder" width="54" height="54" viewBox="0 0 24 24" fill="#4B6A9B">
+                <svg id="avatarSvgPlaceholder" width="52" height="52" viewBox="0 0 24 24" fill="#4B6A9B">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
                 <img id="avatarPreviewImg" class="avatar-img" src="" alt="Player Avatar" style="display:none;">
@@ -108,7 +283,7 @@
             <label class="field-label" for="regName">Full Name <span class="req-star">*</span></label>
             <div class="input-with-icon">
               <span class="input-prefix-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="#64748B">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
               </span>
@@ -122,7 +297,7 @@
               <label class="field-label" for="regYear">Year <span class="req-star">*</span></label>
               <div class="select-wrapper">
                 <span class="input-prefix-icon">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="#64748B">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#64748B">
                     <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
                   </svg>
                 </span>
@@ -135,7 +310,7 @@
                   <option value="Postgraduate / Staff">Postgraduate / Staff</option>
                 </select>
                 <span class="select-chevron">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B2545" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B2545" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="6 9 12 15 18 9"/>
                   </svg>
                 </span>
@@ -147,7 +322,7 @@
               <label class="field-label" for="regPhone">Phone Number <span class="req-star">*</span></label>
               <div class="input-with-icon">
                 <span class="input-prefix-icon">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#64748B">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#64748B">
                     <path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                   </svg>
                 </span>
@@ -178,7 +353,7 @@
           <div class="stat-box stat-box-blue">
             <div class="stat-header-row">
               <div class="stat-icon-sq">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19.7 4.3a1 1 0 0 0-1.4 0l-3.3 3.3 1.4 1.4 3.3-3.3a1 1 0 0 0 0-1.4z"/>
                   <path d="M15.7 8.3L7.3 16.7a2 2 0 0 0-.6 1.4v2.9h2.9c.5 0 1-.2 1.4-.6l8.4-8.4-3.7-3.7z"/>
                 </svg>
@@ -195,7 +370,7 @@
           <div class="stat-box stat-box-amber">
             <div class="stat-header-row">
               <div class="stat-icon-sq">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
                 </svg>
               </div>
@@ -211,7 +386,7 @@
           <div class="stat-box stat-box-red">
             <div class="stat-header-row">
               <div class="stat-icon-sq">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" fill="#DC2626"/>
                   <path d="M8 4c4 3 4 13 0 16" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
                   <path d="M16 4c-4 3-4 13 0 16" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
@@ -246,7 +421,7 @@
           <!-- Batsman -->
           <div class="role-pill" data-role="Batsman">
             <span class="role-pill-icon" style="color:#2563EB;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19.7 4.3a1 1 0 0 0-1.4 0l-3.3 3.3 1.4 1.4 3.3-3.3a1 1 0 0 0 0-1.4z"/>
                 <path d="M15.7 8.3L7.3 16.7a2 2 0 0 0-.6 1.4v2.9h2.9c.5 0 1-.2 1.4-.6l8.4-8.4-3.7-3.7z"/>
               </svg>
@@ -258,7 +433,7 @@
           <!-- Bowler -->
           <div class="role-pill" data-role="Bowler">
             <span class="role-pill-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="10" fill="#DC2626"/>
                 <path d="M8 4c4 3 4 13 0 16" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
                 <path d="M16 4c-4 3-4 13 0 16" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
@@ -271,7 +446,7 @@
           <!-- All-Rounder -->
           <div class="role-pill" data-role="All-Rounder">
             <span class="role-pill-icon" style="color:#F59E0B;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
             </span>
@@ -282,7 +457,7 @@
           <!-- Wicket-Keeper -->
           <div class="role-pill" data-role="Wicket-Keeper">
             <span class="role-pill-icon" style="color:#047857;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M7 3a2 2 0 0 0-2 2v7.5c0 2 1.5 3.5 3.5 3.5H9v2H5v2h8v-2h-2v-2h.5c2 0 3.5-1.5 3.5-3.5V5a2 2 0 0 0-4 0v4h-1V4a2 2 0 0 0-4 0v5h-1V5a2 2 0 0 0-2-2z"/>
               </svg>
             </span>
@@ -293,7 +468,7 @@
           <!-- NA -->
           <div class="role-pill" data-role="NA">
             <span class="role-pill-icon" style="color:#334155;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="12" cy="12" r="9"/>
                 <line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/>
               </svg>
@@ -309,7 +484,7 @@
         <!-- Batting Rating -->
         <div class="rating-card rating-card-batting">
           <div class="rating-header-row">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#DC2626">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#DC2626">
               <path d="M19.7 4.3a1 1 0 0 0-1.4 0l-3.3 3.3 1.4 1.4 3.3-3.3a1 1 0 0 0 0-1.4z"/>
               <path d="M15.7 8.3L7.3 16.7a2 2 0 0 0-.6 1.4v2.9h2.9c.5 0 1-.2 1.4-.6l8.4-8.4-3.7-3.7z"/>
             </svg>
@@ -324,7 +499,7 @@
         <!-- Bowling Rating -->
         <div class="rating-card rating-card-bowling">
           <div class="rating-header-row">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="10" fill="#2563EB"/>
               <path d="M8 4c4 3 4 13 0 16" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
               <path d="M16 4c-4 3-4 13 0 16" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
@@ -340,7 +515,7 @@
         <!-- Keeping Skills Rating -->
         <div class="rating-card rating-card-keeping">
           <div class="rating-header-row">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#7E22CE">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#7E22CE">
               <path d="M7 3a2 2 0 0 0-2 2v7.5c0 2 1.5 3.5 3.5 3.5H9v2H5v2h8v-2h-2v-2h.5c2 0 3.5-1.5 3.5-3.5V5a2 2 0 0 0-4 0v4h-1V4a2 2 0 0 0-4 0v5h-1V5a2 2 0 0 0-2-2z"/>
             </svg>
             <span class="rating-label">Keeping Skills Rating (out of 10) <span class="req-star">*</span></span>
@@ -358,7 +533,7 @@
         <div class="style-card style-card-batting">
           <div class="style-header-row">
             <div class="style-icon-sq">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19.7 4.3a1 1 0 0 0-1.4 0l-3.3 3.3 1.4 1.4 3.3-3.3a1 1 0 0 0 0-1.4z"/>
                 <path d="M15.7 8.3L7.3 16.7a2 2 0 0 0-.6 1.4v2.9h2.9c.5 0 1-.2 1.4-.6l8.4-8.4-3.7-3.7z"/>
               </svg>
@@ -382,7 +557,7 @@
               <option value="NA">NA</option>
             </select>
             <span class="select-chevron">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B2545" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B2545" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
             </span>
@@ -393,7 +568,7 @@
         <div class="style-card style-card-bowling">
           <div class="style-header-row">
             <div class="style-icon-sq">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="10" fill="#7E22CE"/>
                 <path d="M8 4c4 3 4 13 0 16" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
                 <path d="M16 4c-4 3-4 13 0 16" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
@@ -418,7 +593,7 @@
               <option value="NA">NA</option>
             </select>
             <span class="select-chevron">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B2545" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0B2545" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
             </span>
@@ -428,22 +603,98 @@
 
     </form>
 
-    <!-- FOOTER WITH SUBMIT BUTTON -->
-    <footer class="reg-footer">
-      <img src="assets/reg-footer-clean.jpg" alt="Stadium Atmosphere" class="reg-footer-img">
-      <div class="reg-footer-button-layer">
-        <button type="submit" form="playerRegForm" id="btnSubmitRegistration" class="btn-submit-reg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          </svg>
-          <span>Submit Registration</span>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-        </button>
+    <!-- ============================================================ -->
+    <!-- 3. PURE-CODE FOOTER WITH STADIUM HORIZON & SUBMIT BUTTON    -->
+    <!-- ============================================================ -->
+    <footer class="reg-footer-banner">
+      <!-- Dynamic Vector Stadium Swoosh Arcs & Crowd -->
+      <svg class="footer-swoosh-arc" viewBox="0 0 682 120" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="goldSwooshGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#F59E0B"/>
+            <stop offset="50%" stop-color="#FCD34D"/>
+            <stop offset="100%" stop-color="#F59E0B"/>
+          </linearGradient>
+          <linearGradient id="blueSwooshGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1E40AF"/>
+            <stop offset="50%" stop-color="#38BDF8"/>
+            <stop offset="100%" stop-color="#1E40AF"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Dynamic Sports Swoosh Curves -->
+        <path d="M -20 50 Q 341 12 702 50 L 702 120 L -20 120 Z" fill="#061A3A"/>
+        <path d="M -10 44 Q 341 4 692 44" stroke="url(#goldSwooshGrad)" stroke-width="4.5" fill="none" opacity="0.95"/>
+        <path d="M -10 52 Q 341 14 692 52" stroke="url(#blueSwooshGrad)" stroke-width="3.5" fill="none" opacity="0.9"/>
+
+        <!-- Stadium Crowd Silhouettes & Flags -->
+        <path d="M0 120 L0 88 C30 84 50 92 80 87 C110 82 130 90 160 86 C200 82 240 89 280 85 C320 83 360 88 400 85 C450 82 490 89 530 86 C570 83 600 89 640 86 C660 84 682 88 682 120 Z" fill="#030A14"/>
+        <!-- Crowd Heads & Flag Silhouettes -->
+        <circle cx="45" cy="84" r="3" fill="#030A14"/>
+        <circle cx="65" cy="82" r="3.5" fill="#030A14"/>
+        <circle cx="110" cy="80" r="3" fill="#030A14"/>
+        <circle cx="145" cy="81" r="3.5" fill="#030A14"/>
+        <circle cx="530" cy="81" r="3.5" fill="#030A14"/>
+        <circle cx="560" cy="80" r="3" fill="#030A14"/>
+        <circle cx="620" cy="82" r="3" fill="#030A14"/>
+        <line x1="90" y1="84" x2="90" y2="70" stroke="#030A14" stroke-width="1.5"/>
+        <polygon points="90,70 102,74 90,78" fill="#F59E0B" opacity="0.7"/>
+        <line x1="590" y1="84" x2="590" y2="70" stroke="#030A14" stroke-width="1.5"/>
+        <polygon points="590,70 602,74 590,78" fill="#38BDF8" opacity="0.7"/>
+      </svg>
+
+      <!-- Batsman Silhouette Left -->
+      <div class="footer-batsman-silhouette">
+        <svg viewBox="0 0 100 110" width="80" height="85">
+          <!-- Batsman ready in stance -->
+          <circle cx="40" cy="22" r="8" fill="#030A14"/>
+          <path d="M35 28 L 52 50 L 42 70 L 32 40 Z" fill="#030A14"/>
+          <!-- Legs & Stumps behind -->
+          <line x1="20" y1="52" x2="20" y2="88" stroke="#F59E0B" stroke-width="2"/>
+          <line x1="24" y1="52" x2="24" y2="88" stroke="#F59E0B" stroke-width="2"/>
+          <line x1="28" y1="52" x2="28" y2="88" stroke="#F59E0B" stroke-width="2"/>
+          <path d="M42 68 L 32 100 L 44 100 L 50 72 Z" fill="#030A14"/>
+          <path d="M48 68 L 65 98 L 76 96 L 55 70 Z" fill="#030A14"/>
+          <!-- Bat resting on pitch -->
+          <line x1="50" y1="45" x2="68" y2="92" stroke="#B45309" stroke-width="4" stroke-linecap="round"/>
+        </svg>
       </div>
+
+      <!-- 3D Rendered Vector Cricket Ball Right -->
+      <div class="footer-cricket-ball">
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
+          <defs>
+            <radialGradient id="cricketBall3D" cx="35%" cy="32%" r="65%">
+              <stop offset="0%" stop-color="#FF6B6B"/>
+              <stop offset="30%" stop-color="#DC2626"/>
+              <stop offset="75%" stop-color="#991B1B"/>
+              <stop offset="100%" stop-color="#450A0A"/>
+            </radialGradient>
+          </defs>
+          <!-- Ball Spherical Body -->
+          <circle cx="50" cy="50" r="44" fill="url(#cricketBall3D)"/>
+          <!-- Primary White Curved Seam -->
+          <path d="M 22 22 Q 58 48 78 78" stroke="#FFFFFF" stroke-width="3" fill="none" opacity="0.95"/>
+          <path d="M 20 25 Q 56 51 76 81" stroke="#FEE2E2" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+          <path d="M 24 19 Q 60 45 80 75" stroke="#FEE2E2" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+          <!-- Specular Light Reflection -->
+          <ellipse cx="36" cy="30" rx="10" ry="6" transform="rotate(-30 36 30)" fill="#FFFFFF" opacity="0.45"/>
+        </svg>
+      </div>
+
+      <!-- Centered Interactive Submit Button -->
+      <button type="submit" form="playerRegForm" id="btnSubmitRegistration" class="btn-submit-reg">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+        <span>Submit Registration</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
     </footer>
+
   </div>
 
   <!-- Web Link Modal -->
