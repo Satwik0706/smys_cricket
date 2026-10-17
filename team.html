@@ -6,7 +6,7 @@
   <title>Franchise War-Room — T20 Cricket Mega Auction</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/portal.css">
 </head>
 <body>
@@ -47,8 +47,11 @@
           <input type="text" id="inputTeamLoginId" class="form-input" placeholder="e.g. csk_101" required autofocus>
         </div>
         <div class="form-group" style="margin-bottom: 20px;">
-          <label class="form-label">Team Password</label>
-          <input type="password" id="inputTeamPassword" class="form-input" placeholder="e.g. CSK@8492" required>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label class="form-label" style="margin-bottom:0;">Table Password / Secret Key</label>
+            <button type="button" id="btnToggleTeamPass" style="background:none; border:none; color:var(--primary-500); font-size:0.75rem; font-weight:700; cursor:pointer;">👁️ Show Key</button>
+          </div>
+          <input type="password" id="inputTeamPassword" class="form-input" placeholder="e.g. CSK@2026 or Secret Key" required>
         </div>
         <button type="submit" class="btn-primary" style="width:100%;">Connect to Bidding Table</button>
       </form>
@@ -57,12 +60,12 @@
     <!-- Authenticated Team Bidding Console -->
     <div id="teamMainContent" style="display:none; margin-top:20px;">
       <!-- Franchise Profile Banner -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:var(--bg-surface); padding:16px 24px; border-radius:var(--r-lg); border:1px solid var(--border-subtle); box-shadow:var(--shadow-sm); flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; background:linear-gradient(135deg, rgba(17, 24, 39, 0.92) 0%, rgba(15, 23, 42, 0.96) 100%); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); padding:18px 28px; border-radius:var(--r-xl); border:1px solid rgba(255, 255, 255, 0.14); box-shadow:0 12px 35px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2); flex-wrap:wrap; gap:16px;">
         <div style="display:flex; align-items:center; gap:16px;">
-          <div id="teamBadgeEmoji" style="font-size:2.2rem;">🏏</div>
+          <div id="teamBadgeEmoji" style="font-size:2.4rem; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">🏏</div>
           <div>
-            <h2 id="teamAuthenticatedName" style="font-size:1.45rem; font-weight:900; color:var(--text-primary); line-height:1.2;">Team Name</h2>
-            <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;" id="teamLeadershipTag">Captain: Not Set • Vice-Captain: Not Set</div>
+            <h2 id="teamAuthenticatedName" style="font-family:var(--font-display); font-size:1.8rem; font-weight:900; color:#FFFFFF; line-height:1.1; letter-spacing:0.5px;">Team Name</h2>
+            <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:3px; font-weight:600;" id="teamLeadershipTag">Captain: Not Set • Vice-Captain: Not Set</div>
           </div>
         </div>
         <button class="icon-btn" id="btnTeamLogout">
@@ -73,16 +76,16 @@
       <div class="warroom-grid">
         <!-- Left Column: Active Player & Giant Bidding Paddle -->
         <div class="warroom-card">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-subtle); padding-bottom:16px; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-subtle); padding-bottom:18px; flex-wrap:wrap; gap:14px;">
             <div>
-              <div style="color:var(--text-muted); font-size:0.75rem; letter-spacing:1.5px; text-transform:uppercase; font-weight:700;">CURRENT ON THE BLOCK</div>
-              <h2 id="teamViewPlayerName" style="font-size:2rem; font-weight:900; color:var(--text-primary); margin:2px 0;">NO ACTIVE PLAYER</h2>
-              <div id="teamViewPlayerRole" style="color:var(--primary-600); font-weight:700; font-size:0.9rem;">Awaiting call from auctioneer</div>
+              <div style="color:var(--text-secondary); font-size:0.76rem; letter-spacing:1.8px; text-transform:uppercase; font-weight:800;">CURRENT ON THE BLOCK</div>
+              <h2 id="teamViewPlayerName" style="font-family:var(--font-display); font-size:2.3rem; font-weight:900; color:#FFFFFF; margin:3px 0; letter-spacing:0.8px; text-shadow:0 2px 10px rgba(0,0,0,0.6);">NO ACTIVE PLAYER</h2>
+              <div id="teamViewPlayerRole" style="color:#38BDF8; font-weight:800; font-size:0.95rem; letter-spacing:0.5px; text-shadow:0 0 12px rgba(56, 189, 248, 0.35);">Awaiting call from auctioneer</div>
             </div>
             <div style="text-align:right;">
-              <div style="color:var(--text-muted); font-size:0.75rem; letter-spacing:1px; text-transform:uppercase; font-weight:700;">CURRENT BID</div>
-              <div id="teamViewCurrentBid" style="font-size:2.6rem; font-weight:900; color:#059669; line-height:1;">₹ 0.00 CR</div>
-              <div id="teamViewLeaderTag" style="font-size:0.88rem; font-weight:700; color:var(--text-secondary); margin-top:4px;">No Bids Placed</div>
+              <div style="color:var(--text-secondary); font-size:0.76rem; letter-spacing:1.5px; text-transform:uppercase; font-weight:800;">CURRENT BID</div>
+              <div id="teamViewCurrentBid" style="font-family:var(--font-display); font-size:3rem; font-weight:900; color:#34D399; line-height:1; text-shadow:0 0 20px rgba(16, 185, 129, 0.45);">₹ 0.00 CR</div>
+              <div id="teamViewLeaderTag" style="font-size:0.9rem; font-weight:800; color:var(--text-secondary); margin-top:5px;">No Bids Placed</div>
             </div>
           </div>
 
@@ -154,15 +157,15 @@
 
           <!-- Squad Limits Counters -->
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0;">
-            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); padding:14px; border-radius:12px; text-align:center;">
+            <div style="background:rgba(15, 23, 42, 0.8); border:1px solid rgba(255, 255, 255, 0.08); padding:14px; border-radius:var(--r-md); text-align:center;">
               <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Squad Size</div>
-              <div id="teamSquadCount" style="font-size:1.6rem; font-weight:900; color:var(--text-primary);">0 / 25</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Min 18 required</div>
+              <div id="teamSquadCount" style="font-size:1.6rem; font-weight:900; color:var(--text-white); font-family:var(--font-display);">0 / 25</div>
+              <div style="font-size:0.75rem; color:var(--text-secondary);">Min 18 required</div>
             </div>
-            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); padding:14px; border-radius:12px; text-align:center;">
+            <div style="background:rgba(15, 23, 42, 0.8); border:1px solid rgba(255, 255, 255, 0.08); padding:14px; border-radius:var(--r-md); text-align:center;">
               <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Overseas Quota</div>
-              <div id="teamOverseasCount" style="font-size:1.6rem; font-weight:900; color:var(--text-primary);">0 / 8</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Max 8 allowed</div>
+              <div id="teamOverseasCount" style="font-size:1.6rem; font-weight:900; color:var(--text-white); font-family:var(--font-display);">0 / 8</div>
+              <div style="font-size:0.75rem; color:var(--text-secondary);">Max 8 allowed</div>
             </div>
           </div>
 

@@ -111,9 +111,14 @@ class AuctionStore {
   async fetchCloudData() {
     if (!this.supabase) return;
     try {
-      // 1. Fetch Players from Supabase
+      // 1. Fetch Players from Supabase (Once on startup, not polled)
       const { data: dbPlayers, error: pErr } = await this.supabase.from('players').select('*');
-      if (!pErr && Array.isArray(dbPlayers)) {
+      if (pErr) {
+        console.warn("Supabase fetch players error:", pErr);
+        if (pErr.message && (pErr.message.includes('exceeded') || pErr.code === '429' || pErr.message.includes('402'))) {
+          window.dispatchEvent(new CustomEvent('cricket_cloud_egress_warning', { detail: { message: pErr.message } }));
+        }
+      } else if (Array.isArray(dbPlayers)) {
         const cloudPlayerMap = new Map();
         dbPlayers.forEach(row => {
           const mapped = {
@@ -168,7 +173,9 @@ class AuctionStore {
 
       // 2. Fetch Teams from Supabase
       const { data: dbTeams, error: tErr } = await this.supabase.from('teams').select('*');
-      if (!tErr && Array.isArray(dbTeams) && dbTeams.length > 0) {
+      if (tErr) {
+        console.warn("Supabase fetch teams error:", tErr);
+      } else if (Array.isArray(dbTeams) && dbTeams.length > 0) {
         dbTeams.forEach(t => {
           const mappedTeam = {
             id: t.id,
@@ -223,7 +230,20 @@ class AuctionStore {
       if (this.supabaseChannel) {
         try { this.supabase.removeChannel(this.supabaseChannel); } catch (e) {}
       }
-      this.supabaseChannel = this.supabase.channel('public_cricket_auction_realtime')
+
+      // Supabase Channel with Realtime Broadcast (Zero database egress!) + Postgres changes
+      this.supabaseChannel = this.supabase.channel('public_cricket_auction_realtime', {
+        config: { broadcast: { self: false } }
+      })
+        // 1. Zero-Egress Ultra-Fast Broadcast Sync (for live bids & timer)
+        .on('broadcast', { event: 'AUCTION_LIVE_SYNC' }, ({ payload }) => {
+          if (payload && payload.live) {
+            this.state.live = Object.assign(this.state.live, payload.live);
+            this.saveLocal();
+            this.notify();
+          }
+        })
+        // 2. Database Live Room Sync
         .on('postgres_changes', { event: '*', schema: 'public', table: 'auction_state' }, payload => {
           if (payload && payload.new) {
             const row = payload.new;
@@ -238,26 +258,97 @@ class AuctionStore {
             this.notify();
           }
         })
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, () => {
-          this.fetchCloudData();
+        // 3. Incremental Player Updates (NEVER re-fetch the entire table!)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, payload => {
+          if (payload.eventType === 'DELETE' && payload.old) {
+            this.state.players = this.state.players.filter(p => p.id !== payload.old.id);
+            this.saveLocal();
+            this.notify();
+          } else if (payload.new) {
+            const row = payload.new;
+            const mapped = {
+              id: row.id,
+              name: row.name,
+              role: row.role,
+              battingStyle: row.batting_style || 'Right-hand bat',
+              bowlingStyle: row.bowling_style || '',
+              country: row.country || 'India',
+              age: row.age || 24,
+              isOverseas: (row.country && row.country.toLowerCase() !== 'india'),
+              matches: row.matches || 0,
+              runs: row.runs || 0,
+              wickets: row.wickets || 0,
+              strikeRate: parseFloat(row.strike_rate) || 0,
+              economy: parseFloat(row.economy) || 0,
+              cricHeroesName: row.cric_heroes_name || '',
+              cricHeroesPhone: row.cric_heroes_phone || '',
+              photoUrl: row.photo_url || window.DEFAULT_CRICKET_AVATAR,
+              tierId: row.tier_id,
+              basePriceCr: parseFloat(row.base_price_cr) || 0.20,
+              status: row.status || 'PENDING',
+              auctionSequence: row.auction_sequence || 999,
+              soldToTeam: row.sold_to_team,
+              soldPriceCr: row.sold_price_cr ? parseFloat(row.sold_price_cr) : null
+            };
+            const idx = this.state.players.findIndex(x => x.id === mapped.id);
+            if (idx >= 0) {
+              this.state.players[idx] = Object.assign(this.state.players[idx], mapped);
+            } else {
+              this.state.players.push(mapped);
+            }
+            this.saveLocal();
+            this.notify();
+          }
         })
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'teams' }, () => {
-          this.fetchCloudData();
+        // 4. Incremental Team Updates (NEVER re-fetch the entire table!)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'teams' }, payload => {
+          if (payload.eventType === 'DELETE' && payload.old) {
+            this.state.teams = this.state.teams.filter(t => t.id !== payload.old.id);
+            this.saveLocal();
+            this.notify();
+          } else if (payload.new) {
+            const t = payload.new;
+            const mappedTeam = {
+              id: t.id,
+              name: t.name,
+              shortCode: t.short_code,
+              primaryColor: t.primary_color || '#0EA5E9',
+              secondaryColor: t.secondary_color || '#071E3D',
+              logoEmoji: t.logo_url || '🏏',
+              purseLeftCr: parseFloat(t.purse_left_cr) || 0,
+              totalPurseCr: parseFloat(t.total_purse_cr) || 100,
+              captainName: t.captain_name || '',
+              captainPriceCr: parseFloat(t.captain_price_cr) || 0,
+              viceCaptainName: t.vice_captain_name || '',
+              viceCaptainPriceCr: parseFloat(t.vice_captain_price_cr) || 0,
+              teamLoginId: t.team_login_id || (t.short_code.toLowerCase() + '_101'),
+              teamPassword: t.team_password || (t.short_code + '@1234'),
+              squad: Array.isArray(t.squad) ? t.squad : [],
+              overseasCount: t.overseas_count || 0
+            };
+            const idx = this.state.teams.findIndex(x => x.id === mappedTeam.id);
+            if (idx >= 0) {
+              this.state.teams[idx] = Object.assign(this.state.teams[idx], mappedTeam);
+            } else {
+              this.state.teams.push(mappedTeam);
+            }
+            this.recalculateTeamPurse(mappedTeam);
+            this.saveLocal();
+            this.notify();
+          }
         })
         .subscribe((status, err) => {
           if (status === 'SUBSCRIBED') {
-            this.fetchCloudData();
+            console.log("✓ Supabase Realtime connected. Zero-egress broadcast active.");
           }
         });
 
-      // Background fallback polling: Guarantees updates from other phones/devices
-      // arrive in ~3 seconds even if mobile sleep or websockets hiccup
-      if (this.cloudSyncInterval) clearInterval(this.cloudSyncInterval);
-      this.cloudSyncInterval = setInterval(() => {
-        if (this.supabase && this.isCloudSyncEnabled) {
-          this.fetchCloudData();
-        }
-      }, 3500);
+      // NOTE: Polling loop interval permanently removed!
+      // This eliminates the 8.75GB runaway egress bug completely.
+      if (this.cloudSyncInterval) {
+        clearInterval(this.cloudSyncInterval);
+        this.cloudSyncInterval = null;
+      }
     } catch (err) {
       console.warn("Supabase realtime setup error:", err);
     }
@@ -332,23 +423,30 @@ class AuctionStore {
 
   syncAuctionStateToCloud() {
     if (!this.supabase) return;
-    try {
-      this.supabase.from('auction_state').upsert({
-        id: 'live_room',
-        active_player_id: this.state.live.activePlayerId,
-        current_bid_cr: this.state.live.currentBidCr,
-        current_bidder_id: this.state.live.currentBidderId,
-        bid_history: this.state.live.bidHistory,
-        hammer_status: this.state.live.hammerStatus,
-        timer_running: this.state.live.timerRunning,
-        timer_seconds: this.state.live.timerSeconds,
-        updated_at: new Date().toISOString()
-      }).then(({ error }) => {
-        if (error) console.warn("Auction state cloud upsert error", error);
-      });
-    } catch (e) {
-      console.warn("Auction state sync error", e);
-    }
+    if (this._syncDebounce) clearTimeout(this._syncDebounce);
+    this._syncDebounce = setTimeout(async () => {
+      try {
+        const { error } = await this.supabase.from('auction_state').upsert({
+          id: 'live_room',
+          active_player_id: this.state.live.activePlayerId,
+          current_bid_cr: this.state.live.currentBidCr,
+          current_bidder_id: this.state.live.currentBidderId,
+          bid_history: this.state.live.bidHistory,
+          hammer_status: this.state.live.hammerStatus,
+          timer_running: this.state.live.timerRunning,
+          timer_seconds: this.state.live.timerSeconds,
+          updated_at: new Date().toISOString()
+        });
+        if (error) {
+          console.warn("Auction state cloud upsert error", error);
+          if (error.message && (error.message.includes('exceeded') || error.message.includes('429') || error.message.includes('402'))) {
+            window.dispatchEvent(new CustomEvent('cricket_cloud_egress_warning', { detail: { message: error.message } }));
+          }
+        }
+      } catch (e) {
+        console.warn("Auction state sync error", e);
+      }
+    }, 120);
   }
 
   loadState() {
@@ -413,6 +511,16 @@ class AuctionStore {
     this.saveLocal();
     if (this.channel) {
       this.channel.postMessage({ type: 'STATE_SYNC', payload: this.state });
+    }
+    // Zero-egress Realtime Broadcast message across all devices on same channel
+    if (this.supabase && this.supabaseChannel) {
+      try {
+        this.supabaseChannel.send({
+          type: 'broadcast',
+          event: 'AUCTION_LIVE_SYNC',
+          payload: { live: this.state.live }
+        });
+      } catch (e) {}
     }
     this.syncAuctionStateToCloud();
     this.notify();
@@ -481,10 +589,14 @@ class AuctionStore {
     const totalDeductions = captainPrice + viceCaptainPrice;
     const initialPurseLeft = Math.max(0, parseFloat((totalPurse - totalDeductions).toFixed(2)));
 
-    // Generate unique Login ID and Password
+    // Admin custom credentials or clean fallback
     const cleanCode = (data.shortCode || "TEAM").trim().toUpperCase();
-    const loginId = cleanCode.toLowerCase() + "_" + Math.floor(100 + Math.random() * 900);
-    const generatedPassword = cleanCode + "@" + Math.floor(1000 + Math.random() * 9000);
+    const loginId = (data.teamLoginId && data.teamLoginId.trim())
+      ? data.teamLoginId.trim()
+      : (cleanCode.toLowerCase() + "_" + Math.floor(100 + Math.random() * 900));
+    const assignedPassword = (data.teamPassword && data.teamPassword.trim())
+      ? data.teamPassword.trim()
+      : (cleanCode + "@" + Math.floor(1000 + Math.random() * 9000));
 
     const newTeam = {
       id: "team_" + Date.now(),
@@ -501,7 +613,7 @@ class AuctionStore {
       totalPurseCr: totalPurse,
       purseLeftCr: initialPurseLeft,
       teamLoginId: loginId,
-      teamPassword: generatedPassword,
+      teamPassword: assignedPassword,
       squad: [],
       overseasCount: 0
     };
@@ -533,6 +645,39 @@ class AuctionStore {
     return newTeam;
   }
 
+  updateTeamCredentials(teamId, newCreds) {
+    const team = this.state.teams.find(t => t.id === teamId);
+    if (!team) return { success: false, reason: "Team not found" };
+
+    if (newCreds.teamLoginId && newCreds.teamLoginId.trim()) {
+      team.teamLoginId = newCreds.teamLoginId.trim();
+    }
+    if (newCreds.teamPassword && newCreds.teamPassword.trim()) {
+      team.teamPassword = newCreds.teamPassword.trim();
+    }
+    if (newCreds.name && newCreds.name.trim()) {
+      team.name = newCreds.name.trim();
+    }
+    if (newCreds.shortCode && newCreds.shortCode.trim()) {
+      team.shortCode = newCreds.shortCode.trim().toUpperCase();
+    }
+    if (newCreds.primaryColor) {
+      team.primaryColor = newCreds.primaryColor;
+    }
+    if (newCreds.logoEmoji) {
+      team.logoEmoji = newCreds.logoEmoji;
+    }
+    if (newCreds.totalPurseCr !== undefined) {
+      team.totalPurseCr = parseFloat(newCreds.totalPurseCr) || 100;
+      this.recalculateTeamPurse(team);
+    }
+
+    this.saveLocal();
+    this.broadcast();
+    this.syncTeamToCloud(team);
+    return { success: true, team };
+  }
+
   deleteTeam(teamId) {
     this.state.teams = this.state.teams.filter(t => t.id !== teamId);
     if (this.state.live.currentBidderId === teamId) {
@@ -550,19 +695,24 @@ class AuctionStore {
     const newPlayer = {
       id: id,
       name: (data.name || "").trim(),
-      role: data.role || "Batter",
-      battingStyle: data.battingStyle || "Right-hand bat",
-      bowlingStyle: data.bowlingStyle || "Right-arm medium",
+      year: data.year || "",
+      phone: data.phone || data.cricHeroesPhone || "",
+      role: data.role || "Batsman",
+      battingStyle: data.battingStyle || "",
+      bowlingStyle: data.bowlingStyle || "",
+      battingRating: parseInt(data.battingRating) || 0,
+      bowlingRating: parseInt(data.bowlingRating) || 0,
+      keepingRating: parseInt(data.keepingRating) || 0,
       country: data.country ? data.country.trim() : "India",
-      age: parseInt(data.age) || 24,
-      isOverseas: data.country && data.country.toLowerCase() !== 'india',
+      age: parseInt(data.age) || 20,
+      isOverseas: false,
       matches: parseInt(data.matches) || 0,
       runs: parseInt(data.runs) || 0,
       wickets: parseInt(data.wickets) || 0,
       strikeRate: parseFloat(data.strikeRate) || 0,
       economy: parseFloat(data.economy) || 0,
       cricHeroesName: (data.cricHeroesName || "").trim(),
-      cricHeroesPhone: (data.cricHeroesPhone || "").trim(),
+      cricHeroesPhone: (data.phone || data.cricHeroesPhone || "").trim(),
       photoUrl: data.photoUrl || window.DEFAULT_CRICKET_AVATAR,
       tierId: null, // Admin will assign
       basePriceCr: parseFloat(data.requestedBasePriceCr) || 0.20,

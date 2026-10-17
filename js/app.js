@@ -434,6 +434,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const teamAuthenticatedName = document.getElementById('teamAuthenticatedName');
   const teamBadgeEmoji = document.getElementById('teamBadgeEmoji');
   const teamLeadershipTag = document.getElementById('teamLeadershipTag');
+  const btnToggleTeamPass = document.getElementById('btnToggleTeamPass');
+
+  if (btnToggleTeamPass && inputTeamPassword) {
+    btnToggleTeamPass.addEventListener('click', () => {
+      if (inputTeamPassword.type === 'password') {
+        inputTeamPassword.type = 'text';
+        btnToggleTeamPass.textContent = '🔒 Hide Key';
+      } else {
+        inputTeamPassword.type = 'password';
+        btnToggleTeamPass.textContent = '👁️ Show Key';
+      }
+    });
+  }
 
   let activeLoggedInTeamId = sessionStorage.getItem('cricket_active_team_id') || null;
 
@@ -510,6 +523,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function openCreateTeam() {
     if (createTeamModal) {
       createTeamModal.classList.add('active');
+      const codeInput = document.getElementById('newTeamCode');
+      const passInput = document.getElementById('newTeamPassword');
+      if (passInput && !passInput.value) {
+        const code = (codeInput && codeInput.value ? codeInput.value : 'TEAM').trim().toUpperCase();
+        passInput.value = code + '@' + Math.floor(1000 + Math.random() * 9000);
+      }
       updateTeamPursePreview();
     }
   }
@@ -518,6 +537,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnOpenCreateTeamModal2) btnOpenCreateTeamModal2.addEventListener('click', openCreateTeam);
   if (btnCloseTeamModal && createTeamModal) {
     btnCloseTeamModal.addEventListener('click', () => createTeamModal.classList.remove('active'));
+  }
+
+  const btnGenTeamPass = document.getElementById('btnGenTeamPass');
+  if (btnGenTeamPass) {
+    btnGenTeamPass.addEventListener('click', () => {
+      const code = (document.getElementById('newTeamCode').value || 'TEAM').trim().toUpperCase();
+      const passInput = document.getElementById('newTeamPassword');
+      if (passInput) passInput.value = code + '@' + Math.floor(1000 + Math.random() * 9000);
+    });
   }
 
   function updateTeamPursePreview() {
@@ -536,9 +564,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (formCreateTeam) {
     formCreateTeam.addEventListener('submit', (e) => {
       e.preventDefault();
+      const loginIdInput = document.getElementById('newTeamLoginId');
+      const passInput = document.getElementById('newTeamPassword');
+
       const newTeam = window.auctionStore.createTeam({
         name: document.getElementById('newTeamName').value,
         shortCode: document.getElementById('newTeamCode').value,
+        teamLoginId: loginIdInput ? loginIdInput.value.trim() : '',
+        teamPassword: passInput ? passInput.value.trim() : '',
         primaryColor: document.getElementById('newTeamColor').value,
         logoEmoji: document.getElementById('newTeamEmoji').value,
         totalPurseCr: newTeamTotalPurse ? newTeamTotalPurse.value : 100,
@@ -548,11 +581,72 @@ document.addEventListener('DOMContentLoaded', () => {
         viceCaptainPriceCr: newTeamVCPrice ? newTeamVCPrice.value : 0
       });
 
-      window.showToast(`Franchise "${newTeam.name}" created! Credentials: ${newTeam.teamLoginId} / ${newTeam.teamPassword}`, 'success', 5000);
+      window.showToast(`Franchise "${newTeam.name}" created! Table Key: ${newTeam.teamPassword}`, 'success', 5000);
       formCreateTeam.reset();
       if (createTeamModal) createTeamModal.classList.remove('active');
     });
   }
+
+  // --- EDIT FRANCHISE CREDENTIALS MODAL ---
+  const editTeamModal = document.getElementById('editTeamModal');
+  const formEditTeam = document.getElementById('formEditTeam');
+  const btnCloseEditTeamModal = document.getElementById('btnCloseEditTeamModal');
+  const btnGenEditPass = document.getElementById('btnGenEditPass');
+
+  if (btnCloseEditTeamModal && editTeamModal) {
+    btnCloseEditTeamModal.addEventListener('click', () => editTeamModal.classList.remove('active'));
+  }
+
+  if (btnGenEditPass) {
+    btnGenEditPass.addEventListener('click', () => {
+      const code = (document.getElementById('editTeamCode').value || 'TEAM').trim().toUpperCase();
+      const passInput = document.getElementById('editTeamPassword');
+      if (passInput) passInput.value = code + '@' + Math.floor(1000 + Math.random() * 9000);
+    });
+  }
+
+  if (formEditTeam) {
+    formEditTeam.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const teamId = document.getElementById('editTeamId').value;
+      const res = window.auctionStore.updateTeamCredentials(teamId, {
+        name: document.getElementById('editTeamName').value,
+        shortCode: document.getElementById('editTeamCode').value,
+        teamLoginId: document.getElementById('editTeamLoginId').value,
+        teamPassword: document.getElementById('editTeamPassword').value,
+        primaryColor: document.getElementById('editTeamColor').value,
+        logoEmoji: document.getElementById('editTeamEmoji').value,
+        totalPurseCr: document.getElementById('editTeamTotalPurse').value
+      });
+
+      if (res.success) {
+        window.showToast(`Updated credentials for "${res.team.name}"! Key: ${res.team.teamPassword}`, 'success');
+        if (editTeamModal) editTeamModal.classList.remove('active');
+      } else {
+        window.showToast(res.reason || 'Failed to update credentials', 'warning');
+      }
+    });
+  }
+
+  // --- CLOUD EGRESS WARNING BANNER & FIX BUTTON ---
+  const cloudAlertBanner = document.getElementById('cloudAlertBanner');
+  const btnFixCloudEgress = document.getElementById('btnFixCloudEgress');
+  const cloudAlertDesc = document.getElementById('cloudAlertDesc');
+
+  if (btnFixCloudEgress && btnAdminCloudSettings) {
+    btnFixCloudEgress.addEventListener('click', () => {
+      btnAdminCloudSettings.click();
+    });
+  }
+
+  window.addEventListener('cricket_cloud_egress_warning', (e) => {
+    if (cloudAlertBanner) {
+      cloudAlertBanner.style.display = 'flex';
+      if (cloudAlertDesc && e.detail && e.detail.message) {
+        cloudAlertDesc.textContent = `Supabase responded: "${e.detail.message}". Tap 'Resolve Cloud Sync' to reconnect or switch to a new project.`;
+      }
+    }
+  });
 
   // ============================================================
   // PLAYER REGISTRATION PORTAL
@@ -612,14 +706,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnChoosePhoto = document.getElementById('btnChoosePhoto');
   const uploadSuccessBadge = document.getElementById('uploadSuccessBadge');
 
-  // Standardize any uploaded photo of any size to standard 600x600 high-res avatar,
+  // Standardize any uploaded photo of any size to web-optimized 360x360 high-def avatar,
   // strictly maintaining original aspect ratio without cropping (Aspect-Fit with sports studio backdrop)
+  // Highly optimized (under 25KB) to prevent database egress overload.
   function processAndStandardizeImage(imgSource, callback) {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const targetSize = 600; // Standard official broadcast & avatar resolution
+      const targetSize = 360; // Web-optimized official broadcast & avatar resolution
       canvas.width = targetSize;
       canvas.height = targetSize;
       const ctx = canvas.getContext('2d');
@@ -633,7 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Professional stadium studio backdrop with subtle radial glow
       const bgGrad = ctx.createRadialGradient(
-        targetSize / 2, targetSize / 2, 40,
+        targetSize / 2, targetSize / 2, 30,
         targetSize / 2, targetSize / 2, targetSize * 0.72
       );
       bgGrad.addColorStop(0, '#1E293B');
@@ -647,7 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, 0, 0, img.width, img.height, dx, dy, drawW, drawH);
 
-      const standardizedDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+      const standardizedDataUrl = canvas.toDataURL('image/jpeg', 0.72);
       callback(standardizedDataUrl);
     };
     img.onerror = () => {
@@ -1284,7 +1379,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span style="background:${team.primaryColor}; color:#FFF; padding:2px 7px; border-radius:4px; font-size:0.7rem; font-weight:800; margin-left:6px;">${team.shortCode}</span>
               </div>
             </div>
-            <button class="btn-action-danger btn-delete-team" data-id="${team.id}" style="padding:4px 9px; font-size:0.72rem;">Delete</button>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-action-secondary btn-edit-team-cred" data-id="${team.id}" style="padding:4px 9px; font-size:0.72rem;">✏️ Edit Key</button>
+              <button class="btn-action-danger btn-delete-team" data-id="${team.id}" style="padding:4px 9px; font-size:0.72rem;">Delete</button>
+            </div>
           </div>
 
           <div style="margin:10px 0; font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">
@@ -1292,7 +1390,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>Vice-Captain: <strong style="color:var(--text-primary);">${team.viceCaptainName || 'None'}</strong> ${team.viceCaptainPriceCr ? `(₹${team.viceCaptainPriceCr} Cr)` : ''}</div>
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:8px 10px; border-radius:8px; margin-bottom:10px; text-align:center;">
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); padding:8px 10px; border-radius:8px; margin-bottom:10px; text-align:center;">
             <div>
               <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Total Budget</div>
               <div style="font-weight:800; font-size:0.85rem; color:var(--text-primary);">₹ ${team.totalPurseCr.toFixed(1)} Cr</div>
@@ -1314,16 +1412,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div style="border-top:1px dashed var(--border-subtle); padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Credentials:</div>
+              <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">🔑 War-Room Key:</div>
               <div style="display:flex; gap:6px; margin-top:4px;">
-                <span class="credential-chip">${team.teamLoginId}</span>
-                <span class="credential-chip">${team.teamPassword}</span>
+                <span class="credential-chip" title="Login ID">${team.teamLoginId}</span>
+                <span class="credential-chip" style="font-weight:800; color:var(--primary-600);" title="Table Password / Secret Key">${team.teamPassword}</span>
               </div>
             </div>
             <button class="btn-copy-cred" data-cred="Team: ${team.name}\nLogin ID: ${team.teamLoginId}\nPassword: ${team.teamPassword}">Copy</button>
           </div>
         `;
         adminTeamsGrid.appendChild(card);
+      });
+
+      document.querySelectorAll('.btn-edit-team-cred').forEach(b => {
+        b.onclick = () => {
+          const teamId = b.dataset.id;
+          const team = window.auctionStore.getTeam(teamId);
+          if (!team || !editTeamModal) return;
+          document.getElementById('editTeamId').value = team.id;
+          document.getElementById('editTeamName').value = team.name;
+          document.getElementById('editTeamCode').value = team.shortCode;
+          document.getElementById('editTeamLoginId').value = team.teamLoginId;
+          document.getElementById('editTeamPassword').value = team.teamPassword;
+          document.getElementById('editTeamColor').value = team.primaryColor || '#004BA0';
+          document.getElementById('editTeamEmoji').value = team.logoEmoji || '⚡';
+          document.getElementById('editTeamTotalPurse').value = team.totalPurseCr || 100;
+          editTeamModal.classList.add('active');
+        };
       });
 
       document.querySelectorAll('.btn-delete-team').forEach(b => {
